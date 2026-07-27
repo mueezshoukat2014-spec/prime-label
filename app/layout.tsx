@@ -1,0 +1,167 @@
+import type { Metadata, Viewport } from "next";
+import { Fraunces, Manrope } from "next/font/google";
+import "./globals.css";
+import TabAttention from "@/components/TabAttention";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import { ToastProvider } from "@/components/Toast";
+import AnnouncementBar from "@/components/AnnouncementBar";
+import MetaPixelRouteTracker from "@/components/MetaPixel";
+import { headers } from "next/headers";
+import { getSiteContent } from "@/lib/data";
+
+// The layout reads live Site Settings (Meta Pixel ID, announcement bar), so it
+// must not be frozen at build time — otherwise those toggles only take effect
+// on the next deploy.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+// Fraunces: variable serif (weight, optical size, italic for gold accents)
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  style: ["normal", "italic"],
+});
+
+// Manrope: clean variable sans for body, buttons and labels
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  themeColor: "#08080a",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteContent();
+  const name = s.businessName;
+  const desc = s.bio;
+  const url = "https://primelabelsintl.com";
+  const title = `${name} | Premium Custom Woven Labels, Hang Tags & Branding`;
+
+  return {
+    metadataBase: new URL(url),
+    title: {
+      default: title,
+      template: `%s | ${name}`,
+    },
+    description: desc,
+    keywords: [
+      "woven labels", "custom labels", "satin labels", "hang tags", "thank you cards",
+      "custom stickers", "brand packaging", "woven patches", "fabric labels",
+      "printed labels", "clothing labels", "custom branding", "Prime Labels",
+    ],
+    authors: [{ name }],
+    creator: name,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      url,
+      title,
+      description: desc,
+      siteName: name,
+      locale: "en_US",
+      images: [{ url: "/photos/brand-logo.jpg", width: 1200, height: 630, alt: name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: desc,
+      images: ["/photos/brand-logo.jpg"],
+    },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+  };
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Prime Labels International",
+  url: "https://primelabelsintl.com",
+  description: "Premium custom branding studio specialising in woven labels, hang tags, stickers, packaging and finishing products for clothing brands worldwide.",
+  sameAs: ["https://www.instagram.com/primelabels_intl"],
+  areaServed: "Worldwide",
+  slogan: "Every great brand starts with a label.",
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "sales",
+    availableLanguage: ["English"],
+    areaServed: "Worldwide",
+  },
+};
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const s = await getSiteContent();
+
+  // Resolution order: Site Settings → env var → hard default.
+  const resolvedPixelId =
+    String(s.metaPixelId || "").trim() ||
+    String(process.env.NEXT_PUBLIC_META_PIXEL_ID || "").trim() ||
+    "1392785322737760";
+
+  // Never track the owner's own dashboard sessions. Next sets this header on
+  // every request; fall back to rendering the pixel if it is ever absent.
+  const currentPath = headers().get("x-pathname") ?? "";
+  const isAdmin = currentPath.startsWith("/admin");
+  const metaPixelId = isAdmin ? "" : resolvedPixelId;
+
+  return (
+    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
+      <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+        {/*
+          Meta Pixel base code — server-rendered directly into <head>.
+
+          This must NOT use next/script: that injects the tag into <body> after
+          hydration, so at DOMContentLoaded there is no pixel in the document
+          and Meta Pixel Helper reports "no pixel found". Rendering the raw
+          <script> here puts it in the initial HTML, exactly where the helper
+          (and Meta's own installation check) expects it.
+        */}
+        {metaPixelId && (
+          <script
+            id="meta-pixel-base"
+            dangerouslySetInnerHTML={{
+              __html: `
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${metaPixelId}');
+fbq('track', 'PageView');
+console.log('Meta Pixel initialised: ${metaPixelId}');`,
+            }}
+          />
+        )}
+      </head>
+      <body>
+        <ToastProvider>
+          <MetaPixelRouteTracker />
+          <AnnouncementBar
+            text={
+              String(s.announcementEnabled) === "true"
+                ? String(s.announcementText || "").trim()
+                : ""
+            }
+          />
+          <TabAttention />
+          {children}
+          <FloatingWhatsApp href={s.whatsapp} />
+        </ToastProvider>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({ ...jsonLd, name: s.businessName, slogan: s.heroHeadline }),
+          }}
+        />
+      </body>
+    </html>
+  );
+}

@@ -1,0 +1,36 @@
+{
+  "name": "prime-labels-international",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:init": "node lib/db-init.mjs",
+    "seed": "node lib/db-init.mjs --seed"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@vercel/blob": "^2.6.1",
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^11.18.0",
+    "gsap": "^3.12.5",
+    "next": "^14.2.35",
+    "puppeteer": "^24.43.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resend": "^6.18.0",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3"
+  }
+}

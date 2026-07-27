@@ -1,0 +1,22 @@
+# Exclude everything that is not part of the Next.js app
+.cache
+.config
+.local
+.npm
+.sudo_as_admin_successful
+preview
+scripts
+deploy.sh
+setenv.sh
+shot.js
+shot2.js
+diag.js
+overflow.js
+DECISIONS.md
+README.md
+*.log
+swapfile
+
+node_modules
+.next
+.vercel

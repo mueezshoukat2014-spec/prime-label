@@ -1,0 +1,1672 @@
+{
+  "products": [
+    {
+      "slug": "woven-labels",
+      "title": "Woven Labels",
+      "tagline": "The signature of your brand, woven thread by thread.",
+      "description": "High-density damask and woven labels, soft against the skin yet built to outlast every wash. The finishing touch that turns a garment into a brand, including centre-fold and double-face styles.",
+      "image": "/photos/DaNaYhvEwXS_0.jpg",
+      "gallery": [
+        "/photos/DaNaYhvEwXS_0.jpg",
+        "/photos/DaNaYhvEwXS_1.jpg",
+        "/photos/DaNaYhvEwXS_2.jpg",
+        "/photos/DbAkfVljGTR_0.jpg",
+        "/photos/DbAkfVljGTR_1.jpg",
+        "/photos/DbAkfVljGTR_2.jpg",
+        "/photos/DbAkfVljGTR_3.jpg",
+        "/photos/DY-I9fiDBkL_0.jpg"
+      ],
+      "count": 33,
+      "priceFrom": "On request",
+      "moq": 100,
+      "turnaround": 10
+    },
+    {
+      "slug": "satin-labels",
+      "title": "Satin Labels",
+      "tagline": "Smooth, luminous, and impossibly soft.",
+      "description": "Double-faced satin labels with a gentle sheen and a luxurious feel against the skin. Smooth, durable and made for premium apparel that demands comfort and elegance.",
+      "image": "/photos/DUiJgcYDInD_0.jpg",
+      "gallery": [
+        "/photos/DUiJgcYDInD_0.jpg",
+        "/photos/DUiJgcYDInD_1.jpg",
+        "/photos/DUiJgcYDInD_2.jpg",
+        "/photos/DUiJgcYDInD_3.jpg",
+        "/photos/DXwO6uojHij_0.jpg",
+        "/photos/DXwO6uojHij_1.jpg",
+        "/photos/DXwO6uojHij_2.jpg",
+        "/photos/DXwO6uojHij_3.jpg"
+      ],
+      "count": 28,
+      "priceFrom": "On request",
+      "moq": 500,
+      "turnaround": 10
+    },
+    {
+      "slug": "hang-tags",
+      "title": "Hang Tags",
+      "tagline": "The first thing your customer touches.",
+      "description": "Premium board hang tags with refined finishes, foil detailing and stringing. The detail that tells your customer, before they even open the package, that this is quality.",
+      "image": "/photos/ai-hang-tags.jpg",
+      "gallery": [
+        "/photos/ai-hang-tags.jpg"
+      ],
+      "count": 36,
+      "priceFrom": "On request",
+      "moq": 500,
+      "turnaround": 7
+    },
+    {
+      "slug": "stickers",
+      "title": "Custom Stickers",
+      "tagline": "Sleek, sticky, and unmistakably yours.",
+      "description": "Premium die-cut and round stickers with a high-gloss or matte finish. Durable, vivid and ready to seal every package with your brand.",
+      "image": "/photos/DYQ2pCbjHoE_0.jpg",
+      "gallery": [
+        "/photos/DYQ2pCbjHoE_0.jpg",
+        "/photos/DYQ2pCbjHoE_1.jpg",
+        "/photos/DYQ2pCbjHoE_2.jpg",
+        "/photos/DXyoDUhDGpg_0.jpg",
+        "/photos/DXyoDUhDGpg_1.jpg",
+        "/photos/DXyoDUhDGpg_2.jpg",
+        "/photos/DXyoDUhDGpg_3.jpg",
+        "/photos/DYr2eUBDMif_0.jpg"
+      ],
+      "count": 34,
+      "priceFrom": "On request",
+      "moq": 500,
+      "turnaround": 7
+    },
+    {
+      "slug": "brand-packaging",
+      "title": "Brand Packaging",
+      "tagline": "The box, the bag, the whole experience.",
+      "description": "Custom packaging, paper bags and boxes designed around your brand. Because the unboxing is part of the product, and first impressions start at the door.",
+      "image": "/photos/ai-brand-packaging.jpg",
+      "gallery": [
+        "/photos/ai-brand-packaging.jpg"
+      ],
+      "count": 1,
+      "priceFrom": "On request",
+      "moq": 500,
+      "turnaround": 10
+    },
+    {
+      "slug": "zipper-bags",
+      "title": "Zipper Bags",
+      "tagline": "Packaged, protected, professionally finished.",
+      "description": "Custom branded zipper bags to package and protect your garments. Frosted, premium and finished with your label for a polished, professional presentation every time.",
+      "image": "/photos/ai-zipper-bags.jpg",
+      "gallery": [
+        "/photos/ai-zipper-bags.jpg"
+      ],
+      "count": 1,
+      "priceFrom": "On request",
+      "moq": 100,
+      "turnaround": 7
+    },
+    {
+      "slug": "patch",
+      "title": "Woven Patches",
+      "tagline": "Texture you can feel, detail you can see.",
+      "description": "Custom woven patches with rich texture and fine detail. A tactile, dimensional mark for jackets, caps and statement pieces.",
+      "image": "/photos/DVGwhH2jNP__0.jpg",
+      "gallery": [
+        "/photos/DVGwhH2jNP__0.jpg",
+        "/photos/DVGwhH2jNP__1.jpg",
+        "/photos/DVGwhH2jNP__2.jpg",
+        "/photos/DVGwhH2jNP__3.jpg",
+        "/photos/reel_DVGwuoKjClU.jpg"
+      ],
+      "count": 5,
+      "priceFrom": "On request",
+      "moq": 100,
+      "turnaround": 10
+    },
+    {
+      "slug": "steel-logo",
+      "title": "Steel Logo Tags",
+      "tagline": "Engraved. Weighty. Unforgettable.",
+      "description": "Precision-engraved steel logo tags that add weight and prestige to your most premium pieces. A finishing detail that feels like luxury.",
+      "image": "/photos/DZ-c9bHjBI7_0.jpg",
+      "gallery": [
+        "/photos/DZ-c9bHjBI7_0.jpg",
+        "/photos/DZ-c9bHjBI7_1.jpg",
+        "/photos/DZ-c9bHjBI7_2.jpg",
+        "/photos/DZ-c9bHjBI7_3.jpg"
+      ],
+      "count": 4,
+      "priceFrom": "On request",
+      "moq": 500,
+      "turnaround": 14
+    }
+  ],
+  "gallery": [
+    {
+      "src": "photos/DaNaoG7kxUT_0.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DaNaoG7kxUT",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DaNaoG7kxUT_1.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DaNaoG7kxUT",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DaNaoG7kxUT_2.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DaNaoG7kxUT",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DaNaYhvEwXS_0.jpg",
+      "caption": "WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DaNaYhvEwXS",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DaNaYhvEwXS_1.jpg",
+      "caption": "WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DaNaYhvEwXS",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DaNaYhvEwXS_2.jpg",
+      "caption": "WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DaNaYhvEwXS",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAk1C_MMyD_0.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DbAk1C_MMyD",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/DUQaBMGDHKl_0.jpg",
+      "caption": "PREMIUM WOVEN LABELS & FABRIC LABELS",
+      "category": "hang-tags",
+      "shortcode": "DUQaBMGDHKl",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/Daci82FsL9__0.jpg",
+      "caption": "DOUBLE FACE LABEL",
+      "category": "hang-tags",
+      "shortcode": "Daci82FsL9_",
+      "type": "image",
+      "w": 900,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZ-c9bHjBI7_0.jpg",
+      "caption": "STEEL LOGO",
+      "category": "steel-logo",
+      "shortcode": "DZ-c9bHjBI7",
+      "type": "image",
+      "w": 900,
+      "h": 1200
+    },
+    {
+      "src": "photos/DZ-c9bHjBI7_1.jpg",
+      "caption": "STEEL LOGO",
+      "category": "steel-logo",
+      "shortcode": "DZ-c9bHjBI7",
+      "type": "image",
+      "w": 900,
+      "h": 1200
+    },
+    {
+      "src": "photos/DZ-c9bHjBI7_2.jpg",
+      "caption": "STEEL LOGO",
+      "category": "steel-logo",
+      "shortcode": "DZ-c9bHjBI7",
+      "type": "image",
+      "w": 900,
+      "h": 1200
+    },
+    {
+      "src": "photos/DZ-c9bHjBI7_3.jpg",
+      "caption": "STEEL LOGO",
+      "category": "steel-logo",
+      "shortcode": "DZ-c9bHjBI7",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DZRwirYjDE__0.jpg",
+      "caption": "PREMIUM HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "DZRwirYjDE_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZRwirYjDE__1.jpg",
+      "caption": "PREMIUM HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "DZRwirYjDE_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZRwirYjDE__2.jpg",
+      "caption": "PREMIUM HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "DZRwirYjDE_",
+      "type": "image",
+      "w": 720,
+      "h": 960
+    },
+    {
+      "src": "photos/Da2Pk-dldNl_0.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "Da2Pk-dldNl",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/Da2Pk-dldNl_1.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "Da2Pk-dldNl",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/Da2Pk-dldNl_2.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "Da2Pk-dldNl",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAkfVljGTR_0.jpg",
+      "caption": "PREMIUM WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DbAkfVljGTR",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAkfVljGTR_1.jpg",
+      "caption": "PREMIUM WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DbAkfVljGTR",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAkfVljGTR_2.jpg",
+      "caption": "PREMIUM WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DbAkfVljGTR",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAkfVljGTR_3.jpg",
+      "caption": "PREMIUM WOVEN LABELS ✨",
+      "category": "woven-labels",
+      "shortcode": "DbAkfVljGTR",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DUyC4igDLDw_0.jpg",
+      "caption": "DOUBLE STITCH KNITTING LABELS",
+      "category": "hang-tags",
+      "shortcode": "DUyC4igDLDw",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/DbAku09jH07_0.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DbAku09jH07",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DbAku09jH07_1.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DbAku09jH07",
+      "type": "image",
+      "w": 900,
+      "h": 1200
+    },
+    {
+      "src": "photos/DbAku09jH07_2.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DbAku09jH07",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYQ2pCbjHoE_0.jpg",
+      "caption": "CUSTOM STICKERS ⭐️",
+      "category": "stickers",
+      "shortcode": "DYQ2pCbjHoE",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYQ2pCbjHoE_1.jpg",
+      "caption": "CUSTOM STICKERS ⭐️",
+      "category": "stickers",
+      "shortcode": "DYQ2pCbjHoE",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYQ2pCbjHoE_2.jpg",
+      "caption": "CUSTOM STICKERS ⭐️",
+      "category": "stickers",
+      "shortcode": "DYQ2pCbjHoE",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DXyoDUhDGpg_0.jpg",
+      "caption": "Sticky, sleek, and premium! ✨",
+      "category": "stickers",
+      "shortcode": "DXyoDUhDGpg",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXyoDUhDGpg_1.jpg",
+      "caption": "Sticky, sleek, and premium! ✨",
+      "category": "stickers",
+      "shortcode": "DXyoDUhDGpg",
+      "type": "image",
+      "w": 900,
+      "h": 1200
+    },
+    {
+      "src": "photos/DXyoDUhDGpg_2.jpg",
+      "caption": "Sticky, sleek, and premium! ✨",
+      "category": "stickers",
+      "shortcode": "DXyoDUhDGpg",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXyoDUhDGpg_3.jpg",
+      "caption": "Sticky, sleek, and premium! ✨",
+      "category": "stickers",
+      "shortcode": "DXyoDUhDGpg",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DYr2eUBDMif_0.jpg",
+      "caption": "ROUND STICKERS ✨",
+      "category": "stickers",
+      "shortcode": "DYr2eUBDMif",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYr2eUBDMif_1.jpg",
+      "caption": "ROUND STICKERS ✨",
+      "category": "stickers",
+      "shortcode": "DYr2eUBDMif",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYr2eUBDMif_2.jpg",
+      "caption": "ROUND STICKERS ✨",
+      "category": "stickers",
+      "shortcode": "DYr2eUBDMif",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYr2eUBDMif_3.jpg",
+      "caption": "ROUND STICKERS ✨",
+      "category": "stickers",
+      "shortcode": "DYr2eUBDMif",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DYahhAOEyrc_0.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DYahhAOEyrc",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYahhAOEyrc_1.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DYahhAOEyrc",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYahhAOEyrc_2.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DYahhAOEyrc",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYahhAOEyrc_3.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DYahhAOEyrc",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DacipwTDJAz_0.jpg",
+      "caption": "CENTRE FOLD DOUBLE FACE KNITTING LOGO",
+      "category": "hang-tags",
+      "shortcode": "DacipwTDJAz",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DacipwTDJAz_1.jpg",
+      "caption": "CENTRE FOLD DOUBLE FACE KNITTING LOGO",
+      "category": "hang-tags",
+      "shortcode": "DacipwTDJAz",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DacipwTDJAz_2.jpg",
+      "caption": "CENTRE FOLD DOUBLE FACE KNITTING LOGO",
+      "category": "hang-tags",
+      "shortcode": "DacipwTDJAz",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DXofA51DDvi_0.jpg",
+      "caption": "THANK YOU CARDS | TAG CARDS | ZIPPER BAGS",
+      "category": "thank-you-cards",
+      "shortcode": "DXofA51DDvi",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXofA51DDvi_1.jpg",
+      "caption": "THANK YOU CARDS | TAG CARDS | ZIPPER BAGS",
+      "category": "thank-you-cards",
+      "shortcode": "DXofA51DDvi",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXofA51DDvi_2.jpg",
+      "caption": "THANK YOU CARDS | TAG CARDS | ZIPPER BAGS",
+      "category": "thank-you-cards",
+      "shortcode": "DXofA51DDvi",
+      "type": "image",
+      "w": 720,
+      "h": 960
+    },
+    {
+      "src": "photos/DYc9qdZDF86_0.jpg",
+      "caption": "ROUND PREMIUM STICKERS",
+      "category": "stickers",
+      "shortcode": "DYc9qdZDF86",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYc9qdZDF86_1.jpg",
+      "caption": "ROUND PREMIUM STICKERS",
+      "category": "stickers",
+      "shortcode": "DYc9qdZDF86",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYc9qdZDF86_2.jpg",
+      "caption": "ROUND PREMIUM STICKERS",
+      "category": "stickers",
+      "shortcode": "DYc9qdZDF86",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DYc9qdZDF86_3.jpg",
+      "caption": "ROUND PREMIUM STICKERS",
+      "category": "stickers",
+      "shortcode": "DYc9qdZDF86",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DY-I9fiDBkL_0.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DY-I9fiDBkL",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DY-I9fiDBkL_1.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DY-I9fiDBkL",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DY-I9fiDBkL_2.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DY-I9fiDBkL",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DY-I9fiDBkL_3.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DY-I9fiDBkL",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DY-I9fiDBkL_4.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DY-I9fiDBkL",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DVGwhH2jNP__0.jpg",
+      "caption": "CUSTOM WOVEN PATCHES",
+      "category": "patch",
+      "shortcode": "DVGwhH2jNP_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DVGwhH2jNP__1.jpg",
+      "caption": "CUSTOM WOVEN PATCHES",
+      "category": "patch",
+      "shortcode": "DVGwhH2jNP_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DVGwhH2jNP__2.jpg",
+      "caption": "CUSTOM WOVEN PATCHES",
+      "category": "patch",
+      "shortcode": "DVGwhH2jNP_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DVGwhH2jNP__3.jpg",
+      "caption": "CUSTOM WOVEN PATCHES",
+      "category": "patch",
+      "shortcode": "DVGwhH2jNP_",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZAuaIsDG-t_0.jpg",
+      "caption": "PREMIUM WOVEN LABELS",
+      "category": "knitting-labels",
+      "shortcode": "DZAuaIsDG-t",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZAuaIsDG-t_1.jpg",
+      "caption": "PREMIUM WOVEN LABELS",
+      "category": "knitting-labels",
+      "shortcode": "DZAuaIsDG-t",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DZAuaIsDG-t_2.jpg",
+      "caption": "PREMIUM WOVEN LABELS",
+      "category": "knitting-labels",
+      "shortcode": "DZAuaIsDG-t",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DUiJgcYDInD_0.jpg",
+      "caption": "CUSTOM FABRIC LABELS | Consistent. Bold. Professional",
+      "category": "packaging",
+      "shortcode": "DUiJgcYDInD",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DUiJgcYDInD_1.jpg",
+      "caption": "CUSTOM FABRIC LABELS | Consistent. Bold. Professional",
+      "category": "packaging",
+      "shortcode": "DUiJgcYDInD",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DUiJgcYDInD_2.jpg",
+      "caption": "CUSTOM FABRIC LABELS | Consistent. Bold. Professional",
+      "category": "packaging",
+      "shortcode": "DUiJgcYDInD",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DUiJgcYDInD_3.jpg",
+      "caption": "CUSTOM FABRIC LABELS | Consistent. Bold. Professional",
+      "category": "packaging",
+      "shortcode": "DUiJgcYDInD",
+      "type": "image",
+      "w": 480,
+      "h": 640
+    },
+    {
+      "src": "photos/DXwO6uojHij_0.jpg",
+      "caption": "Premium finish for “Eastern Edit” 🏷️✨ Quality that speaks for your brand. Order yours now! 🚀",
+      "category": "packaging",
+      "shortcode": "DXwO6uojHij",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXwO6uojHij_1.jpg",
+      "caption": "Premium finish for “Eastern Edit” 🏷️✨ Quality that speaks for your brand. Order yours now! 🚀",
+      "category": "packaging",
+      "shortcode": "DXwO6uojHij",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXwO6uojHij_2.jpg",
+      "caption": "Premium finish for “Eastern Edit” 🏷️✨ Quality that speaks for your brand. Order yours now! 🚀",
+      "category": "packaging",
+      "shortcode": "DXwO6uojHij",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DXwO6uojHij_3.jpg",
+      "caption": "Premium finish for “Eastern Edit” 🏷️✨ Quality that speaks for your brand. Order yours now! 🚀",
+      "category": "packaging",
+      "shortcode": "DXwO6uojHij",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DUN4mzJDFL__0.jpg",
+      "caption": "First impressions start before they even see the product. 📦✨ , , , , ,",
+      "category": "branding",
+      "shortcode": "DUN4mzJDFL_",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4mzJDFL__1.jpg",
+      "caption": "First impressions start before they even see the product. 📦✨ , , , , ,",
+      "category": "branding",
+      "shortcode": "DUN4mzJDFL_",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4mzJDFL__2.jpg",
+      "caption": "First impressions start before they even see the product. 📦✨ , , , , ,",
+      "category": "branding",
+      "shortcode": "DUN4mzJDFL_",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4yanDLWS_0.jpg",
+      "caption": "It’s all in the details. 🔍",
+      "category": "woven-labels",
+      "shortcode": "DUN4yanDLWS",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4yanDLWS_1.jpg",
+      "caption": "It’s all in the details. 🔍",
+      "category": "woven-labels",
+      "shortcode": "DUN4yanDLWS",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUY3i7oDOhS_0.jpg",
+      "caption": "Detail is the difference between a good brand and a GREAT one. 🧵✨",
+      "category": "woven-labels",
+      "shortcode": "DUY3i7oDOhS",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/DX9Or3YjJkm_0.jpg",
+      "caption": "High-quality premium stickers for a professional look. DM to order",
+      "category": "stickers",
+      "shortcode": "DX9Or3YjJkm",
+      "type": "image",
+      "w": 1200,
+      "h": 1600
+    },
+    {
+      "src": "photos/DX9Or3YjJkm_1.jpg",
+      "caption": "High-quality premium stickers for a professional look. DM to order",
+      "category": "stickers",
+      "shortcode": "DX9Or3YjJkm",
+      "type": "image",
+      "w": 576,
+      "h": 768
+    },
+    {
+      "src": "photos/DUN4OdUjLPz_0.jpg",
+      "caption": "WOVEN LABELS WovenLabels",
+      "category": "satin",
+      "shortcode": "DUN4OdUjLPz",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4OdUjLPz_1.jpg",
+      "caption": "WOVEN LABELS WovenLabels",
+      "category": "satin",
+      "shortcode": "DUN4OdUjLPz",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2gbKjDZb_0.jpg",
+      "caption": "STICKERS AND THANK YOU CARDS",
+      "category": "stickers",
+      "shortcode": "DUN2gbKjDZb",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2gbKjDZb_1.jpg",
+      "caption": "STICKERS AND THANK YOU CARDS",
+      "category": "stickers",
+      "shortcode": "DUN2gbKjDZb",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2gbKjDZb_2.jpg",
+      "caption": "STICKERS AND THANK YOU CARDS",
+      "category": "stickers",
+      "shortcode": "DUN2gbKjDZb",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN47ZUjL6B_0.jpg",
+      "caption": "The perfect pairing for your brand",
+      "category": "hang-tags",
+      "shortcode": "DUN47ZUjL6B",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN47ZUjL6B_1.jpg",
+      "caption": "The perfect pairing for your brand",
+      "category": "hang-tags",
+      "shortcode": "DUN47ZUjL6B",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN47ZUjL6B_2.jpg",
+      "caption": "The perfect pairing for your brand",
+      "category": "hang-tags",
+      "shortcode": "DUN47ZUjL6B",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN47ZUjL6B_3.jpg",
+      "caption": "The perfect pairing for your brand",
+      "category": "hang-tags",
+      "shortcode": "DUN47ZUjL6B",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN5iBrDH8S_0.jpg",
+      "caption": "premium tags, and high-def woven labels. The details make the brand",
+      "category": "hang-tags",
+      "shortcode": "DUN5iBrDH8S",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN5iBrDH8S_1.jpg",
+      "caption": "premium tags, and high-def woven labels. The details make the brand",
+      "category": "hang-tags",
+      "shortcode": "DUN5iBrDH8S",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN5iBrDH8S_2.jpg",
+      "caption": "premium tags, and high-def woven labels. The details make the brand",
+      "category": "hang-tags",
+      "shortcode": "DUN5iBrDH8S",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN5iBrDH8S_3.jpg",
+      "caption": "premium tags, and high-def woven labels. The details make the brand",
+      "category": "hang-tags",
+      "shortcode": "DUN5iBrDH8S",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4c3DDAYt_0.jpg",
+      "caption": "From the loom to your garment. 🪡",
+      "category": "woven-labels",
+      "shortcode": "DUN4c3DDAYt",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4c3DDAYt_1.jpg",
+      "caption": "From the loom to your garment. 🪡",
+      "category": "woven-labels",
+      "shortcode": "DUN4c3DDAYt",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN4c3DDAYt_2.jpg",
+      "caption": "From the loom to your garment. 🪡",
+      "category": "woven-labels",
+      "shortcode": "DUN4c3DDAYt",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2RIJDPNo_0.jpg",
+      "caption": "Does your tag match your talent?",
+      "category": "packaging",
+      "shortcode": "DUN2RIJDPNo",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2RIJDPNo_1.jpg",
+      "caption": "Does your tag match your talent?",
+      "category": "packaging",
+      "shortcode": "DUN2RIJDPNo",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2RIJDPNo_2.jpg",
+      "caption": "Does your tag match your talent?",
+      "category": "packaging",
+      "shortcode": "DUN2RIJDPNo",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN25ZAjFHD_0.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "packaging",
+      "shortcode": "DUN25ZAjFHD",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN25ZAjFHD_1.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "packaging",
+      "shortcode": "DUN25ZAjFHD",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2v0UjAAU_0.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DUN2v0UjAAU",
+      "type": "image",
+      "w": 1079,
+      "h": 1079
+    },
+    {
+      "src": "photos/DUN2v0UjAAU_1.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DUN2v0UjAAU",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2v0UjAAU_2.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DUN2v0UjAAU",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN3tXeDJ9m_0.jpg",
+      "caption": "Ready to give your brand the glow-up it deserves? DM for a custom quote. 💌",
+      "category": "satin",
+      "shortcode": "DUN3tXeDJ9m",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN3tXeDJ9m_1.jpg",
+      "caption": "Ready to give your brand the glow-up it deserves? DM for a custom quote. 💌",
+      "category": "satin",
+      "shortcode": "DUN3tXeDJ9m",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN3tXeDJ9m_2.jpg",
+      "caption": "Ready to give your brand the glow-up it deserves? DM for a custom quote. 💌",
+      "category": "satin",
+      "shortcode": "DUN3tXeDJ9m",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN3tXeDJ9m_3.jpg",
+      "caption": "Ready to give your brand the glow-up it deserves? DM for a custom quote. 💌",
+      "category": "satin",
+      "shortcode": "DUN3tXeDJ9m",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DULYMkzDIa6_0.jpg",
+      "caption": "Premium High-Density Woven Labels for elite clothing brands! 🧵 Soft on the skin, durable in the wash, and perfect for your brand identity. DM us to get your custom design started! 🌍✈️”",
+      "category": "woven-labels",
+      "shortcode": "DULYMkzDIa6",
+      "type": "image",
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "src": "photos/DULYMkzDIa6_1.jpg",
+      "caption": "Premium High-Density Woven Labels for elite clothing brands! 🧵 Soft on the skin, durable in the wash, and perfect for your brand identity. DM us to get your custom design started! 🌍✈️”",
+      "category": "woven-labels",
+      "shortcode": "DULYMkzDIa6",
+      "type": "image",
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "src": "photos/DUN1Pn9jN5C_0.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DUN1Pn9jN5C",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN1Pn9jN5C_1.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DUN1Pn9jN5C",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN1Pn9jN5C_2.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DUN1Pn9jN5C",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2C7fDKGJ_0.jpg",
+      "caption": "It’s not just a label; it’s your brand’s signature",
+      "category": "woven-labels",
+      "shortcode": "DUN2C7fDKGJ",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2C7fDKGJ_1.jpg",
+      "caption": "It’s not just a label; it’s your brand’s signature",
+      "category": "woven-labels",
+      "shortcode": "DUN2C7fDKGJ",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN2C7fDKGJ_2.jpg",
+      "caption": "It’s not just a label; it’s your brand’s signature",
+      "category": "woven-labels",
+      "shortcode": "DUN2C7fDKGJ",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNcjjDjHB0_0.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS | ZIPPER BAGS CustomPackaging FashionStartup PrimeLabelsIntl",
+      "category": "packaging",
+      "shortcode": "DUNcjjDjHB0",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNcjjDjHB0_1.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS | ZIPPER BAGS CustomPackaging FashionStartup PrimeLabelsIntl",
+      "category": "packaging",
+      "shortcode": "DUNcjjDjHB0",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNcjjDjHB0_2.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS | ZIPPER BAGS CustomPackaging FashionStartup PrimeLabelsIntl",
+      "category": "packaging",
+      "shortcode": "DUNcjjDjHB0",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNcjjDjHB0_3.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS | ZIPPER BAGS CustomPackaging FashionStartup PrimeLabelsIntl",
+      "category": "packaging",
+      "shortcode": "DUNcjjDjHB0",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNvXDUjNT1_0.jpg",
+      "caption": "Your brand is in the details. Elevate your garments with our premium finishing touch FashionBranding PrimeLabelsIntl ClothingAccessories",
+      "category": "hang-tags",
+      "shortcode": "DUNvXDUjNT1",
+      "type": "image",
+      "w": 1080,
+      "h": 1206
+    },
+    {
+      "src": "photos/DUNvXDUjNT1_1.jpg",
+      "caption": "Your brand is in the details. Elevate your garments with our premium finishing touch FashionBranding PrimeLabelsIntl ClothingAccessories",
+      "category": "hang-tags",
+      "shortcode": "DUNvXDUjNT1",
+      "type": "image",
+      "w": 1080,
+      "h": 1206
+    },
+    {
+      "src": "photos/DUNvXDUjNT1_2.jpg",
+      "caption": "Your brand is in the details. Elevate your garments with our premium finishing touch FashionBranding PrimeLabelsIntl ClothingAccessories",
+      "category": "hang-tags",
+      "shortcode": "DUNvXDUjNT1",
+      "type": "image",
+      "w": 1080,
+      "h": 1200
+    },
+    {
+      "src": "photos/DUN1w6njNBR_0.jpg",
+      "caption": "From the first touchpoint to the final stitch",
+      "category": "flyers",
+      "shortcode": "DUN1w6njNBR",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN1w6njNBR_1.jpg",
+      "caption": "From the first touchpoint to the final stitch",
+      "category": "flyers",
+      "shortcode": "DUN1w6njNBR",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUNbwASDDek_0.jpg",
+      "caption": "First impressions matter! Elevate your brand experience with our premium packaging bundle: 📦 Custom Rigid Boxes – Durability meets Elegance. 📜 Branded Butter Paper – Adding that luxury touch. 🏷️ Logo Stickers – The perfect seal for your perfection",
+      "category": "stickers",
+      "shortcode": "DUNbwASDDek",
+      "type": "image",
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "src": "photos/DUNbwASDDek_1.jpg",
+      "caption": "First impressions matter! Elevate your brand experience with our premium packaging bundle: 📦 Custom Rigid Boxes – Durability meets Elegance. 📜 Branded Butter Paper – Adding that luxury touch. 🏷️ Logo Stickers – The perfect seal for your perfection",
+      "category": "stickers",
+      "shortcode": "DUNbwASDDek",
+      "type": "image",
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "src": "photos/DULlL6ejODD_0.jpg",
+      "caption": "Your brand deserves a premium first impression! ✨ From custom Zip-lock Packaging Bags to high-definition Woven Labels, we provide a complete branding suite for fashion startups and established labels. 🌍 PrimeLabels",
+      "category": "packaging",
+      "shortcode": "DULlL6ejODD",
+      "type": "image",
+      "w": 1080,
+      "h": 1314
+    },
+    {
+      "src": "photos/DULlL6ejODD_1.jpg",
+      "caption": "Your brand deserves a premium first impression! ✨ From custom Zip-lock Packaging Bags to high-definition Woven Labels, we provide a complete branding suite for fashion startups and established labels. 🌍 PrimeLabels",
+      "category": "packaging",
+      "shortcode": "DULlL6ejODD",
+      "type": "image",
+      "w": 1315,
+      "h": 1600
+    },
+    {
+      "src": "photos/DULlL6ejODD_2.jpg",
+      "caption": "Your brand deserves a premium first impression! ✨ From custom Zip-lock Packaging Bags to high-definition Woven Labels, we provide a complete branding suite for fashion startups and established labels. 🌍 PrimeLabels",
+      "category": "packaging",
+      "shortcode": "DULlL6ejODD",
+      "type": "image",
+      "w": 1080,
+      "h": 1314
+    },
+    {
+      "src": "photos/DULlL6ejODD_3.jpg",
+      "caption": "Your brand deserves a premium first impression! ✨ From custom Zip-lock Packaging Bags to high-definition Woven Labels, we provide a complete branding suite for fashion startups and established labels. 🌍 PrimeLabels",
+      "category": "packaging",
+      "shortcode": "DULlL6ejODD",
+      "type": "image",
+      "w": 1080,
+      "h": 1314
+    },
+    {
+      "src": "photos/DUNcJ9MDHTF_0.jpg",
+      "caption": "WOVEN LABELS | STICKERS GarmentAccessories",
+      "category": "stickers",
+      "shortcode": "DUNcJ9MDHTF",
+      "type": "image",
+      "w": 1080,
+      "h": 1182
+    },
+    {
+      "src": "photos/DUNcJ9MDHTF_1.jpg",
+      "caption": "WOVEN LABELS | STICKERS GarmentAccessories",
+      "category": "stickers",
+      "shortcode": "DUNcJ9MDHTF",
+      "type": "image",
+      "w": 1080,
+      "h": 1176
+    },
+    {
+      "src": "photos/DUNcJ9MDHTF_2.jpg",
+      "caption": "WOVEN LABELS | STICKERS GarmentAccessories",
+      "category": "stickers",
+      "shortcode": "DUNcJ9MDHTF",
+      "type": "image",
+      "w": 1080,
+      "h": 1176
+    },
+    {
+      "src": "photos/DUNcJ9MDHTF_3.jpg",
+      "caption": "WOVEN LABELS | STICKERS GarmentAccessories",
+      "category": "stickers",
+      "shortcode": "DUNcJ9MDHTF",
+      "type": "image",
+      "w": 1080,
+      "h": 1182
+    },
+    {
+      "src": "photos/DULk1m_DFzg_0.jpg",
+      "caption": "Complete Branding Solution for Apparel Brands! 🧵✨ From Woven Labels to Custom Stickers and Butter Paper, we provide everything you need to make your brand stand out. One-stop shop for all your packaging needs! 🏭 GlobalShipping",
+      "category": "stickers",
+      "shortcode": "DULk1m_DFzg",
+      "type": "image",
+      "w": 1080,
+      "h": 1247
+    },
+    {
+      "src": "photos/DULk1m_DFzg_1.jpg",
+      "caption": "Complete Branding Solution for Apparel Brands! 🧵✨ From Woven Labels to Custom Stickers and Butter Paper, we provide everything you need to make your brand stand out. One-stop shop for all your packaging needs! 🏭 GlobalShipping",
+      "category": "stickers",
+      "shortcode": "DULk1m_DFzg",
+      "type": "image",
+      "w": 1080,
+      "h": 1243
+    },
+    {
+      "src": "photos/DULk1m_DFzg_2.jpg",
+      "caption": "Complete Branding Solution for Apparel Brands! 🧵✨ From Woven Labels to Custom Stickers and Butter Paper, we provide everything you need to make your brand stand out. One-stop shop for all your packaging needs! 🏭 GlobalShipping",
+      "category": "stickers",
+      "shortcode": "DULk1m_DFzg",
+      "type": "image",
+      "w": 1080,
+      "h": 1243
+    },
+    {
+      "src": "photos/DUN1jBQjJW9_0.jpg",
+      "caption": "When you combine Woven Labels and Hangtags, you aren't just selling a product—you're selling a \"unboxing experience.\"",
+      "category": "packaging",
+      "shortcode": "DUN1jBQjJW9",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN1jBQjJW9_1.jpg",
+      "caption": "When you combine Woven Labels and Hangtags, you aren't just selling a product—you're selling a \"unboxing experience.\"",
+      "category": "packaging",
+      "shortcode": "DUN1jBQjJW9",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/DUN1jBQjJW9_2.jpg",
+      "caption": "When you combine Woven Labels and Hangtags, you aren't just selling a product—you're selling a \"unboxing experience.\"",
+      "category": "packaging",
+      "shortcode": "DUN1jBQjJW9",
+      "type": "image",
+      "w": 1080,
+      "h": 1080
+    },
+    {
+      "src": "photos/reel_Da2Ppq7JVpY.jpg",
+      "caption": "WOVEN LABELS | HANG TAGS",
+      "category": "hang-tags",
+      "shortcode": "Da2Ppq7JVpY",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DbAk1C_MMyD.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DbAk1C_MMyD",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_Daci82FsL9_.jpg",
+      "caption": "DOUBLE FACE LABEL",
+      "category": "hang-tags",
+      "shortcode": "Daci82FsL9_",
+      "type": "image",
+      "w": 900,
+      "h": 1600
+    },
+    {
+      "src": "photos/reel_DUQaBMGDHKl.jpg",
+      "caption": "PREMIUM WOVEN LABELS & FABRIC LABELS",
+      "category": "hang-tags",
+      "shortcode": "DUQaBMGDHKl",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DYUYQ-Xs8c1.jpg",
+      "caption": "WOVEN LABELS HANGTAGS PRINTED LABELS STICKERS PAPER BAGS FLYERS",
+      "category": "stickers",
+      "shortcode": "DYUYQ-Xs8c1",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DYaho1fTMsR.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DYaho1fTMsR",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DXyoGrPsjT4.jpg",
+      "caption": "Your brand, but make it premium! ✨",
+      "category": "stickers",
+      "shortcode": "DXyoGrPsjT4",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DZAugs7Mtqc.jpg",
+      "caption": "PREMIUM WOVEN LABELS",
+      "category": "woven-labels",
+      "shortcode": "DZAugs7Mtqc",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DUiHufmDGGY.jpg",
+      "caption": "CUSTOME FABRIC LABELS",
+      "category": "packaging",
+      "shortcode": "DUiHufmDGGY",
+      "type": "image",
+      "w": 640,
+      "h": 1138
+    },
+    {
+      "src": "photos/reel_DbAkkessWCm.jpg",
+      "caption": "PREMIUM WOVEN LABELS 🏷️",
+      "category": "hang-tags",
+      "shortcode": "DbAkkessWCm",
+      "type": "image",
+      "w": 576,
+      "h": 1024
+    },
+    {
+      "src": "photos/reel_DYQ3CpWsqZx.jpg",
+      "caption": "STEEL LOGO",
+      "category": "woven-labels",
+      "shortcode": "DYQ3CpWsqZx",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DXwPEH5MpNw.jpg",
+      "caption": "DM for your custom printing. 🚀",
+      "category": "packaging",
+      "shortcode": "DXwPEH5MpNw",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DXofN4QjCd4.jpg",
+      "caption": "Small details make the biggest difference. Is your brand ready for an upgrade?",
+      "category": "packaging",
+      "shortcode": "DXofN4QjCd4",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DYc9-A1sjJW.jpg",
+      "caption": "STICKERS",
+      "category": "stickers",
+      "shortcode": "DYc9-A1sjJW",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DVGwuoKjClU.jpg",
+      "caption": "WOVEN PATCHES | CUSTOM BRANDING",
+      "category": "patch",
+      "shortcode": "DVGwuoKjClU",
+      "type": "image",
+      "w": 640,
+      "h": 1138
+    },
+    {
+      "src": "photos/reel_DYQ2uZjsjX0.jpg",
+      "caption": "STICKERS ☘️",
+      "category": "stickers",
+      "shortcode": "DYQ2uZjsjX0",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DY-JAups4mq.jpg",
+      "caption": "Complete branding solution",
+      "category": "branding",
+      "shortcode": "DY-JAups4mq",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DUyC4igDLDw.jpg",
+      "caption": "DOUBLE STITCH KNITTING LABELS",
+      "category": "hang-tags",
+      "shortcode": "DUyC4igDLDw",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DUY3i7oDOhS.jpg",
+      "caption": "Detail is the difference between a good brand and a GREAT one. 🧵✨",
+      "category": "woven-labels",
+      "shortcode": "DUY3i7oDOhS",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DZ-dXvOMzmi.jpg",
+      "caption": "STEEL LOGO",
+      "category": "packaging",
+      "shortcode": "DZ-dXvOMzmi",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DX9OwG3sMAR.jpg",
+      "caption": "Sticking with quality! 🏷️✨ Elevate your brand with our premium custom stickers. DM for quotes",
+      "category": "stickers",
+      "shortcode": "DX9OwG3sMAR",
+      "type": "image",
+      "w": 640,
+      "h": 1136
+    },
+    {
+      "src": "photos/reel_DaNaeQmzHK4.jpg",
+      "caption": "WOVEN LABELS",
+      "category": "hang-tags",
+      "shortcode": "DaNaeQmzHK4",
+      "type": "image",
+      "w": 576,
+      "h": 1024
+    }
+  ],
+  "reels": [
+    {
+      "src": "videos/reel_DUQaBMGDHKl.mp4",
+      "cover": "photos/reel_DUQaBMGDHKl.jpg",
+      "caption": "PREMIUM WOVEN LABELS & FABRIC LABELS",
+      "plays": 63863,
+      "shortcode": "DUQaBMGDHKl"
+    },
+    {
+      "src": "videos/reel_DYUYQ-Xs8c1.mp4",
+      "cover": "photos/reel_DYUYQ-Xs8c1.jpg",
+      "caption": "WOVEN LABELS HANGTAGS PRINTED LABELS STICKERS PAPER BAGS FLYERS",
+      "plays": 70001,
+      "shortcode": "DYUYQ-Xs8c1"
+    },
+    {
+      "src": "videos/reel_DUY3i7oDOhS.mp4",
+      "cover": "photos/reel_DUY3i7oDOhS.jpg",
+      "caption": "Detail is the difference between a good brand and a GREAT one. 🧵✨",
+      "plays": 141,
+      "shortcode": "DUY3i7oDOhS"
+    },
+    {
+      "src": "videos/reel_Daci82FsL9_.mp4",
+      "cover": "photos/reel_Daci82FsL9_.jpg",
+      "caption": "DOUBLE FACE LABEL",
+      "plays": 28,
+      "shortcode": "Daci82FsL9_"
+    },
+    {
+      "src": "videos/reel_DYc9-A1sjJW.mp4",
+      "cover": "photos/reel_DYc9-A1sjJW.jpg",
+      "caption": "STICKERS",
+      "plays": 20,
+      "shortcode": "DYc9-A1sjJW"
+    },
+    {
+      "src": "videos/reel_DYQ3CpWsqZx.mp4",
+      "cover": "photos/reel_DYQ3CpWsqZx.jpg",
+      "caption": "STEEL LOGO",
+      "plays": 48,
+      "shortcode": "DYQ3CpWsqZx"
+    },
+    {
+      "src": "videos/reel_DVGwuoKjClU.mp4",
+      "cover": "photos/reel_DVGwuoKjClU.jpg",
+      "caption": "WOVEN PATCHES | CUSTOM BRANDING",
+      "plays": 12,
+      "shortcode": "DVGwuoKjClU"
+    },
+    {
+      "src": "videos/reel_DUyC4igDLDw.mp4",
+      "cover": "photos/reel_DUyC4igDLDw.jpg",
+      "caption": "DOUBLE STITCH KNITTING LABELS",
+      "plays": 177,
+      "shortcode": "DUyC4igDLDw"
+    }
+  ],
+  "categoryCount": 9
+}
