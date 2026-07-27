@@ -82,8 +82,17 @@ export const STATIC_CONTENT = {
   metaPixelId: "",
 } satisfies SiteContent;
 
-// next/image requires local paths to start with "/"
-const lead = (s: string): string => (s && !s.startsWith("/") ? "/" + s : s);
+// next/image requires local paths to start with "/", but uploaded
+// product/gallery images are absolute Vercel Blob URLs. Preserve absolute
+// URLs exactly; only prefix relative local paths.
+export const normalizeMediaUrl = (value: string | null | undefined): string => {
+  const s = String(value ?? "").trim();
+  if (!s) return "";
+  if (/^(https?:|data:|blob:)/i.test(s)) return s;
+  return s.startsWith("/") ? s : `/${s}`;
+};
+
+const lead = normalizeMediaUrl;
 
 export const products = ((contentData as any).products as Product[]).map((p) => ({
   ...p,

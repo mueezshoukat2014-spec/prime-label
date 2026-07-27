@@ -1,13 +1,13 @@
 import "server-only";
 import { sql } from "@/lib/db";
-import { products as staticProducts, gallery, reels, STATIC_CONTENT } from "@/lib/content";
+import { products as staticProducts, gallery, reels, STATIC_CONTENT, normalizeMediaUrl } from "@/lib/content";
 
 export async function getProducts() {
   try {
     const rows = await sql`SELECT slug, title, tagline, description, image, gallery, price_from, moq, turnaround, category FROM products WHERE active = TRUE ORDER BY sort`;
     if (rows.length) {
       return rows.map((r: any) => {
-        const norm = (s: string) => (s && !s.startsWith("/") ? "/" + s : s);
+        const norm = normalizeMediaUrl;
         const gallery: string[] =
           typeof r.gallery === "string" ? JSON.parse(r.gallery) : r.gallery || [];
         return {
