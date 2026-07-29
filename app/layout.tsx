@@ -5,7 +5,6 @@ import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
-import MetaPixelRouteTracker from "@/components/MetaPixel";
 import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
 import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd } from "@/lib/seo";
@@ -101,17 +100,8 @@ const globalJsonLd = [organizationJsonLd, websiteJsonLd, offerCatalogJsonLd];
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const s = await getSiteContent();
 
-  // Resolution order: Site Settings → env var → hard default.
-  const resolvedPixelId =
-    String(s.metaPixelId || "").trim() ||
-    String(process.env.NEXT_PUBLIC_META_PIXEL_ID || "").trim() ||
-    "1392785322737760";
-
-  // Never track the owner's own dashboard sessions. Next sets this header on
-  // every request; fall back to rendering the pixel if it is ever absent.
   const headerStore = headers();
   const cookieStore = cookies();
-  const currentPath = headerStore.get("x-pathname") ?? "";
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
@@ -120,8 +110,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     langPreference === "ar" ||
     (!langPreference && (storedLang === "ar" || autoArabic));
   const initialLang = isInitialArabic ? "ar" : "en";
-  const isAdmin = currentPath.startsWith("/admin");
-  const metaPixelId = isAdmin ? "" : resolvedPixelId;
 
   return (
     <html
@@ -134,36 +122,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
 
-        {/*
-          Meta Pixel base code — server-rendered directly into <head>.
-
-          This must NOT use next/script: that injects the tag into <body> after
-          hydration, so at DOMContentLoaded there is no pixel in the document
-          and Meta Pixel Helper reports "no pixel found". Rendering the raw
-          <script> here puts it in the initial HTML, exactly where the helper
-          (and Meta's own installation check) expects it.
-        */}
-        {metaPixelId && (
-          <script
-            id="meta-pixel-base"
-            dangerouslySetInnerHTML={{
-              __html: `
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
-s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${metaPixelId}');
-fbq('track', 'PageView');
-console.log('Meta Pixel initialised: ${metaPixelId}');`,
-            }}
-          />
-        )}
       </head>
       <body>
         <ToastProvider>
-          <MetaPixelRouteTracker />
           <AnnouncementBar
             text={
               String(s.announcementEnabled) === "true"
