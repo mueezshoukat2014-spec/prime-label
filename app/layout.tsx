@@ -8,6 +8,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import MetaPixelRouteTracker from "@/components/MetaPixel";
 import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
+import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd } from "@/lib/seo";
 
 // The layout reads live Site Settings (Meta Pixel ID, announcement bar), so it
 // must not be frozen at build time — otherwise those toggles only take effect
@@ -46,9 +47,8 @@ export const viewport: Viewport = {
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteContent();
   const name = s.businessName;
-  const desc = s.bio;
-  const url = "https://primelabelsintl.com";
-  const title = `${name} | Premium Custom Woven Labels, Hang Tags & Branding`;
+  const url = SITE_URL;
+  const title = `${name} | Custom Woven Labels, Hang Tags & Packaging for Saudi Arabia & GCC`;
 
   return {
     metadataBase: new URL(url),
@@ -56,28 +56,34 @@ export async function generateMetadata(): Promise<Metadata> {
       default: title,
       template: `%s | ${name}`,
     },
-    description: desc,
-    keywords: [
-      "woven labels", "custom labels", "satin labels", "hang tags", "thank you cards",
-      "custom stickers", "brand packaging", "woven patches", "fabric labels",
-      "printed labels", "clothing labels", "custom branding", "Prime Labels",
-    ],
+    description:
+      "Premium custom woven labels, satin labels, hang tags, stickers, packaging and garment branding accessories for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
+    keywords: [...PRIMARY_KEYWORDS],
     authors: [{ name }],
     creator: name,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        "en": url,
+        "x-default": url,
+      },
+    },
     openGraph: {
       type: "website",
       url,
       title,
-      description: desc,
+      description:
+        "Custom woven labels, hang tags, stickers and packaging for clothing brands across Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
       siteName: name,
       locale: "en_US",
+      alternateLocale: ["ar_SA", "en_GB", "en_AE"],
       images: [{ url: "/photos/brand-logo.jpg", width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: desc,
+      description:
+        "Custom woven labels, hang tags, stickers and packaging for clothing brands across Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
       images: ["/photos/brand-logo.jpg"],
     },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
@@ -89,22 +95,8 @@ const ARABIC_COUNTRIES = new Set([
   "MR", "OM", "PS", "QA", "SA", "SD", "SO", "SY", "TN", "YE", "KM",
 ]);
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Prime Labels International",
-  url: "https://primelabelsintl.com",
-  description: "Premium custom branding studio specialising in woven labels, hang tags, stickers, packaging and finishing products for clothing brands worldwide.",
-  sameAs: ["https://www.instagram.com/primelabels_intl"],
-  areaServed: "Worldwide",
-  slogan: "Every great brand starts with a label.",
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "sales",
-    availableLanguage: ["English"],
-    areaServed: "Worldwide",
-  },
-};
+const globalJsonLd = [organizationJsonLd, websiteJsonLd, offerCatalogJsonLd];
+
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const s = await getSiteContent();
@@ -140,7 +132,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
 
         {/*
           Meta Pixel base code — server-rendered directly into <head>.
@@ -186,7 +178,7 @@ console.log('Meta Pixel initialised: ${metaPixelId}');`,
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({ ...jsonLd, name: s.businessName, slogan: s.heroHeadline }),
+            __html: JSON.stringify({ ...organizationJsonLd, name: s.businessName || BRAND_NAME, slogan: s.heroHeadline }),
           }}
         />
       </body>

@@ -22,6 +22,7 @@ const COLS = [
       { label: "Process", href: "/#process" },
       { label: "About", href: "/#about" },
       { label: "FAQ", href: "/#faq" },
+      { label: "GCC Custom Labels", href: "/gcc-custom-labels" },
     ],
   },
   {
@@ -57,8 +58,8 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
             <span className="display text-2xl text-cream">Prime Labels</span>
           </Link>
           <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-cream-muted">
-            Premium custom branding products for clothing and lifestyle brands.
-            Woven to perfection, shipped worldwide.
+            Premium custom labels, hang tags and packaging for clothing brands in
+            Saudi Arabia, the GCC and worldwide.
           </p>
           <div className="mt-6 flex gap-3">
             <a
