@@ -240,7 +240,7 @@ function UkFlagIcon() {
 export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const isArabic = lang === "ar";
-  const targetLabel = isArabic ? "English" : "Arabic";
+  const targetLabel = isArabic ? "English" : "العربية";
 
   useEffect(() => {
     const preference = readCookie(LANG_PREF_COOKIE);
@@ -296,7 +296,7 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
       translate="no"
     >
       {isArabic ? <UkFlagIcon /> : <SaudiFlagIcon />}
-      <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+      <span className="text-[11px] font-semibold tracking-[0.12em]">
         {targetLabel}
       </span>
     </button>
