@@ -53,8 +53,14 @@ export default function LogoStrip({
           <div className="mb-9 flex justify-center">
             <span className="eyebrow">
               <span className="h-px w-8 bg-champagne/60" />
-              <span>{title}</span>
-              <VerifiedBadgeIcon />
+              {title === "Trusted by clothing brands worldwide" ? (
+                <>
+                  <VerifiedBadgeIcon />
+                  <span>Trusted by clothing brands worldwide</span>
+                </>
+              ) : (
+                <span>{title}</span>
+              )}
               <span className="h-px w-8 bg-champagne/60" />
             </span>
           </div>

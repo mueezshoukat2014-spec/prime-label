@@ -211,8 +211,8 @@ export default function Hero() {
               Worldwide shipping
             </span>
             <span className="flex items-center gap-2">
-              Trusted by clothing brands
               <VerifiedBadgeIcon className="text-champagne" />
+              <span>Trusted by clothing brands</span>
             </span>
             <span className="hidden items-center gap-2 sm:flex">
               <DeliveryVanIcon className="text-champagne" />
