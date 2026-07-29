@@ -123,9 +123,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
+  const autoArabic = headerStore.get("x-auto-arabic") === "1" || ARABIC_COUNTRIES.has(country);
   const isInitialArabic =
     langPreference === "ar" ||
-    (!langPreference && (storedLang === "ar" || ARABIC_COUNTRIES.has(country)));
+    (!langPreference && (storedLang === "ar" || autoArabic));
   const initialLang = isInitialArabic ? "ar" : "en";
   const isAdmin = currentPath.startsWith("/admin");
   const metaPixelId = isAdmin ? "" : resolvedPixelId;

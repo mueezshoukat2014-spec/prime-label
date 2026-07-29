@@ -20,10 +20,16 @@ export function middleware(request: NextRequest) {
   const country =
     request.headers.get("x-vercel-ip-country") ||
     request.headers.get("cf-ipcountry") ||
+    request.headers.get("x-country") ||
     "";
+  const acceptLanguage = request.headers.get("accept-language") || "";
+  const browserPrefersArabic = /(^|,)\s*ar(?:-|;|,|$)/i.test(acceptLanguage);
+  const regionPrefersArabic =
+    ARABIC_COUNTRIES.has(country.toUpperCase()) || browserPrefersArabic;
 
   headers.set("x-pathname", pathname);
   if (country) headers.set("x-country", country.toUpperCase());
+  if (regionPrefersArabic) headers.set("x-auto-arabic", "1");
 
   const response = NextResponse.next({ request: { headers } });
 
@@ -41,7 +47,7 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith("/admin") &&
     !manualPreference &&
     !alreadySelected &&
-    ARABIC_COUNTRIES.has(country.toUpperCase());
+    regionPrefersArabic;
 
   if (shouldAutoArabic) {
     response.cookies.set("pl_lang", "ar", {
