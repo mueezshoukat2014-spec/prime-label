@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   title: "Custom Woven Labels & Packaging for Saudi Arabia, UAE & GCC",
   description:
     "Premium custom woven labels, satin labels, hang tags, stickers and clothing brand packaging for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
-  alternates: { canonical: `${SITE_URL}/gcc-custom-labels` },
+  alternates: {
+    canonical: `${SITE_URL}/gcc-custom-labels`,
+    languages: { en: `${SITE_URL}/gcc-custom-labels`, "x-default": `${SITE_URL}/gcc-custom-labels` },
+  },
   keywords: [
     "custom woven labels Saudi Arabia",
     "clothing labels Riyadh",

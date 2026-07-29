@@ -33,6 +33,10 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers } });
 
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api")) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  }
+
   if (country) {
     response.cookies.set("pl_country", country.toUpperCase(), {
       path: "/",

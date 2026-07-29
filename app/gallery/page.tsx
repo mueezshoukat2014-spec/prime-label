@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   description:
     "View premium custom woven labels, hang tags, stickers, packaging, patches and garment branding accessories made for fashion brands across Saudi Arabia, UAE, GCC and worldwide.",
   keywords: ["custom labels gallery", "woven labels examples", "hang tags portfolio", "packaging for clothing brands", "GCC apparel branding"],
-  alternates: { canonical: "https://primelabelsintl.com/gallery" },
+  alternates: {
+    canonical: "https://primelabelsintl.com/gallery",
+    languages: { en: "https://primelabelsintl.com/gallery", "x-default": "https://primelabelsintl.com/gallery" },
+  },
 };
 
 export default async function GalleryPage() {

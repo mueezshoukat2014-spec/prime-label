@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   description:
     "Get a tailored quote for custom woven labels, satin labels, hang tags, stickers and brand packaging for Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide shipping.",
   keywords: ["custom labels quote", "woven labels Saudi Arabia", "hang tags UAE", "brand packaging GCC", "clothing labels quote"],
-  alternates: { canonical: "https://primelabelsintl.com/quote" },
+  alternates: {
+    canonical: "https://primelabelsintl.com/quote",
+    languages: { en: "https://primelabelsintl.com/quote", "x-default": "https://primelabelsintl.com/quote" },
+  },
 };
 
 export default async function QuotePage({

@@ -1,13 +1,56 @@
 import type { MetadataRoute } from "next";
 
+const base = "https://primelabelsintl.com";
+const lastModified = new Date("2026-07-30T00:00:00.000Z");
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://primelabelsintl.com";
-  const now = new Date();
   return [
-    { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/quote`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
-    { url: `${base}/gcc-custom-labels`, lastModified: now, changeFrequency: "weekly", priority: 0.92 },
-    { url: `${base}/gallery`, lastModified: now, changeFrequency: "weekly", priority: 0.85 },
-    { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    {
+      url: base,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 1,
+      images: [
+        `${base}/photos/brand-logo.jpg`,
+        `${base}/photos/DaNaYhvEwXS_0.jpg`,
+        `${base}/photos/ai-brand-packaging.jpg`,
+      ],
+    },
+    {
+      url: `${base}/quote`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      images: [`${base}/photos/brand-logo.jpg`],
+    },
+    {
+      url: `${base}/gcc-custom-labels`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.92,
+      images: [
+        `${base}/photos/DaNaYhvEwXS_0.jpg`,
+        `${base}/photos/ai-hang-tags.jpg`,
+        `${base}/photos/ai-zipper-bags.jpg`,
+      ],
+    },
+    {
+      url: `${base}/gallery`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.85,
+      images: [
+        `${base}/photos/DaNaoG7kxUT_0.jpg`,
+        `${base}/photos/DaNaYhvEwXS_1.jpg`,
+        `${base}/photos/DYQ2pCbjHoE_0.jpg`,
+      ],
+    },
+    {
+      url: `${base}/contact`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      images: [`${base}/photos/brand-logo.jpg`],
+    },
   ];
 }

@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   description:
     "Contact Prime Labels International for custom woven labels, hang tags, stickers and packaging for clothing brands in Saudi Arabia, UAE, GCC countries and worldwide.",
   keywords: ["contact woven label supplier", "custom labels Saudi Arabia", "packaging supplier GCC", "clothing label manufacturer"],
-  alternates: { canonical: "https://primelabelsintl.com/contact" },
+  alternates: {
+    canonical: "https://primelabelsintl.com/contact",
+    languages: { en: "https://primelabelsintl.com/contact", "x-default": "https://primelabelsintl.com/contact" },
+  },
 };
 
 export default async function ContactPage() {
