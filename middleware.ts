@@ -1,18 +1,62 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const ARABIC_COUNTRIES = new Set([
+  "AE", "BH", "DJ", "DZ", "EG", "IQ", "JO", "KW", "LB", "LY", "MA",
+  "MR", "OM", "PS", "QA", "SA", "SD", "SO", "SY", "TN", "YE", "KM",
+]);
+
 /**
- * Exposes the current pathname to Server Components via a request header.
+ * Exposes request metadata to Server Components and sets a lightweight country
+ * cookie used by the client language switcher.
  *
- * The root layout needs it to decide whether to render the Meta Pixel — it
- * must be skipped on /admin so the owner's own dashboard sessions are never
- * tracked. Server Components can't read the URL directly, and Next does not
- * guarantee an equivalent built-in header.
+ * Vercel provides the visitor country in x-vercel-ip-country. If a visitor is
+ * from an Arabic-speaking country and has not manually chosen English/Arabic,
+ * we prime Google Translate cookies so the site opens in Arabic by default.
  */
 export function middleware(request: NextRequest) {
   const headers = new Headers(request.headers);
-  headers.set("x-pathname", request.nextUrl.pathname);
-  return NextResponse.next({ request: { headers } });
+  const pathname = request.nextUrl.pathname;
+  const country =
+    request.headers.get("x-vercel-ip-country") ||
+    request.headers.get("cf-ipcountry") ||
+    "";
+
+  headers.set("x-pathname", pathname);
+  if (country) headers.set("x-country", country.toUpperCase());
+
+  const response = NextResponse.next({ request: { headers } });
+
+  if (country) {
+    response.cookies.set("pl_country", country.toUpperCase(), {
+      path: "/",
+      maxAge: 60 * 60 * 24,
+      sameSite: "lax",
+    });
+  }
+
+  const manualPreference = request.cookies.get("pl_lang_pref")?.value;
+  const alreadySelected = request.cookies.get("pl_lang")?.value;
+  const shouldAutoArabic =
+    !pathname.startsWith("/admin") &&
+    !manualPreference &&
+    !alreadySelected &&
+    ARABIC_COUNTRIES.has(country.toUpperCase());
+
+  if (shouldAutoArabic) {
+    response.cookies.set("pl_lang", "ar", {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+    response.cookies.set("googtrans", "/en/ar", {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+  }
+
+  return response;
 }
 
 export const config = {

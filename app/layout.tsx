@@ -6,7 +6,7 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MetaPixelRouteTracker from "@/components/MetaPixel";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
 
 // The layout reads live Site Settings (Meta Pixel ID, announcement bar), so it
@@ -84,6 +84,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const ARABIC_COUNTRIES = new Set([
+  "AE", "BH", "DJ", "DZ", "EG", "IQ", "JO", "KW", "LB", "LY", "MA",
+  "MR", "OM", "PS", "QA", "SA", "SD", "SO", "SY", "TN", "YE", "KM",
+]);
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -112,12 +117,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   // Never track the owner's own dashboard sessions. Next sets this header on
   // every request; fall back to rendering the pixel if it is ever absent.
-  const currentPath = headers().get("x-pathname") ?? "";
+  const headerStore = headers();
+  const cookieStore = cookies();
+  const currentPath = headerStore.get("x-pathname") ?? "";
+  const country = (headerStore.get("x-country") || "").toUpperCase();
+  const langPreference = cookieStore.get("pl_lang_pref")?.value;
+  const storedLang = cookieStore.get("pl_lang")?.value;
+  const isInitialArabic =
+    langPreference === "ar" ||
+    (!langPreference && (storedLang === "ar" || ARABIC_COUNTRIES.has(country)));
+  const initialLang = isInitialArabic ? "ar" : "en";
   const isAdmin = currentPath.startsWith("/admin");
   const metaPixelId = isAdmin ? "" : resolvedPixelId;
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${cairo.variable}`} suppressHydrationWarning>
+    <html
+      lang={initialLang}
+      dir={isInitialArabic ? "rtl" : "ltr"}
+      data-lang={initialLang}
+      className={`${fraunces.variable} ${manrope.variable} ${cairo.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 

@@ -5,7 +5,22 @@ import { useEffect, useState } from "react";
 const SOURCE_LANG = "en";
 const TARGET_LANG = "ar";
 const LANG_COOKIE = "pl_lang";
+const LANG_PREF_COOKIE = "pl_lang_pref";
+const COUNTRY_COOKIE = "pl_country";
 const TRANS_COOKIE = "googtrans";
+
+const ARABIC_COUNTRIES = new Set([
+  "AE", "BH", "DJ", "DZ", "EG", "IQ", "JO", "KW", "LB", "LY", "MA",
+  "MR", "OM", "PS", "QA", "SA", "SD", "SO", "SY", "TN", "YE", "KM",
+]);
+
+const ARABIC_TIMEZONES = new Set([
+  "Africa/Algiers", "Africa/Cairo", "Africa/Casablanca", "Africa/Khartoum",
+  "Africa/Mogadishu", "Africa/Nouakchott", "Africa/Tunis", "Asia/Aden",
+  "Asia/Amman", "Asia/Baghdad", "Asia/Bahrain", "Asia/Beirut", "Asia/Damascus",
+  "Asia/Dubai", "Asia/Gaza", "Asia/Hebron", "Asia/Kuwait", "Asia/Muscat",
+  "Asia/Qatar", "Asia/Riyadh",
+]);
 
 declare global {
   interface Window {
@@ -97,10 +112,22 @@ function triggerGoogleSelect(lang: "en" | "ar") {
   return true;
 }
 
-function setArabicCookies() {
+function requestTranslation(lang: "en" | "ar") {
+  ensureGoogleTranslate();
+  let tries = 0;
+  const tick = () => {
+    tries += 1;
+    if (triggerGoogleSelect(lang)) return;
+    if (tries < 16) window.setTimeout(tick, 250);
+  };
+  window.setTimeout(tick, 250);
+}
+
+function setArabicCookies(preference?: "manual") {
   const value = `/${SOURCE_LANG}/${TARGET_LANG}`;
   setCookie(LANG_COOKIE, TARGET_LANG);
   setCookie(TRANS_COOKIE, value);
+  if (preference === "manual") setCookie(LANG_PREF_COOKIE, TARGET_LANG);
 
   // Google Translate may read the cookie on the root domain as well. Setting
   // both is harmless and makes the switch survive www/non-www variants.
@@ -111,9 +138,10 @@ function setArabicCookies() {
   }
 }
 
-function clearArabicCookies() {
-  clearCookie(LANG_COOKIE);
+function clearArabicCookies(preference?: "manual") {
+  setCookie(LANG_COOKIE, SOURCE_LANG);
   clearCookie(TRANS_COOKIE);
+  if (preference === "manual") setCookie(LANG_PREF_COOKIE, SOURCE_LANG);
   const host = window.location.hostname;
   const parts = host.split(".");
   if (parts.length > 2) {
@@ -121,13 +149,45 @@ function clearArabicCookies() {
   }
 }
 
+function shouldAutoArabic() {
+  const country = readCookie(COUNTRY_COOKIE).toUpperCase();
+  if (country && ARABIC_COUNTRIES.has(country)) return true;
+
+  const browserLangs = [navigator.language, ...(navigator.languages || [])]
+    .filter(Boolean)
+    .map((v) => v.toLowerCase());
+  if (browserLangs.some((v) => v === "ar" || v.startsWith("ar-"))) return true;
+
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (ARABIC_TIMEZONES.has(tz)) return true;
+  } catch {
+    // ignore timezone detection failures
+  }
+  return false;
+}
+
 export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const isArabic = lang === "ar";
 
   useEffect(() => {
-    const stored = readCookie(LANG_COOKIE) === TARGET_LANG || readCookie(TRANS_COOKIE).includes(`/${TARGET_LANG}`);
-    const initial = stored ? "ar" : "en";
+    const preference = readCookie(LANG_PREF_COOKIE);
+    const storedArabic =
+      readCookie(LANG_COOKIE) === TARGET_LANG || readCookie(TRANS_COOKIE).includes(`/${TARGET_LANG}`);
+
+    const initial =
+      preference === SOURCE_LANG
+        ? "en"
+        : preference === TARGET_LANG || storedArabic || shouldAutoArabic()
+          ? "ar"
+          : "en";
+
+    if (initial === "ar") {
+      setArabicCookies(preference === TARGET_LANG ? "manual" : undefined);
+      requestTranslation("ar");
+    }
+
     setLang(initial);
     applyDocumentLanguage(initial);
     ensureGoogleTranslate();
@@ -135,7 +195,7 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
 
   function toggle() {
     if (isArabic) {
-      clearArabicCookies();
+      clearArabicCookies("manual");
       applyDocumentLanguage("en");
       setLang("en");
       // Removing Google Translate cleanly requires a reload; otherwise it keeps
@@ -144,15 +204,10 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
       return;
     }
 
-    setArabicCookies();
+    setArabicCookies("manual");
     applyDocumentLanguage("ar");
     setLang("ar");
-    ensureGoogleTranslate();
-
-    window.setTimeout(() => {
-      const changed = triggerGoogleSelect("ar");
-      if (!changed) window.location.reload();
-    }, 500);
+    requestTranslation("ar");
   }
 
   return (
