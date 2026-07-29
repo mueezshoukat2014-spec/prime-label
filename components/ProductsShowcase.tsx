@@ -32,8 +32,8 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
           </div>
           </Reveal>
           <p className="max-w-sm text-[15px] leading-relaxed text-cream-muted">
-            Nine product lines, one standard. Everything your clothing brand
-            needs to feel finished, premium, and unmistakably yours.
+            Everything your clothing brand needs to feel finished, premium, and
+            unmistakably yours.
           </p>
         </div>
 
