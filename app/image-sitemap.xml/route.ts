@@ -1,6 +1,8 @@
 const base = "https://primelabelsintl.com";
 
-const entries = [
+type ImageEntry = [path: string, title: string];
+
+const entries: Array<{ loc: string; images: ImageEntry[] }> = [
   {
     loc: base,
     images: [
@@ -36,25 +38,27 @@ function esc(value: string) {
 }
 
 export function GET() {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${entries
-  .map(
-    (entry) => `  <url>
-    <loc>${esc(entry.loc)}</loc>
-${entry.images
-  .map(
-    ([path, title]) => `    <image:image>
+  const urls = entries
+    .map((entry) => {
+      const images = entry.images
+        .map(
+          ([path, title]) => `    <image:image>
       <image:loc>${esc(`${base}${path}`)}</image:loc>
       <image:title>${esc(title)}</image:title>
     </image:image>`
-  )
-  .join("
-")}
-  </url>`
-  )
-  .join("
-")}
+        )
+        .join("\n");
+
+      return `  <url>
+    <loc>${esc(entry.loc)}</loc>
+${images}
+  </url>`;
+    })
+    .join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls}
 </urlset>`;
 
   return new Response(xml, {
