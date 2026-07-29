@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { normalizeWaLink, waProductLink, waQuoteSubmittedLink } from "@/lib/whatsapp";
 import { celebrate } from "@/lib/confetti";
+import { trackLead } from "@/lib/fbq";
 import { useToast } from "@/components/Toast";
 import {
   ALLOWED_EXTENSIONS,
@@ -376,6 +377,9 @@ export default function QuoteForm({
             : "Something went wrong. Please try again or message us on WhatsApp."
         );
       }
+
+      // Fire Meta Lead only after the API confirms the lead was saved.
+      trackLead(form.product);
 
       const uploaded = (data.artworkUrl as string | null) ?? null;
       setArtworkUrl(uploaded);
