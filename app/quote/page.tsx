@@ -36,7 +36,7 @@ export default async function QuotePage({
               <Reveal>
                 <span className="eyebrow">
                   <span className="h-px w-8 bg-champagne/60" />
-                  Request a quote
+                  Customize your order
                 </span>
               </Reveal>
               <Reveal delay={0.1}>

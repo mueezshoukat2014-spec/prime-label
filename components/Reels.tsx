@@ -2,9 +2,23 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal, EASE } from "@/components/anim";
 import SwipeHint from "@/components/SwipeHint";
 import type { Reel } from "@/lib/content";
+
+const REEL_PRODUCTS = [
+  "Woven Labels",
+  "Hang Tags",
+  "Satin Labels",
+  "Custom Stickers",
+  "Packaging Boxes",
+  "Zipper Bags",
+  "Woven Patches",
+  "Steel Logo Tags",
+] as const;
+
+const productForReel = (index: number) => REEL_PRODUCTS[index % REEL_PRODUCTS.length];
 
 export default function Reels({ reels }: { reels: Reel[] }) {
   const [active, setActive] = useState(0);
@@ -14,6 +28,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   const listRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const r = reels[active];
+  const activeProduct = productForReel(active);
 
   // detect mobile (<768px)
   useEffect(() => {
@@ -27,6 +42,39 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   const play = useCallback(() => {
     vidRef.current?.play().then(() => setPlaying(true)).catch(() => {});
   }, []);
+
+  // Preload videos only when the section is close to viewport. This keeps the
+  // landing page light, but makes reel previews/playback ready when customers scroll here.
+  useEffect(() => {
+    const section = listRef.current?.closest("section");
+    if (!section) return;
+    const links: HTMLLinkElement[] = [];
+    const preload = () => {
+      reels.forEach((reel) => {
+        if (document.querySelector(`link[rel="preload"][href="${reel.src}"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "video";
+        link.href = reel.src;
+        document.head.appendChild(link);
+        links.push(link);
+      });
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          preload();
+          io.disconnect();
+        }
+      },
+      { rootMargin: "700px 0px" }
+    );
+    io.observe(section);
+    return () => {
+      io.disconnect();
+      links.forEach((link) => link.remove());
+    };
+  }, [reels]);
 
   // playback control: desktop autoplays, mobile plays only when in view
   useEffect(() => {
@@ -131,7 +179,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 muted
                 loop
                 playsInline
-                preload="none"
+                preload="metadata"
                 initial={{ opacity: 0, scale: 1.04 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
@@ -197,6 +245,12 @@ export default function Reels({ reels }: { reels: Reel[] }) {
               <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-cream">
                 {r.caption}
               </p>
+              <Link
+                href={`/quote?product=${encodeURIComponent(activeProduct)}`}
+                className="pointer-events-auto mt-4 inline-flex rounded-full border border-champagne/35 bg-champagne/12 px-4 py-2 text-[12px] font-medium text-champagne backdrop-blur transition-colors hover:bg-champagne/20"
+              >
+                Customize this {activeProduct} →
+              </Link>
             </div>
           </Reveal>
 
@@ -227,35 +281,43 @@ export default function Reels({ reels }: { reels: Reel[] }) {
           >
             {reels.map((reel, i) => {
               const isActive = i === active;
+              const product = productForReel(i);
               return (
-                <button
-                  key={reel.src}
-                  ref={(el) => {
-                    thumbRefs.current[i] = el;
-                  }}
-                  onClick={() => select(i)}
-                  className={`group relative aspect-[3/4] w-[88px] shrink-0 snap-start overflow-hidden rounded-2xl border transition-all duration-500 sm:w-[110px] lg:w-full ${
-                    isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"
-                  }`}
-                >
-                  <Image
-                    src={reel.cover}
-                    alt={reel.caption}
-                    fill
-                    sizes="(max-width:1024px) 40vw, 300px"
-                    quality={45}
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-                  <div className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full glass-strong">
-                    <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
-                      <path d="M0 0v11l9-5.5L0 0z" fill="#F4F0E8" />
-                    </svg>
-                  </div>
-                  <span className="absolute bottom-2 left-2 right-2 line-clamp-2 text-left text-[10px] leading-tight text-cream-muted">
-                    {reel.caption}
-                  </span>
-                </button>
+                <div key={reel.src} className="w-[88px] shrink-0 snap-start sm:w-[110px] lg:w-full">
+                  <button
+                    ref={(el) => {
+                      thumbRefs.current[i] = el;
+                    }}
+                    onClick={() => select(i)}
+                    className={`group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border transition-all duration-500 ${
+                      isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={reel.cover}
+                      alt={reel.caption}
+                      fill
+                      sizes="(max-width:1024px) 40vw, 300px"
+                      quality={58}
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                    <div className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full glass-strong">
+                      <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
+                        <path d="M0 0v11l9-5.5L0 0z" fill="#F4F0E8" />
+                      </svg>
+                    </div>
+                    <span className="absolute bottom-2 left-2 right-2 line-clamp-2 text-left text-[10px] leading-tight text-cream-muted">
+                      {reel.caption}
+                    </span>
+                  </button>
+                  <Link
+                    href={`/quote?product=${encodeURIComponent(product)}`}
+                    className="mt-2 block truncate rounded-full border border-champagne/25 bg-champagne/[0.06] px-2.5 py-1.5 text-center text-[10px] font-medium text-champagne transition-colors hover:bg-champagne/15"
+                  >
+                    {product}
+                  </Link>
+                </div>
               );
             })}
           </div>

@@ -50,7 +50,7 @@ export default function SeoMarketSection() {
                   GCC custom labels guide →
                 </Link>
                 <Link href="/quote" className="btn-primary !py-3 !px-5 text-[12px]">
-                  Get GCC pricing
+                  Customize Your Order
                 </Link>
               </div>
             </div>

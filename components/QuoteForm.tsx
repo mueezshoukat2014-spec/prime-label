@@ -181,6 +181,7 @@ type FormState = {
   name: string;
   phone: string;
   product: string;
+  otherProduct: string;
   email: string;
   quantity: string;
   details: string;
@@ -209,6 +210,7 @@ export default function QuoteForm({
     name: "",
     phone: "",
     product: seededProduct,
+    otherProduct: "",
     email: "",
     quantity: "",
     details: "",
@@ -231,6 +233,8 @@ export default function QuoteForm({
   const [waHref, setWaHref] = useState(fallbackWa);
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
   const [countryOpen, setCountryOpen] = useState(false);
+  const [productOpen, setProductOpen] = useState(false);
+  const [quantityOpen, setQuantityOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
@@ -243,6 +247,12 @@ export default function QuoteForm({
         ? `Other — ${form.otherCountry.trim()}`
         : "Other"
       : form.country.trim();
+  const productForSubmission =
+    form.product === "Other"
+      ? form.otherProduct.trim()
+        ? `Other — ${form.otherProduct.trim()}`
+        : "Other"
+      : form.product;
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -267,6 +277,16 @@ export default function QuoteForm({
           : f.phone,
       };
     });
+  }
+
+
+  function handleProductChange(product: string) {
+    setForm((f) => ({
+      ...f,
+      product,
+      otherProduct: product === "Other" ? f.otherProduct : "",
+    }));
+    markTouched("product");
   }
 
   const markTouched = (k: TouchKey) => setTouched((t) => ({ ...t, [k]: true }));
@@ -322,6 +342,13 @@ export default function QuoteForm({
       toast.error(msg);
       return;
     }
+    if (form.product === "Other" && !form.otherProduct.trim()) {
+      setStatus("error");
+      const msg = "Please describe the product or custom item you need.";
+      setErr(msg);
+      toast.error(msg);
+      return;
+    }
     if (Object.keys(errors).length > 0) {
       const first = errors.name || errors.phone || errors.product || errors.email!;
       setStatus("error");
@@ -337,7 +364,7 @@ export default function QuoteForm({
       const fd = new FormData();
       fd.append("name", form.name.trim());
       fd.append("phone", form.phone.trim());
-      fd.append("product", form.product);
+      fd.append("product", productForSubmission);
       fd.append("email", form.email.trim());
       fd.append("quantity", form.quantity);
       fd.append("details", form.details.trim());
@@ -379,7 +406,7 @@ export default function QuoteForm({
       }
 
       // Fire Meta Lead only after the API confirms the lead was saved.
-      trackLead(form.product);
+      trackLead(productForSubmission);
 
       const uploaded = (data.artworkUrl as string | null) ?? null;
       setArtworkUrl(uploaded);
@@ -392,7 +419,7 @@ export default function QuoteForm({
         email: form.email.trim(),
         company: form.company.trim(),
         country: countryForSubmission,
-        product: form.product,
+        product: productForSubmission,
         quantity: form.quantity,
         details: form.details.trim(),
         artworkUrl: uploaded,
@@ -621,47 +648,107 @@ export default function QuoteForm({
               error={liveErrors.product}
               htmlFor="q-product"
             >
-              <select
-                id="q-product"
-                name="product"
-                value={form.product}
-                onChange={(e) => {
-                  set("product", e.target.value);
-                  markTouched("product");
-                }}
-                onBlur={() => markTouched("product")}
-                aria-invalid={!!liveErrors.product}
-                className={`${inputCls} ${liveErrors.product ? errBorder : okBorder}`}
-              >
-                <option value="" className="bg-ink">
-                  Select a category
-                </option>
-                {PRODUCT_CATEGORIES.map((p) => (
-                  <option key={p} value={p} className="bg-ink">
-                    {p}
-                  </option>
-                ))}
-              </select>
+              <input type="hidden" name="product" value={productForSubmission} />
+              <div className="relative">
+                <button
+                  id="q-product"
+                  type="button"
+                  onClick={() => setProductOpen((v) => !v)}
+                  onBlur={() => markTouched("product")}
+                  aria-invalid={!!liveErrors.product}
+                  aria-haspopup="listbox"
+                  aria-expanded={productOpen}
+                  className={`${inputCls} ${liveErrors.product ? errBorder : okBorder} flex items-center justify-between gap-3 text-left backdrop-blur-xl`}
+                >
+                  <span className={form.product ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                    {form.product || "Select a category"}
+                  </span>
+                  <svg className={`shrink-0 text-cream-dim transition-transform ${productOpen ? "rotate-180" : ""}`} width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                {productOpen && (
+                  <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="listbox">
+                    {PRODUCT_CATEGORIES.map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        role="option"
+                        aria-selected={form.product === item}
+                        onClick={() => {
+                          handleProductChange(item);
+                          setProductOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
+                          form.product === item ? "bg-champagne/12 text-cream" : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                        }`}
+                      >
+                        <span>{item}</span>
+                        {form.product === item && <span className="text-champagne">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Field>
+
+            {form.product === "Other" && (
+              <Field
+                label="Custom product details"
+                required
+                hint="Tell us what product, accessory, or special branding item you need."
+                htmlFor="q-other-product"
+              >
+                <input
+                  id="q-other-product"
+                  value={form.otherProduct}
+                  onChange={(e) => set("otherProduct", e.target.value)}
+                  className={`${inputCls} ${okBorder}`}
+                  placeholder="Describe your custom item"
+                />
+              </Field>
+            )}
 
             {/* ---------------- optional ---------------- */}
             <Field label="Quantity" htmlFor="q-quantity">
-              <select
-                id="q-quantity"
-                name="quantity"
-                value={form.quantity}
-                onChange={(e) => set("quantity", e.target.value)}
-                className={`${inputCls} ${okBorder}`}
-              >
-                <option value="" className="bg-ink">
-                  Select a quantity
-                </option>
-                {QUANTITY_OPTIONS.map((q) => (
-                  <option key={q} value={q} className="bg-ink">
-                    {q}
-                  </option>
-                ))}
-              </select>
+              <input type="hidden" name="quantity" value={form.quantity} />
+              <div className="relative">
+                <button
+                  id="q-quantity"
+                  type="button"
+                  onClick={() => setQuantityOpen((v) => !v)}
+                  className={`${inputCls} ${okBorder} flex items-center justify-between gap-3 text-left backdrop-blur-xl`}
+                >
+                  <span className={form.quantity ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                    {form.quantity || "Select a quantity"}
+                  </span>
+                  <svg className={`shrink-0 text-cream-dim transition-transform ${quantityOpen ? "rotate-180" : ""}`} width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                {quantityOpen && (
+                  <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-40 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="listbox">
+                    {QUANTITY_OPTIONS.map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        role="option"
+                        aria-selected={form.quantity === item}
+                        onClick={() => {
+                          set("quantity", item);
+                          setQuantityOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
+                          form.quantity === item ? "bg-champagne/12 text-cream" : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                        }`}
+                      >
+                        <span>{item}</span>
+                        {form.quantity === item && <span className="text-champagne">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Field>
 
             <Field label="Email" error={liveErrors.email} htmlFor="q-email">

@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
 import type { Product } from "@/lib/content";
@@ -10,9 +10,14 @@ import SwipeHint from "@/components/SwipeHint";
 
 export default function ProductsShowcase({ products }: { products: Product[] }) {
   const [active, setActive] = useState(0);
+  const selectorRef = useRef<HTMLDivElement>(null);
   const p = products[active];
+  const selectProduct = (index: number) => setActive(index);
   const prev = () => setActive((a) => (a - 1 + products.length) % products.length);
   const next = () => setActive((a) => (a + 1) % products.length);
+  const scrollSelector = (dir: -1 | 1) => {
+    selectorRef.current?.scrollBy({ left: dir * 180, behavior: "smooth" });
+  };
 
   return (
     <section id="products" className="relative py-20 sm:py-28">
@@ -40,7 +45,24 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
         <div className="grid gap-10 lg:grid-cols-[360px_1fr] lg:gap-16">
           {/* selector */}
           <div className="flex min-w-0 flex-col">
-            <div className="relative flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="relative rounded-[1.75rem] border border-champagne/20 bg-surface/35 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
+              <button
+                type="button"
+                onClick={() => scrollSelector(-1)}
+                aria-label="Scroll product categories left"
+                className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/75 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollSelector(1)}
+                aria-label="Scroll product categories right"
+                className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/75 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+              <div ref={selectorRef} className="relative flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto px-10 pb-2 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <div className="pointer-events-none sticky left-0 z-10 -mr-8 hidden w-8 shrink-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:block" />
               <div className="pointer-events-none sticky right-0 order-last z-10 -ml-16 hidden w-16 shrink-0 bg-gradient-to-l from-ink via-ink/80 to-transparent max-lg:block" />
               {products.map((prod, i) => {
@@ -48,7 +70,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 return (
                   <button
                     key={prod.slug}
-                    onClick={() => setActive(i)}
+                    onClick={() => selectProduct(i)}
                     className={`group relative flex shrink-0 snap-start items-center gap-4 rounded-2xl px-5 py-4 text-left transition-all duration-500 lg:w-full ${
                       isActive ? "glass" : "hover:bg-cream/[0.03]"
                     }`}
@@ -77,6 +99,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   </button>
                 );
               })}
+              </div>
             </div>
             {products.length > 1 && (
               <div className="mt-3 flex justify-center lg:hidden">
@@ -172,10 +195,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                       <Link
                         href={`/quote?product=${encodeURIComponent(p.title)}`}
                         data-cursor="Quote"
-                        className="inline-flex items-center gap-2 text-[13px] font-medium text-cream link-underline w-fit"
+                        className="btn-primary !py-3 !px-5 text-[12px] shadow-glow-sm"
                       >
-                        Request a quote for {p.title}
-                        <span className="text-champagne">→</span>
+                        Customize Your Order
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                          <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </Link>
 
                       {/* product-specific WhatsApp enquiry */}
@@ -229,8 +254,8 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                           src={g}
                           alt={`${p.title} ${gi + 1}`}
                           fill
-                          sizes="(max-width:768px) 33vw, 120px"
-                          quality={55}
+                          sizes="(max-width:768px) 33vw, 260px"
+                          quality={82}
                           className="object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
                         />
                       </motion.div>

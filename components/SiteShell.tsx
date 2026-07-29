@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -11,6 +12,7 @@ export default function SiteShell({
 }) {
   return (
     <>
+      <Loader />
       <Navbar />
       <main>{children}</main>
       {footer}

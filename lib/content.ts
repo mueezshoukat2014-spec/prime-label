@@ -121,7 +121,7 @@ export const faqs = [
   },
   {
     q: "How do I get a price?",
-    a: "Tap Request a Quote, tell us the product, quantity and any design details, and we will reply with a tailored quote. Because every order is custom, pricing depends on quantity, size and finish.",
+    a: "Tap Customize Your Order, tell us the product, quantity and any design details, and we will reply with a tailored quote. Because every order is custom, pricing depends on quantity, size and finish.",
   },
   {
     q: "Can I use my own logo and design?",

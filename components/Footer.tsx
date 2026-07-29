@@ -28,7 +28,7 @@ const COLS = [
   {
     title: "Get in touch",
     links: [
-      { label: "Request a Quote", href: "/quote" },
+      { label: "Customize Your Order", href: "/quote" },
       { label: "Contact", href: "/contact" },
       { label: "WhatsApp", href: WHATSAPP_URL },
       { label: "Instagram", href: "https://www.instagram.com/primelabels_intl" },

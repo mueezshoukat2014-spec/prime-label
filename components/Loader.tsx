@@ -9,25 +9,40 @@ export default function Loader() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // only on first load of the session
+    // Lightweight first-session preloader: gives the site a polished entrance
+    // without blocking repeat visitors or ads traffic for too long.
     if (sessionStorage.getItem("pl_loaded") === "1") {
       setDone(true);
       return;
     }
-    let p = 0;
-    const tick = setInterval(() => {
-      p += Math.random() * 14 + 5;
-      if (p >= 100) {
-        p = 100;
-        clearInterval(tick);
-        setTimeout(() => {
+
+    let p = 12;
+    const started = Date.now();
+    const finish = () => {
+      const elapsed = Date.now() - started;
+      window.setTimeout(() => {
+        setProgress(100);
+        window.setTimeout(() => {
           setDone(true);
           sessionStorage.setItem("pl_loaded", "1");
-        }, 480);
-      }
-      setProgress(Math.min(100, p));
-    }, 140);
-    return () => clearInterval(tick);
+        }, 220);
+      }, Math.max(0, 650 - elapsed));
+    };
+
+    const tick = setInterval(() => {
+      p = Math.min(92, p + 11);
+      setProgress(p);
+    }, 90);
+
+    if (document.readyState === "complete") finish();
+    else window.addEventListener("load", finish, { once: true });
+
+    const hardCap = window.setTimeout(finish, 1200);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(hardCap);
+      window.removeEventListener("load", finish);
+    };
   }, []);
 
   return (
@@ -36,7 +51,7 @@ export default function Loader() {
         <motion.div
           className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-ink"
           exit={{ y: "-100%" }}
-          transition={{ duration: 1.05, ease: EASE }}
+          transition={{ duration: 0.55, ease: EASE }}
         >
           <div className="pointer-events-none absolute inset-0 bg-radial-fade opacity-60" />
           <motion.div
@@ -64,7 +79,7 @@ export default function Loader() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
+            transition={{ delay: 0.15, duration: 0.45 }}
             className="absolute bottom-10 text-[10px] uppercase tracking-widest2 text-cream-dim"
           >
             Crafting premium branding

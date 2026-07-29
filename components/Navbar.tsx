@@ -35,10 +35,10 @@ export default function Navbar() {
         >
           <div className="container-lux">
             <div
-              className={`flex items-center justify-between rounded-full px-5 py-3 transition-all duration-500 ${
+              className={`relative flex items-center justify-between overflow-hidden rounded-full border border-champagne/35 px-5 py-3 ring-1 ring-champagne/10 transition-all duration-500 ${
                 scrolled
-                  ? "glass-strong shadow-soft"
-                  : "border border-transparent bg-transparent"
+                  ? "glass-strong shadow-[0_0_36px_-16px_rgba(201,168,106,0.85),0_20px_60px_-28px_rgba(0,0,0,0.9)]"
+                  : "border border-champagne/10 bg-ink/20 shadow-[0_0_28px_-18px_rgba(201,168,106,0.75)] backdrop-blur-md"
               }`}
             >
               <Link href="/" className="group flex items-center gap-3" data-cursor="Home">
@@ -74,7 +74,7 @@ export default function Navbar() {
                 >
                   <Magnetic strength={0.4}>
                     <span className="btn-primary !py-3 !px-6 text-[12px]">
-                      Request a Quote
+                      Customize Your Order
                     </span>
                   </Magnetic>
                 </Link>
@@ -138,7 +138,7 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className="btn-primary mt-8 w-full justify-center"
               >
-                Request a Quote
+                Customize Your Order
               </Link>
             </nav>
           </motion.div>
