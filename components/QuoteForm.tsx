@@ -116,6 +116,33 @@ const TRUST = [
   },
 ];
 
+const COUNTRY_OPTIONS = [
+  { name: "Saudi Arabia", code: "+966" },
+  { name: "United Arab Emirates", code: "+971" },
+  { name: "Qatar", code: "+974" },
+  { name: "Kuwait", code: "+965" },
+  { name: "Bahrain", code: "+973" },
+  { name: "Oman", code: "+968" },
+  { name: "Pakistan", code: "+92" },
+  { name: "United Kingdom", code: "+44" },
+  { name: "United States", code: "+1" },
+  { name: "Canada", code: "+1" },
+  { name: "Australia", code: "+61" },
+  { name: "Germany", code: "+49" },
+  { name: "France", code: "+33" },
+  { name: "Italy", code: "+39" },
+  { name: "Turkey", code: "+90" },
+  { name: "Other", code: "" },
+] as const;
+
+const getCountryCode = (country: string) =>
+  COUNTRY_OPTIONS.find((c) => c.name === country)?.code || "";
+
+const isOnlyCountryCode = (phone: string, code: string) => {
+  const cleaned = phone.trim().replace(/[\s().-]/g, "");
+  return !cleaned || (code ? cleaned === code : false);
+};
+
 type FormState = {
   name: string;
   phone: string;
@@ -171,8 +198,31 @@ export default function QuoteForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
+  const selectedCountryCode = getCountryCode(form.country);
+
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
+
+  function handleCountryChange(country: string) {
+    const nextCode = getCountryCode(country);
+    setForm((f) => {
+      const previousCode = getCountryCode(f.country);
+      const phone = f.phone.trim();
+      const localDigits = phone.replace(/\D/g, "").replace(/^0+/, "");
+      const shouldAutoFill =
+        nextCode &&
+        (!phone || isOnlyCountryCode(phone, previousCode) || !phone.startsWith("+"));
+      return {
+        ...f,
+        country,
+        phone: shouldAutoFill
+          ? phone && !phone.startsWith("+") && localDigits
+            ? `${nextCode} ${localDigits}`
+            : `${nextCode} `
+          : f.phone,
+      };
+    });
+  }
 
   const markTouched = (k: TouchKey) => setTouched((t) => ({ ...t, [k]: true }));
 
@@ -379,7 +429,7 @@ export default function QuoteForm({
             className="grid gap-5 sm:grid-cols-2"
           >
             <p className="sm:col-span-2 -mb-1 text-[12px] text-cream-dim">
-              Just three details to get your quote —{" "}
+              Share your details to get your quote —{" "}
               <span className="text-champagne">*</span> marks what we need.
             </p>
 
@@ -399,10 +449,38 @@ export default function QuoteForm({
             </Field>
 
             <Field
+              label="Country"
+              hint="Selecting a country auto-fills the WhatsApp country code."
+              htmlFor="q-country"
+            >
+              <select
+                id="q-country"
+                name="country"
+                autoComplete="country-name"
+                value={form.country}
+                onChange={(e) => handleCountryChange(e.target.value)}
+                className={`${inputCls} ${okBorder}`}
+              >
+                <option value="" className="bg-ink">
+                  Select country
+                </option>
+                {COUNTRY_OPTIONS.map((c) => (
+                  <option key={c.name} value={c.name} className="bg-ink">
+                    {c.code ? `${c.name} (${c.code})` : c.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
+            <Field
               label="WhatsApp number"
               required
               error={liveErrors.phone}
-              hint="We send your quote here."
+              hint={
+                selectedCountryCode
+                  ? `Country code ${selectedCountryCode} added. Complete your WhatsApp number.`
+                  : "Enter your full WhatsApp number with country code, e.g. +966 5XXXXXXXX."
+              }
               htmlFor="q-phone"
             >
               <input
@@ -416,7 +494,7 @@ export default function QuoteForm({
                 onBlur={() => markTouched("phone")}
                 aria-invalid={!!liveErrors.phone}
                 className={`${inputCls} ${liveErrors.phone ? errBorder : okBorder}`}
-                placeholder="+92 300 0000000"
+                placeholder={selectedCountryCode ? `${selectedCountryCode} 5XXXXXXXX` : "+966 5XXXXXXXX"}
               />
             </Field>
 
@@ -496,17 +574,6 @@ export default function QuoteForm({
               />
             </Field>
 
-            <Field label="Country" htmlFor="q-country">
-              <input
-                id="q-country"
-                name="country"
-                autoComplete="country-name"
-                value={form.country}
-                onChange={(e) => set("country", e.target.value)}
-                className={`${inputCls} ${okBorder}`}
-                placeholder="Where are you based?"
-              />
-            </Field>
 
             <div className="sm:col-span-2">
               <Field label="Message / notes" htmlFor="q-details">

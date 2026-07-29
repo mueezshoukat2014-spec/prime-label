@@ -93,22 +93,22 @@ export function validateName(raw: string): string {
 
 /** The single error message specified for an invalid WhatsApp number. */
 export const PHONE_ERROR =
-  "Please enter a valid WhatsApp number so we can send your quote.";
+  "Please enter your full WhatsApp number with country code (example: +966 5XXXXXXXX).";
 
 /**
- * WhatsApp / phone — required. Digits with an optional leading "+".
+ * WhatsApp / phone — required and must include an international country code.
  * Spaces, hyphens, brackets and dots are accepted as separators and stripped
- * before checking, so "+92 324 4999224" and "(0324) 499-9224" both pass.
+ * before checking, so "+966 50 000 0000" and "+971-55-000-0000" both pass.
  */
 export function validatePhone(raw: string): string {
   const value = raw.trim();
   if (!value) return PHONE_ERROR;
 
-  // Reject anything that is not a digit, separator, or a single leading "+".
-  if (!/^\+?[\d\s().-]+$/.test(value)) return PHONE_ERROR;
+  // Require a leading + so the customer cannot submit a local-only number.
+  if (!/^\+[\d\s().-]+$/.test(value)) return PHONE_ERROR;
 
   const digits = value.replace(/\D/g, "");
-  if (digits.length < 7 || digits.length > 15) return PHONE_ERROR; // ITU E.164 range
+  if (digits.length < 8 || digits.length > 15) return PHONE_ERROR; // ITU E.164 range
   return "";
 }
 

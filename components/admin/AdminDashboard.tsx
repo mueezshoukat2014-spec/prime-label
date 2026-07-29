@@ -238,15 +238,19 @@ function Leads() {
                     <span className={`rounded-full px-2 py-0.5 text-[10px] uppercase ${l.status === "new" ? "bg-champagne/15 text-champagne" : "bg-cream/10 text-cream-muted"}`}>{l.status}</span>
                   </div>
                   <div className="mt-1 text-[12px] text-cream-muted">
-                    {l.email && <span>{l.email} · </span>}
-                    {l.phone && <span>{l.phone} · </span>}
-                    {l.company && <span>{l.company} · </span>}
-                    {l.country}
+                    {l.email && <span>{l.email}</span>}
+                    {l.company && <span>{l.email ? " · " : ""}{l.company}</span>}
                   </div>
                 </div>
                 <span className="text-[11px] text-cream-dim">{new Date(l.created_at).toLocaleString()}</span>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2 text-[12px] text-cream-muted">
+              <div className="mt-3 grid gap-2 text-[12px] text-cream-muted sm:grid-cols-2 lg:grid-cols-4">
+                {l.phone && (
+                  <span className="rounded bg-champagne/[0.07] px-2 py-1 text-champagne">
+                    WhatsApp: {l.phone}
+                  </span>
+                )}
+                {l.country && <span className="rounded bg-cream/5 px-2 py-1">Country: {l.country}</span>}
                 {l.product && <span className="rounded bg-cream/5 px-2 py-1">Product: {l.product}</span>}
                 {l.quantity && <span className="rounded bg-cream/5 px-2 py-1">Qty: {l.quantity}</span>}
               </div>
@@ -277,6 +281,7 @@ function Leads() {
                       product: l.product,
                       quantity: l.quantity,
                       email: l.email,
+                      country: l.country,
                     })
                   }
                   className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-3 py-1.5 text-[12px] text-champagne transition-colors hover:bg-champagne/[0.16]"

@@ -26,6 +26,7 @@ export type QuoteLead = {
   product: string | null;
   quantity: string | null;
   email?: string | null;
+  country?: string | null;
 };
 
 /**
@@ -115,6 +116,7 @@ export default function SendQuoteModal({
             <p className="mt-1 text-[12.5px] text-cream-muted">
               To <span className="text-cream">{lead.name}</span>
               {lead.phone && <span className="text-cream-dim"> · {lead.phone}</span>}
+              {lead.country && <span className="text-cream-dim"> · {lead.country}</span>}
             </p>
           </div>
           <button
