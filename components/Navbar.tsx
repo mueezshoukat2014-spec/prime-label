@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Magnetic } from "@/components/anim";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const LINKS = [
   { label: "Products", href: "/#products" },
@@ -65,6 +66,7 @@ export default function Navbar() {
               </nav>
 
               <div className="flex items-center gap-3">
+                <LanguageSwitcher />
                 <Link
                   href="/quote"
                   className="hidden sm:inline-flex"
@@ -103,13 +105,16 @@ export default function Navbar() {
           >
             <div className="flex items-center justify-between px-6 py-6">
               <span className="display text-2xl gradient-text">Prime Labels</span>
-              <button
+              <div className="flex items-center gap-3">
+                <LanguageSwitcher compact />
+                <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
                 className="flex h-11 w-11 items-center justify-center rounded-full glass text-cream"
               >
                 ✕
-              </button>
+                </button>
+              </div>
             </div>
             <nav className="flex flex-1 flex-col justify-center gap-2 px-6">
               {LINKS.map((l, i) => (

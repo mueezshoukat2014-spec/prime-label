@@ -250,3 +250,54 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* ---------- Arabic language mode / Google Translate polish ---------- */
+#google_translate_element,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+html[data-lang="ar"] body,
+html[data-lang="ar"] button,
+html[data-lang="ar"] input,
+html[data-lang="ar"] textarea,
+html[data-lang="ar"] select {
+  font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
+}
+
+html[data-lang="ar"] .display,
+html[data-lang="ar"] .display-tight {
+  font-family: var(--font-arabic), var(--font-display), serif;
+  letter-spacing: -0.015em;
+}
+
+html[data-lang="ar"] .eyebrow,
+html[data-lang="ar"] .tracking-widest2,
+html[data-lang="ar"] .tracking-wide2,
+html[data-lang="ar"] [class*="tracking-"] {
+  letter-spacing: 0.04em;
+}
+
+html[data-lang="ar"] .link-underline::after {
+  transform-origin: left;
+}
+
+html[data-lang="ar"] .link-underline:hover::after {
+  transform-origin: right;
+}
+
+html[data-lang="ar"] .notranslate {
+  direction: ltr;
+}

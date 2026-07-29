@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Fraunces, Manrope, Cairo } from "next/font/google";
 import "./globals.css";
 import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -27,6 +27,13 @@ const fraunces = Fraunces({
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+// Cairo: polished Arabic support for translated mode, close to the site's clean luxury UI.
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-arabic",
   display: "swap",
 });
 
@@ -110,7 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const metaPixelId = isAdmin ? "" : resolvedPixelId;
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${cairo.variable}`} suppressHydrationWarning>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
