@@ -87,7 +87,7 @@ export function TextReveal({
               hidden: { y: "110%" },
               show: { y: "0%" },
             }}
-            transition={{ duration: 0.9, ease: EASE, delay: delay + i * stagger }}
+            transition={{ duration: 0.55, ease: EASE, delay: delay + i * stagger }}
           >
             {word}
             {i < words.length - 1 ? "\u00A0" : ""}

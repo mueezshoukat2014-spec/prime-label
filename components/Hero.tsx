@@ -17,7 +17,7 @@ type FloaterItem = {
 const FLOATERS: FloaterItem[] = [
   { src: "/photos/DaNaYhvEwXS_0.jpg", alt: "Woven labels", cls: "top-[16%] right-[8%] w-[230px] h-[300px]", depth: 1.4, rot: -6, delay: 0 },
   { src: "/photos/DZRwirYjDE__0.jpg", alt: "Hang tags", cls: "top-[44%] right-[26%] w-[190px] h-[250px]", depth: 0.8, rot: 5, delay: 0.15 },
-  { src: "/photos/DYQ2pCbjHoE_0.jpg", alt: "Custom stickers", cls: "bottom-[12%] right-[12%] w-[170px] h-[170px]", depth: 1.1, rot: -3, delay: 0.3 },
+  { src: "/photos/DYQ2pCbjHoE_0.jpg", alt: "Custom stickers", cls: "bottom-[12%] right-[12%] w-[170px] h-[170px]", depth: 1.1, rot: -3, delay: 0.05 },
 ];
 
 function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: MotionValue<number> }) {
@@ -29,7 +29,7 @@ function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: M
       style={{ x: tx, y: ty }}
       initial={{ opacity: 0, scale: 0.85, y: 40 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1.2, ease: EASE, delay: 0.5 + f.delay }}
+      transition={{ duration: 1.2, ease: EASE, delay: 0.15 + f.delay }}
     >
       <motion.div
         className="relative h-full w-full overflow-hidden rounded-3xl border border-cream/10 shadow-soft"
@@ -41,8 +41,8 @@ function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: M
           src={f.src}
           alt={f.alt}
           fill
-          priority
           sizes="240px"
+          quality={58}
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
@@ -140,7 +140,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.05 }}
             className="mb-7 flex items-center gap-3"
           >
             <span className="eyebrow">
@@ -150,17 +150,17 @@ export default function Hero() {
           </motion.div>
 
           <h1 className="display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
-            <TextReveal text="Every great" delay={0.4} />
-            <TextReveal text="brand starts" delay={0.55} />
+            <TextReveal text="Every great" delay={0.04} />
+            <TextReveal text="brand starts" delay={0.1} />
             <span className="block overflow-hidden">
-              <TextReveal text="with a label." className="gradient-text italic" delay={0.7} />
+              <TextReveal text="with a label." className="gradient-text italic" delay={0.16} />
             </span>
           </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 1 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.24 }}
             className="mt-8 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted sm:text-base"
           >
             High-density woven and satin labels, premium hang tags, custom
@@ -171,7 +171,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 1.15 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.32 }}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
             <Link href="/quote" data-cursor="Quote">
@@ -194,7 +194,7 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 1.3 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
             className="mt-4 text-[12px] text-cream-dim"
           >
             Every order is custom-priced. Get a tailored quote within one business day.
@@ -203,7 +203,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.4 }}
+            transition={{ duration: 1, delay: 0.45 }}
             className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-wide2 text-cream-dim"
           >
             <span className="flex items-center gap-2">

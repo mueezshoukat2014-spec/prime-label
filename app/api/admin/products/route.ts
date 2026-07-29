@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { put, del } from "@vercel/blob";
+import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
@@ -55,10 +56,18 @@ async function uploadImage(file: File): Promise<string> {
     throw new Error("Image uploads are not configured. Please contact support.");
   }
 
-  const blob = await put(buildProductImagePath(file.name), file, {
+  const input = Buffer.from(await file.arrayBuffer());
+  const optimised = await sharp(input)
+    .rotate()
+    .resize({ width: 1400, height: 1400, fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 72, effort: 4 })
+    .toBuffer();
+
+  const pathname = buildProductImagePath(file.name).replace(/\.[^.]+$/, ".webp");
+  const blob = await put(pathname, optimised, {
     access: "public",
     addRandomSuffix: true,
-    contentType: file.type || undefined,
+    contentType: "image/webp",
   });
   return blob.url;
 }

@@ -261,7 +261,8 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
 
     setLang(initial);
     applyDocumentLanguage(initial);
-    ensureGoogleTranslate();
+    // Do not load Google Translate for normal English visitors. It is a heavy
+    // third-party script and only needed after Arabic is selected/auto-detected.
   }, []);
 
   function toggle() {

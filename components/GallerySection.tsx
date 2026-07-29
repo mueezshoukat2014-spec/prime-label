@@ -115,6 +115,7 @@ export default function GallerySection({
                 alt={item.caption || item.category}
                 fill
                 sizes="(max-width:768px) 50vw, (max-width:1280px) 33vw, 25vw"
+                quality={55}
                 className="object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
               />
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
@@ -186,6 +187,7 @@ export default function GallerySection({
                 width={filtered[lightbox].w || 1200}
                 height={filtered[lightbox].h || 1500}
                 sizes="(max-width:1280px) 100vw, 1024px"
+                quality={70}
                 className="max-h-[80vh] w-auto rounded-2xl border border-line object-contain"
               />
               <figcaption className="mt-4 flex items-center justify-between gap-4">

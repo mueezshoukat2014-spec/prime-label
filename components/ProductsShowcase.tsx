@@ -132,6 +132,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                       alt={p.title}
                       fill
                       sizes="(max-width:1024px) 90vw, 420px"
+                      quality={60}
                       className="object-cover"
                     />
                   </motion.div>
@@ -229,6 +230,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                           alt={`${p.title} ${gi + 1}`}
                           fill
                           sizes="(max-width:768px) 33vw, 120px"
+                          quality={55}
                           className="object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
                         />
                       </motion.div>

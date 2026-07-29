@@ -16,6 +16,7 @@ export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; i
             alt=""
             fill
             sizes="100vw"
+            quality={55}
             className="scale-105 object-cover blur-[2px]"
           />
         </div>

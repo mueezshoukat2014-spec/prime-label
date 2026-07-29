@@ -243,6 +243,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                     alt={reel.caption}
                     fill
                     sizes="(max-width:1024px) 40vw, 300px"
+                    quality={45}
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />

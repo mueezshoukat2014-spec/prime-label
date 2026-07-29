@@ -1,7 +1,4 @@
 "use client";
-import Loader from "@/components/Loader";
-import Cursor from "@/components/Cursor";
-import ScrollProgress from "@/components/ScrollProgress";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -14,9 +11,6 @@ export default function SiteShell({
 }) {
   return (
     <>
-      <Loader />
-      <Cursor />
-      <ScrollProgress />
       <Navbar />
       <main>{children}</main>
       {footer}

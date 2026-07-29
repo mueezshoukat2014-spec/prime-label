@@ -119,7 +119,7 @@ export default async function Home() {
       <GsapFeature />
       <Reels reels={reels} />
       <Process />
-      <GallerySection items={gallery} limit={20} />
+      <GallerySection items={gallery} limit={8} />
       <Testimonials items={testimonials as any} />
       <FAQ items={faqs} />
       <FinalCTA whatsapp={site.whatsapp} instagram={site.instagram} />

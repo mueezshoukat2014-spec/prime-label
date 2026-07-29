@@ -65,6 +65,7 @@ export default function GsapFeature() {
           alt="Premium woven label detail"
           fill
           sizes="100vw"
+          quality={60}
           className="object-cover"
         />
         <div className="absolute inset-0 bg-ink/75" />
