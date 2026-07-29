@@ -117,23 +117,26 @@ const TRUST = [
 ];
 
 const COUNTRY_OPTIONS = [
-  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
-  { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
-  { name: "Qatar", code: "+974", flag: "🇶🇦" },
-  { name: "Kuwait", code: "+965", flag: "🇰🇼" },
-  { name: "Bahrain", code: "+973", flag: "🇧🇭" },
-  { name: "Oman", code: "+968", flag: "🇴🇲" },
-  { name: "Pakistan", code: "+92", flag: "🇵🇰" },
-  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
-  { name: "United States", code: "+1", flag: "🇺🇸" },
-  { name: "Canada", code: "+1", flag: "🇨🇦" },
-  { name: "Australia", code: "+61", flag: "🇦🇺" },
-  { name: "Germany", code: "+49", flag: "🇩🇪" },
-  { name: "France", code: "+33", flag: "🇫🇷" },
-  { name: "Italy", code: "+39", flag: "🇮🇹" },
-  { name: "Turkey", code: "+90", flag: "🇹🇷" },
-  { name: "Other", code: "", flag: "🌍" },
+  { name: "Saudi Arabia", code: "+966", bg: "#006C35" },
+  { name: "United Arab Emirates", code: "+971", bg: "linear-gradient(90deg,#EF3340 0 25%,transparent 25%),linear-gradient(#009739 0 33%,#FFFFFF 33% 66%,#000000 66%)" },
+  { name: "Qatar", code: "+974", bg: "linear-gradient(90deg,#FFFFFF 0 30%,#8A1538 30%)" },
+  { name: "Kuwait", code: "+965", bg: "linear-gradient(90deg,#000000 0 24%,transparent 24%),linear-gradient(#007A3D 0 33%,#FFFFFF 33% 66%,#CE1126 66%)" },
+  { name: "Bahrain", code: "+973", bg: "linear-gradient(90deg,#FFFFFF 0 30%,#CE1126 30%)" },
+  { name: "Oman", code: "+968", bg: "linear-gradient(90deg,#DB161B 0 26%,transparent 26%),linear-gradient(#FFFFFF 0 33%,#DB161B 33% 66%,#008000 66%)" },
+  { name: "Pakistan", code: "+92", bg: "linear-gradient(90deg,#FFFFFF 0 22%,#01411C 22%)" },
+  { name: "United Kingdom", code: "+44", bg: "linear-gradient(90deg,#012169 0 100%)" },
+  { name: "United States", code: "+1", bg: "repeating-linear-gradient(0deg,#B22234 0 2px,#FFFFFF 2px 4px)" },
+  { name: "Canada", code: "+1", bg: "linear-gradient(90deg,#D52B1E 0 25%,#FFFFFF 25% 75%,#D52B1E 75%)" },
+  { name: "Australia", code: "+61", bg: "#012169" },
+  { name: "Germany", code: "+49", bg: "linear-gradient(#000000 0 33%,#DD0000 33% 66%,#FFCE00 66%)" },
+  { name: "France", code: "+33", bg: "linear-gradient(90deg,#0055A4 0 33%,#FFFFFF 33% 66%,#EF4135 66%)" },
+  { name: "Italy", code: "+39", bg: "linear-gradient(90deg,#009246 0 33%,#FFFFFF 33% 66%,#CE2B37 66%)" },
+  { name: "Turkey", code: "+90", bg: "#E30A17" },
+  { name: "Other", code: "", bg: "radial-gradient(circle at 35% 35%,#E6CB8C 0 14%,transparent 15%),linear-gradient(135deg,#26262E,#0D0D10)" },
 ] as const;
+
+type CountryOption = (typeof COUNTRY_OPTIONS)[number];
+
 
 const getCountryCode = (country: string) =>
   COUNTRY_OPTIONS.find((c) => c.name === country)?.code || "";
@@ -142,6 +145,37 @@ const isOnlyCountryCode = (phone: string, code: string) => {
   const cleaned = phone.trim().replace(/[\s().-]/g, "");
   return !cleaned || (code ? cleaned === code : false);
 };
+
+function CountryFlagIcon({ country }: { country: CountryOption }) {
+  return (
+    <span
+      className="relative inline-flex h-5 w-7 shrink-0 overflow-hidden rounded-[0.28rem] border border-cream/20 shadow-[0_0_18px_-10px_rgba(201,168,106,0.9)]"
+      style={{ background: country.bg }}
+      aria-hidden
+    >
+      {country.name === "Saudi Arabia" && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="h-[1.5px] w-4 rounded-full bg-white/95" />
+        </span>
+      )}
+      {country.name === "United Kingdom" && (
+        <span className="absolute inset-0">
+          <span className="absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 bg-white" />
+          <span className="absolute left-0 top-1/2 h-[3px] w-full -translate-y-1/2 bg-white" />
+          <span className="absolute left-1/2 top-0 h-full w-[1.5px] -translate-x-1/2 bg-[#C8102E]" />
+          <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-1/2 bg-[#C8102E]" />
+        </span>
+      )}
+      {country.name === "Australia" && (
+        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-white/90" />
+      )}
+      {country.name === "Turkey" && (
+        <span className="absolute left-2 top-1.5 h-2 w-2 rounded-full border-[2px] border-white" />
+      )}
+      <span className="pointer-events-none absolute inset-0 rounded-[0.28rem] ring-1 ring-inset ring-white/10" />
+    </span>
+  );
+}
 
 type FormState = {
   name: string;
@@ -152,6 +186,7 @@ type FormState = {
   details: string;
   company: string;
   country: string;
+  otherCountry: string;
 };
 
 type TouchKey = "name" | "phone" | "product" | "email";
@@ -179,6 +214,7 @@ export default function QuoteForm({
     details: "",
     company: "",
     country: "",
+    otherCountry: "",
   });
   const [touched, setTouched] = useState<Record<TouchKey, boolean>>({
     name: false,
@@ -194,11 +230,19 @@ export default function QuoteForm({
   const [dragging, setDragging] = useState(false);
   const [waHref, setWaHref] = useState(fallbackWa);
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
+  const [countryOpen, setCountryOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
-  const selectedCountryCode = getCountryCode(form.country);
+  const selectedCountry = COUNTRY_OPTIONS.find((c) => c.name === form.country) || null;
+  const selectedCountryCode = selectedCountry?.code || "";
+  const countryForSubmission =
+    form.country === "Other"
+      ? form.otherCountry.trim()
+        ? `Other — ${form.otherCountry.trim()}`
+        : "Other"
+      : form.country.trim();
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -215,6 +259,7 @@ export default function QuoteForm({
       return {
         ...f,
         country,
+        otherCountry: country === "Other" ? f.otherCountry : "",
         phone: shouldAutoFill
           ? phone && !phone.startsWith("+") && localDigits
             ? `${nextCode} ${localDigits}`
@@ -270,6 +315,13 @@ export default function QuoteForm({
     setTouched({ name: true, phone: true, product: true, email: true });
 
     const errors = validateQuote(form);
+    if (form.country === "Other" && !form.otherCountry.trim()) {
+      setStatus("error");
+      const msg = "Please tell us which country you are based in.";
+      setErr(msg);
+      toast.error(msg);
+      return;
+    }
     if (Object.keys(errors).length > 0) {
       const first = errors.name || errors.phone || errors.product || errors.email!;
       setStatus("error");
@@ -290,7 +342,7 @@ export default function QuoteForm({
       fd.append("quantity", form.quantity);
       fd.append("details", form.details.trim());
       fd.append("company", form.company.trim());
-      fd.append("country", form.country.trim());
+      fd.append("country", countryForSubmission);
 
       // Files over the serverless body limit go straight to Blob storage.
       if (file && file.size > DIRECT_UPLOAD_THRESHOLD) {
@@ -341,7 +393,7 @@ export default function QuoteForm({
         phone: form.phone.trim(),
         email: form.email.trim(),
         company: form.company.trim(),
-        country: form.country.trim(),
+        country: countryForSubmission,
         product: form.product,
         quantity: form.quantity,
         details: form.details.trim(),
@@ -450,27 +502,94 @@ export default function QuoteForm({
 
             <Field
               label="Country"
-              hint="Choose your country for our records. It only suggests a phone code — you can edit the WhatsApp code anytime."
+              hint="Choose your country for our records. The phone code is only a suggestion — you can use any valid WhatsApp country code."
               htmlFor="q-country"
             >
-              <select
-                id="q-country"
-                name="country"
-                autoComplete="country-name"
-                value={form.country}
-                onChange={(e) => handleCountryChange(e.target.value)}
-                className={`${inputCls} ${okBorder}`}
-              >
-                <option value="" className="bg-ink">
-                  Select country
-                </option>
-                {COUNTRY_OPTIONS.map((c) => (
-                  <option key={c.name} value={c.name} className="bg-ink">
-                    {c.code ? `${c.flag} ${c.name} (${c.code})` : `${c.flag} ${c.name}`}
-                  </option>
-                ))}
-              </select>
+              <input type="hidden" name="country" value={countryForSubmission} />
+              <div className="relative">
+                <button
+                  id="q-country"
+                  type="button"
+                  onClick={() => setCountryOpen((v) => !v)}
+                  className={`${inputCls} ${okBorder} flex items-center justify-between gap-3 text-left`}
+                  aria-haspopup="listbox"
+                  aria-expanded={countryOpen}
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    {selectedCountry ? (
+                      <CountryFlagIcon country={selectedCountry} />
+                    ) : (
+                      <span className="flex h-5 w-7 shrink-0 items-center justify-center rounded-[0.28rem] border border-line bg-surface-2 text-[10px] text-champagne">
+                        ✦
+                      </span>
+                    )}
+                    <span className={selectedCountry ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                      {selectedCountry
+                        ? `${selectedCountry.name}${selectedCountry.code ? ` (${selectedCountry.code})` : ""}`
+                        : "Select country"}
+                    </span>
+                  </span>
+                  <svg
+                    className={`shrink-0 text-cream-dim transition-transform ${countryOpen ? "rotate-180" : ""}`}
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                  >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                {countryOpen && (
+                  <div
+                    className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    role="listbox"
+                  >
+                    {COUNTRY_OPTIONS.map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        role="option"
+                        aria-selected={form.country === c.name}
+                        onClick={() => {
+                          handleCountryChange(c.name);
+                          setCountryOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
+                          form.country === c.name
+                            ? "bg-champagne/12 text-cream"
+                            : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                        }`}
+                      >
+                        <span className="flex min-w-0 items-center gap-3">
+                          <CountryFlagIcon country={c} />
+                          <span className="truncate">{c.name}</span>
+                        </span>
+                        {c.code && <span className="shrink-0 text-[12px] text-champagne">{c.code}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Field>
+
+            {form.country === "Other" && (
+              <Field
+                label="Country name"
+                required
+                hint="Tell us which country you are based in if it is not in the list."
+                htmlFor="q-other-country"
+              >
+                <input
+                  id="q-other-country"
+                  value={form.otherCountry}
+                  onChange={(e) => set("otherCountry", e.target.value)}
+                  className={`${inputCls} ${okBorder}`}
+                  placeholder="Type your country"
+                />
+              </Field>
+            )}
 
             <Field
               label="WhatsApp number"
