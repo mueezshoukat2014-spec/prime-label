@@ -118,11 +118,8 @@ export default function GallerySection({
                 className="object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
               />
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <span className="text-[10px] uppercase tracking-widest2 text-champagne">
-                  {CAT_LABELS[item.category] || item.category}
-                </span>
-                <span className="mt-1 line-clamp-2 text-left text-[12px] text-cream-muted">
-                  {item.caption || "Custom branding by Prime Labels"}
+                <span className="line-clamp-2 text-left text-[12px] uppercase tracking-widest2 text-cream-muted">
+                  {item.caption || CAT_LABELS[item.category] || "Custom branding by Prime Labels"}
                 </span>
               </div>
               <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full glass-strong opacity-0 transition-opacity duration-500 group-hover:opacity-100">
