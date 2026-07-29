@@ -186,11 +186,60 @@ function shouldAutoArabic() {
   return false;
 }
 
+
+function SaudiFlagIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden className="shrink-0 rounded-full shadow-sm">
+      <defs>
+        <clipPath id="sa-flag-clip">
+          <circle cx="12" cy="12" r="11" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#sa-flag-clip)">
+        <rect width="24" height="24" fill="#006C35" />
+        <path
+          d="M6.2 10.2h11.6M7 8.1h10M8.1 12.1h7.8"
+          stroke="#fff"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+          opacity="0.95"
+        />
+        <path
+          d="M6.8 15.3h8.7c1.3 0 2.2-.35 2.8-1.05M14.7 15.3l-1.4 1.25"
+          stroke="#fff"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <circle cx="12" cy="12" r="10.5" fill="none" stroke="rgba(244,240,232,0.28)" />
+    </svg>
+  );
+}
+
+function UkFlagIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden className="shrink-0 rounded-full shadow-sm">
+      <defs>
+        <clipPath id="uk-flag-clip">
+          <circle cx="12" cy="12" r="11" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#uk-flag-clip)">
+        <rect width="24" height="24" fill="#012169" />
+        <path d="M-2 0l28 24M26 0L-2 24" stroke="#fff" strokeWidth="5" />
+        <path d="M-2 0l28 24M26 0L-2 24" stroke="#C8102E" strokeWidth="2.5" />
+        <path d="M12 0v24M0 12h24" stroke="#fff" strokeWidth="7" />
+        <path d="M12 0v24M0 12h24" stroke="#C8102E" strokeWidth="4" />
+      </g>
+      <circle cx="12" cy="12" r="10.5" fill="none" stroke="rgba(244,240,232,0.28)" />
+    </svg>
+  );
+}
+
 export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const isArabic = lang === "ar";
-  const targetFlag = isArabic ? "🇬🇧" : "🇸🇦";
-  const targetLabel = isArabic ? "EN" : "عربي";
 
   useEffect(() => {
     const preference = readCookie(LANG_PREF_COOKIE);
@@ -239,35 +288,11 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
       onClick={toggle}
       aria-label={isArabic ? "Switch website language to English" : "Switch website language to Arabic"}
       title={isArabic ? "English" : "Arabic"}
-      className={`notranslate group inline-flex items-center justify-center gap-2 rounded-full border border-line bg-surface/45 text-cream-muted shadow-soft backdrop-blur transition-all duration-300 hover:border-champagne/55 hover:text-champagne ${
-        compact ? "h-11 w-11" : "h-11 px-3.5"
-      }`}
+      className="notranslate group inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface/45 text-cream-muted shadow-soft backdrop-blur transition-all duration-300 hover:border-champagne/55 hover:text-champagne"
       data-cursor="Language"
       translate="no"
     >
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-        <path
-          d="M5.5 7.5h13M5.5 16.5h13"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          opacity="0.65"
-        />
-      </svg>
-      <span className="text-[15px] leading-none" aria-hidden>
-        {targetFlag}
-      </span>
-      {!compact && (
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
-          {targetLabel}
-        </span>
-      )}
+      {isArabic ? <UkFlagIcon /> : <SaudiFlagIcon />}
     </button>
   );
 }
