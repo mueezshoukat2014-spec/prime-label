@@ -201,7 +201,11 @@ export default function Reels({ reels }: { reels: Reel[] }) {
           </Reveal>
 
           {/* reel list + arrows */}
-          <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-stretch">
+          <div className="min-w-0">
+            <div className="mb-3 flex justify-center lg:hidden">
+              <SwipeHint />
+            </div>
+            <div className="flex min-w-0 items-center gap-2 lg:flex-col lg:items-stretch">
             {/* up / prev arrow */}
             <button
               type="button"
@@ -219,7 +223,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
 
           <div
             ref={listRef}
-            className="flex min-w-0 flex-1 gap-3 overflow-x-auto lg:max-h-[480px] lg:flex-none lg:flex-col lg:overflow-y-auto lg:pr-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex min-w-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto lg:max-h-[480px] lg:flex-none lg:snap-none lg:flex-col lg:overflow-y-auto lg:pr-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {reels.map((reel, i) => {
               const isActive = i === active;
@@ -230,7 +234,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                     thumbRefs.current[i] = el;
                   }}
                   onClick={() => select(i)}
-                  className={`group relative aspect-[3/4] w-[88px] shrink-0 overflow-hidden rounded-2xl border transition-all duration-500 sm:w-[110px] lg:w-full ${
+                  className={`group relative aspect-[3/4] w-[88px] shrink-0 snap-start overflow-hidden rounded-2xl border transition-all duration-500 sm:w-[110px] lg:w-full ${
                     isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"
                   }`}
                 >
@@ -269,8 +273,8 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 <path d="M3 6l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+            </div>
           </div>
-          <SwipeHint className="mt-2" />
         </div>
       </div>
     </section>

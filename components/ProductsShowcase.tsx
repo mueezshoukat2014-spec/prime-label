@@ -6,6 +6,7 @@ import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
 import type { Product } from "@/lib/content";
 import { waProductLink } from "@/lib/whatsapp";
+import SwipeHint from "@/components/SwipeHint";
 
 export default function ProductsShowcase({ products }: { products: Product[] }) {
   const [active, setActive] = useState(0);
@@ -39,14 +40,16 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
         <div className="grid gap-10 lg:grid-cols-[360px_1fr] lg:gap-16">
           {/* selector */}
           <div className="flex min-w-0 flex-col">
-            <div className="flex w-full min-w-0 gap-3 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="relative flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="pointer-events-none sticky left-0 z-10 -mr-8 hidden w-8 shrink-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:block" />
+              <div className="pointer-events-none sticky right-0 order-last z-10 -ml-16 hidden w-16 shrink-0 bg-gradient-to-l from-ink via-ink/80 to-transparent max-lg:block" />
               {products.map((prod, i) => {
                 const isActive = i === active;
                 return (
                   <button
                     key={prod.slug}
                     onClick={() => setActive(i)}
-                    className={`group relative flex shrink-0 items-center gap-4 rounded-2xl px-5 py-4 text-left transition-all duration-500 lg:w-full ${
+                    className={`group relative flex shrink-0 snap-start items-center gap-4 rounded-2xl px-5 py-4 text-left transition-all duration-500 lg:w-full ${
                       isActive ? "glass" : "hover:bg-cream/[0.03]"
                     }`}
                   >
@@ -75,6 +78,11 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 );
               })}
             </div>
+            {products.length > 1 && (
+              <div className="mt-3 flex justify-center lg:hidden">
+                <SwipeHint />
+              </div>
+            )}
             <div className="mt-6 hidden items-center gap-3 md:flex">
               <button
                 onClick={prev}
