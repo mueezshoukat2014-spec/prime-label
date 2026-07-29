@@ -14,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://primelabelsintl.com/sitemap.xml",
+    sitemap: ["https://primelabelsintl.com/sitemap.xml", "https://primelabelsintl.com/image-sitemap.xml"],
     host: "https://primelabelsintl.com",
   };
 }
