@@ -103,8 +103,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const headerStore = headers();
   const cookieStore = cookies();
-  const currentPath = headerStore.get("x-pathname") ?? "";
-  const isAdmin = currentPath.startsWith("/admin");
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
@@ -125,7 +123,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
 
-        {!isAdmin && META_PIXEL_ID && (
+        {META_PIXEL_ID && (
           <script
             id="meta-pixel-base"
             dangerouslySetInnerHTML={{
@@ -144,7 +142,7 @@ fbq('track', 'PageView');`,
 
       </head>
       <body>
-        {!isAdmin && META_PIXEL_ID && (
+        {META_PIXEL_ID && (
           <noscript id="meta-pixel-noscript">
             <img
               height="1"
@@ -156,7 +154,7 @@ fbq('track', 'PageView');`,
           </noscript>
         )}
         <ToastProvider>
-          {!isAdmin && <MetaPixelRouteTracker />}
+          <MetaPixelRouteTracker />
           <AnnouncementBar
             text={
               String(s.announcementEnabled) === "true"

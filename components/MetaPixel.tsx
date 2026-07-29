@@ -21,7 +21,7 @@ export default function MetaPixelRouteTracker() {
   const quoteViewTracked = useRef(false);
 
   useEffect(() => {
-    if (!pathname || pathname.startsWith("/admin")) return;
+    if (!pathname) return;
 
     if (lastPageView.current === null) {
       lastPageView.current = pathname;
