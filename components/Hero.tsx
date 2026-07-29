@@ -216,7 +216,7 @@ export default function Hero() {
             </span>
             <span className="hidden items-center gap-2 sm:flex">
               <DeliveryVanIcon className="text-champagne" />
-              Fast shipping
+              Fast express delivery
             </span>
           </motion.div>
         </div>
