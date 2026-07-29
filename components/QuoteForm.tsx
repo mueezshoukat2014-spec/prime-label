@@ -117,22 +117,22 @@ const TRUST = [
 ];
 
 const COUNTRY_OPTIONS = [
-  { name: "Saudi Arabia", code: "+966" },
-  { name: "United Arab Emirates", code: "+971" },
-  { name: "Qatar", code: "+974" },
-  { name: "Kuwait", code: "+965" },
-  { name: "Bahrain", code: "+973" },
-  { name: "Oman", code: "+968" },
-  { name: "Pakistan", code: "+92" },
-  { name: "United Kingdom", code: "+44" },
-  { name: "United States", code: "+1" },
-  { name: "Canada", code: "+1" },
-  { name: "Australia", code: "+61" },
-  { name: "Germany", code: "+49" },
-  { name: "France", code: "+33" },
-  { name: "Italy", code: "+39" },
-  { name: "Turkey", code: "+90" },
-  { name: "Other", code: "" },
+  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
+  { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
+  { name: "Qatar", code: "+974", flag: "🇶🇦" },
+  { name: "Kuwait", code: "+965", flag: "🇰🇼" },
+  { name: "Bahrain", code: "+973", flag: "🇧🇭" },
+  { name: "Oman", code: "+968", flag: "🇴🇲" },
+  { name: "Pakistan", code: "+92", flag: "🇵🇰" },
+  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
+  { name: "United States", code: "+1", flag: "🇺🇸" },
+  { name: "Canada", code: "+1", flag: "🇨🇦" },
+  { name: "Australia", code: "+61", flag: "🇦🇺" },
+  { name: "Germany", code: "+49", flag: "🇩🇪" },
+  { name: "France", code: "+33", flag: "🇫🇷" },
+  { name: "Italy", code: "+39", flag: "🇮🇹" },
+  { name: "Turkey", code: "+90", flag: "🇹🇷" },
+  { name: "Other", code: "", flag: "🌍" },
 ] as const;
 
 const getCountryCode = (country: string) =>
@@ -450,7 +450,7 @@ export default function QuoteForm({
 
             <Field
               label="Country"
-              hint="Selecting a country auto-fills the WhatsApp country code."
+              hint="Choose your country for our records. It only suggests a phone code — you can edit the WhatsApp code anytime."
               htmlFor="q-country"
             >
               <select
@@ -466,7 +466,7 @@ export default function QuoteForm({
                 </option>
                 {COUNTRY_OPTIONS.map((c) => (
                   <option key={c.name} value={c.name} className="bg-ink">
-                    {c.code ? `${c.name} (${c.code})` : c.name}
+                    {c.code ? `${c.flag} ${c.name} (${c.code})` : `${c.flag} ${c.name}`}
                   </option>
                 ))}
               </select>
@@ -478,8 +478,8 @@ export default function QuoteForm({
               error={liveErrors.phone}
               hint={
                 selectedCountryCode
-                  ? `Country code ${selectedCountryCode} added. Complete your WhatsApp number.`
-                  : "Enter your full WhatsApp number with country code, e.g. +966 5XXXXXXXX."
+                  ? `Suggested code ${selectedCountryCode} added. You can change it to any valid WhatsApp country code.`
+                  : "Enter your full WhatsApp number with any country code, e.g. +966 5XXXXXXXX."
               }
               htmlFor="q-phone"
             >
