@@ -53,8 +53,29 @@ function setCookie(name: string, value: string, maxAge = 60 * 60 * 24 * 365) {
   document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
 }
 
-function clearCookie(name: string) {
-  document.cookie = `${name}=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT;SameSite=Lax`;
+function possibleCookieDomains() {
+  if (typeof window === "undefined") return [] as string[];
+  const host = window.location.hostname;
+  const parts = host.split(".").filter(Boolean);
+  const domains = new Set<string>();
+  domains.add(host);
+  domains.add(`.${host}`);
+  if (parts.length >= 2) {
+    const root = parts.slice(-2).join(".");
+    domains.add(root);
+    domains.add(`.${root}`);
+  }
+  return Array.from(domains);
+}
+
+function clearCookieEverywhere(name: string) {
+  const expires = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = `${name}=;path=/;${expires};SameSite=Lax`;
+  document.cookie = `${name}=;path=/;max-age=0;SameSite=Lax`;
+  for (const domain of possibleCookieDomains()) {
+    document.cookie = `${name}=;path=/;domain=${domain};${expires};SameSite=Lax`;
+    document.cookie = `${name}=;path=/;domain=${domain};max-age=0;SameSite=Lax`;
+  }
 }
 
 function applyDocumentLanguage(lang: "en" | "ar") {
@@ -131,22 +152,20 @@ function setArabicCookies(preference?: "manual") {
 
   // Google Translate may read the cookie on the root domain as well. Setting
   // both is harmless and makes the switch survive www/non-www variants.
-  const host = window.location.hostname;
-  const parts = host.split(".");
-  if (parts.length > 2) {
-    document.cookie = `${TRANS_COOKIE}=${value};path=/;domain=.${parts.slice(-2).join(".")};max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+  for (const domain of possibleCookieDomains()) {
+    document.cookie = `${TRANS_COOKIE}=${value};path=/;domain=${domain};max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
   }
 }
 
 function clearArabicCookies(preference?: "manual") {
+  // Remember manual English so Arabic-region auto-detection does not immediately
+  // switch the visitor back to Arabic on the next load.
   setCookie(LANG_COOKIE, SOURCE_LANG);
-  clearCookie(TRANS_COOKIE);
   if (preference === "manual") setCookie(LANG_PREF_COOKIE, SOURCE_LANG);
-  const host = window.location.hostname;
-  const parts = host.split(".");
-  if (parts.length > 2) {
-    document.cookie = `${TRANS_COOKIE}=;path=/;domain=.${parts.slice(-2).join(".")};expires=Thu, 01 Jan 1970 00:00:00 GMT;SameSite=Lax`;
-  }
+
+  // Google Translate may create host-only and domain cookies. Clearing only one
+  // copy leaves the page stuck in Arabic on refresh, so remove every variant.
+  clearCookieEverywhere(TRANS_COOKIE);
 }
 
 function shouldAutoArabic() {
@@ -170,6 +189,8 @@ function shouldAutoArabic() {
 export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const isArabic = lang === "ar";
+  const targetFlag = isArabic ? "🇬🇧" : "🇸🇦";
+  const targetLabel = isArabic ? "EN" : "عربي";
 
   useEffect(() => {
     const preference = readCookie(LANG_PREF_COOKIE);
@@ -198,9 +219,11 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
       clearArabicCookies("manual");
       applyDocumentLanguage("en");
       setLang("en");
+      triggerGoogleSelect("en");
       // Removing Google Translate cleanly requires a reload; otherwise it keeps
-      // translated text nodes cached in the DOM.
-      window.location.reload();
+      // translated text nodes cached in the DOM. The cookies above are cleared
+      // before reload so the fresh page returns to the original English text.
+      window.setTimeout(() => window.location.reload(), 150);
       return;
     }
 
@@ -237,9 +260,12 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
           opacity="0.65"
         />
       </svg>
+      <span className="text-[15px] leading-none" aria-hidden>
+        {targetFlag}
+      </span>
       {!compact && (
         <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
-          {isArabic ? "EN" : "عربي"}
+          {targetLabel}
         </span>
       )}
     </button>
