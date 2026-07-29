@@ -51,6 +51,41 @@ function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: M
   );
 }
 
+
+function VerifiedBadgeIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 2.75l2.16 1.73 2.76-.18 1.02 2.57 2.34 1.47-.68 2.68.68 2.68-2.34 1.47-1.02 2.57-2.76-.18L12 21.25l-2.16-1.73-2.76.18-1.02-2.57-2.34-1.47.68-2.68-.68-2.68 2.34-1.47L7.08 4.3l2.76.18L12 2.75z"
+        fill="currentColor"
+        opacity="0.95"
+      />
+      <path
+        d="M8.7 12.25l2.05 2.05 4.75-5.05"
+        stroke="#08080A"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DeliveryVanIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M3.5 7.5h10.2v7.6H3.5V7.5zM13.7 10.1h3.2l2.5 2.8v2.2h-5.7v-5z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M5.6 17.2a1.7 1.7 0 103.4 0 1.7 1.7 0 00-3.4 0zM15.7 17.2a1.7 1.7 0 103.4 0 1.7 1.7 0 00-3.4 0z" fill="currentColor" />
+      <path d="M2.5 15.1h18.7M6 5.6h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function Hero() {
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -175,8 +210,14 @@ export default function Hero() {
               <span className="h-1.5 w-1.5 rounded-full bg-champagne animate-pulse-soft" />
               Worldwide shipping
             </span>
-            <span>Trusted by clothing brands</span>
-            <span className="hidden sm:inline">9 product lines</span>
+            <span className="flex items-center gap-2">
+              Trusted by clothing brands
+              <VerifiedBadgeIcon className="text-champagne" />
+            </span>
+            <span className="hidden items-center gap-2 sm:flex">
+              <DeliveryVanIcon className="text-champagne" />
+              Fast shipping
+            </span>
           </motion.div>
         </div>
       </div>

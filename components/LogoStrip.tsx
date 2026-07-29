@@ -2,6 +2,19 @@
 import Image from "next/image";
 import { Marquee, Reveal } from "@/components/anim";
 
+
+function VerifiedBadgeIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden className="text-champagne">
+      <path
+        d="M12 2.75l2.16 1.73 2.76-.18 1.02 2.57 2.34 1.47-.68 2.68.68 2.68-2.34 1.47-1.02 2.57-2.76-.18L12 21.25l-2.16-1.73-2.76.18-1.02-2.57-2.34-1.47.68-2.68-.68-2.68 2.34-1.47L7.08 4.3l2.76.18L12 2.75z"
+        fill="currentColor"
+      />
+      <path d="M8.7 12.25l2.05 2.05 4.75-5.05" stroke="#08080A" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export type BrandLogo = { name: string; logoUrl?: string };
 
 function LogoItem({ logo }: { logo: BrandLogo }) {
@@ -40,7 +53,8 @@ export default function LogoStrip({
           <div className="mb-9 flex justify-center">
             <span className="eyebrow">
               <span className="h-px w-8 bg-champagne/60" />
-              {title}
+              <span>{title}</span>
+              <VerifiedBadgeIcon />
               <span className="h-px w-8 bg-champagne/60" />
             </span>
           </div>
