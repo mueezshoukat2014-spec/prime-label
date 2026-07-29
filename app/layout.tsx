@@ -5,6 +5,7 @@ import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import MetaPixelRouteTracker from "@/components/MetaPixel";
 import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
 import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd } from "@/lib/seo";
@@ -94,6 +95,7 @@ const ARABIC_COUNTRIES = new Set([
 ]);
 
 const globalJsonLd = [organizationJsonLd, websiteJsonLd, offerCatalogJsonLd];
+const META_PIXEL_ID = "1554256332856113";
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -101,6 +103,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const headerStore = headers();
   const cookieStore = cookies();
+  const currentPath = headerStore.get("x-pathname") ?? "";
+  const isAdmin = currentPath.startsWith("/admin");
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
@@ -121,9 +125,38 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
 
+        {!isAdmin && META_PIXEL_ID && (
+          <script
+            id="meta-pixel-base"
+            dangerouslySetInnerHTML={{
+              __html: `
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${META_PIXEL_ID}');
+fbq('track', 'PageView');`,
+            }}
+          />
+        )}
+
       </head>
       <body>
+        {!isAdmin && META_PIXEL_ID && (
+          <noscript id="meta-pixel-noscript">
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              alt=""
+              src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        )}
         <ToastProvider>
+          {!isAdmin && <MetaPixelRouteTracker />}
           <AnnouncementBar
             text={
               String(s.announcementEnabled) === "true"

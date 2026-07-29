@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { normalizeWaLink } from "@/lib/whatsapp";
+import { trackContact } from "@/lib/fbq";
 
 const inputCls =
   "w-full rounded-xl border border-line bg-surface/40 px-4 py-3.5 text-[14px] text-cream placeholder:text-cream-dim/60 outline-none transition-colors duration-300 focus:border-champagne/50 focus:bg-surface/70";
@@ -22,6 +23,7 @@ export default function ContactForm({ whatsapp }: { whatsapp?: string }) {
         body: JSON.stringify(Object.fromEntries(fd.entries())),
       });
       if (!res.ok) throw new Error();
+      trackContact("Contact Form Submit");
       setStatus("success");
       (e.target as HTMLFormElement).reset();
     } catch {
