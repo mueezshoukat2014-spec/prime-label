@@ -11,7 +11,6 @@ const ALLOWED_KEYS = new Set([
   "notificationEmail",
   "announcementText",
   "announcementEnabled",
-  "metaPixelId",
   "businessName",
   "tagline",
   "heroHeadline",
@@ -31,7 +30,7 @@ const ALLOWED_KEYS = new Set([
  * Everything else is protected: an empty submission is treated as
  * "not edited" and the stored value is kept.
  */
-const MAY_BE_EMPTY = new Set(["phone", "announcementText", "announcementEnabled", "metaPixelId"]);
+const MAY_BE_EMPTY = new Set(["phone", "announcementText", "announcementEnabled"]);
 
 /** Common typos of the big free mail providers, mapped to the real thing. */
 const DOMAIN_TYPOS: Record<string, string> = {

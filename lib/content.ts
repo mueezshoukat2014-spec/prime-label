@@ -54,8 +54,6 @@ export type SiteContent = {
   announcementText: string;
   /** "true" shows the promo bar. Stored as a string in site_content. */
   announcementEnabled: string;
-  /** Meta Pixel ID; empty disables tracking. */
-  metaPixelId: string;
 };
 
 const profile = (profileData as any[])[0] || {};
@@ -79,7 +77,6 @@ export const STATIC_CONTENT = {
   notificationEmail: "mueezshoukat2014@gmail.com",
   announcementText: "",
   announcementEnabled: "false",
-  metaPixelId: "",
 } satisfies SiteContent;
 
 // next/image requires local paths to start with "/", but uploaded

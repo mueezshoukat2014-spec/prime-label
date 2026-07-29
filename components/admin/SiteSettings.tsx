@@ -83,12 +83,6 @@ const FIELDS: Field[] = [
     hint: "Shown in a gold bar at the very top of every page. Leave empty to hide.",
     placeholder: "Free worldwide shipping on orders over 5000 pcs",
   },
-  {
-    key: "metaPixelId",
-    label: "Meta Pixel ID",
-    hint: "Numeric ID from Meta Events Manager. Leave empty to disable tracking.",
-    placeholder: "1234567890123456",
-  },
 ];
 
 export default function SiteSettings() {
@@ -166,14 +160,6 @@ export default function SiteSettings() {
         return;
       }
     }
-    if (dirty.includes("metaPixelId")) {
-      const v = (form.metaPixelId ?? "").trim();
-      if (v && !/^\d{6,20}$/.test(v)) {
-        toast.error("Meta Pixel ID should be numeric (6–20 digits), or empty to disable.");
-        return;
-      }
-    }
-
     setSaving(true);
     try {
       const body: Record<string, string> = {};
@@ -221,7 +207,7 @@ export default function SiteSettings() {
         <div>
           <h1 className="display text-3xl">Site Settings</h1>
           <p className="mt-1 text-[13px] text-cream-muted">
-            Global contact details, promo bar and tracking. Changes go live immediately.
+            Global contact details and promo bar. Changes go live immediately.
           </p>
         </div>
         <AppliedBadge show={applied} />
