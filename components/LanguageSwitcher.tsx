@@ -240,6 +240,7 @@ function UkFlagIcon() {
 export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<"en" | "ar">("en");
   const isArabic = lang === "ar";
+  const targetLabel = isArabic ? "English" : "Arabic";
 
   useEffect(() => {
     const preference = readCookie(LANG_PREF_COOKIE);
@@ -288,11 +289,16 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
       onClick={toggle}
       aria-label={isArabic ? "Switch website language to English" : "Switch website language to Arabic"}
       title={isArabic ? "English" : "Arabic"}
-      className="notranslate group inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface/45 text-cream-muted shadow-soft backdrop-blur transition-all duration-300 hover:border-champagne/55 hover:text-champagne"
+      className={`notranslate group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-surface/45 px-3.5 text-cream-muted shadow-soft backdrop-blur transition-all duration-300 hover:border-champagne/55 hover:text-champagne ${
+        compact ? "px-3" : "px-3.5"
+      }`}
       data-cursor="Language"
       translate="no"
     >
       {isArabic ? <UkFlagIcon /> : <SaudiFlagIcon />}
+      <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+        {targetLabel}
+      </span>
     </button>
   );
 }
