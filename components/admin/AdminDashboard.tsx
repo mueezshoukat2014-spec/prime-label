@@ -4,6 +4,7 @@ import Logo from "@/components/Logo";
 import ProductManager from "@/components/admin/ProductManager";
 import AppliedBadge from "@/components/admin/AppliedBadge";
 import GalleryManager from "@/components/admin/GalleryManager";
+import VideoManager from "@/components/admin/VideoManager";
 import QuoteGenerator from "@/components/admin/QuoteGenerator";
 import SiteSettings from "@/components/admin/SiteSettings";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
@@ -23,6 +24,7 @@ type Tab =
   | "faqs"
   | "testimonials"
   | "gallery"
+  | "videos"
   | "quotegen"
   | "settings";
 const TABS: { id: Tab; label: string }[] = [
@@ -34,6 +36,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "faqs", label: "FAQs" },
   { id: "testimonials", label: "Testimonials" },
   { id: "gallery", label: "Gallery / Portfolio" },
+  { id: "videos", label: "Videos / Shorts" },
   { id: "quotegen", label: "Quote Generator" },
   { id: "settings", label: "Site Settings" },
 ];
@@ -96,6 +99,7 @@ export default function AdminDashboard() {
           {tab === "faqs" && <Faqs />}
           {tab === "testimonials" && <Testimonials />}
           {tab === "gallery" && <GalleryManager />}
+          {tab === "videos" && <VideoManager />}
           {tab === "quotegen" && <QuoteGenerator />}
           {tab === "settings" && <SiteSettings />}
         </div>

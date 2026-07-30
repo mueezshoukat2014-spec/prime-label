@@ -1,6 +1,7 @@
 import "server-only";
 import { sql } from "@/lib/db";
-import { products as staticProducts, gallery, reels, STATIC_CONTENT, normalizeMediaUrl } from "@/lib/content";
+import { products as staticProducts, gallery, reels as staticReels, STATIC_CONTENT, normalizeMediaUrl, type Reel } from "@/lib/content";
+import { normaliseManagedVideos, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from "@/lib/youtube";
 
 export async function getProducts() {
   try {
@@ -90,4 +91,34 @@ export async function getGallery() {
   return gallery;
 }
 
-export { gallery, reels };
+
+export async function getReels(): Promise<Reel[]> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'youtubeShorts' LIMIT 1`;
+    if (rows.length) {
+      const managed = normaliseManagedVideos(JSON.parse(String(rows[0]?.value || "[]"))).filter(
+        (video) => video.active
+      );
+      if (managed.length) {
+        return managed.map((video) => ({
+          kind: "youtube" as const,
+          src: youtubeEmbedUrl(video.youtubeId),
+          embedUrl: youtubeEmbedUrl(video.youtubeId),
+          watchUrl: youtubeWatchUrl(video.youtubeId),
+          cover: youtubeThumbUrl(video.youtubeId),
+          caption: video.caption,
+          title: video.title,
+          product: video.product,
+          shortcode: `youtube-${video.youtubeId}`,
+          youtubeId: video.youtubeId,
+          plays: null,
+        }));
+      }
+    }
+  } catch {
+    /* fall through to bundled/local reels */
+  }
+  return staticReels;
+}
+
+export { gallery, staticReels as reels };

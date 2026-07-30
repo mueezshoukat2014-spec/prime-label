@@ -20,6 +20,8 @@ const REEL_PRODUCTS = [
 
 const productForReel = (index: number) => REEL_PRODUCTS[index % REEL_PRODUCTS.length];
 
+const isYouTubeReel = (reel: Reel) => reel.kind === "youtube" && !!reel.youtubeId;
+
 export default function Reels({ reels }: { reels: Reel[] }) {
   const [active, setActive] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -28,7 +30,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   const listRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const r = reels[active];
-  const activeProduct = productForReel(active);
+  const activeProduct = r.product || productForReel(active);
 
   // detect mobile (<768px)
   useEffect(() => {
@@ -40,8 +42,12 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   }, []);
 
   const play = useCallback(() => {
+    if (isYouTubeReel(r)) {
+      setPlaying(true);
+      return;
+    }
     vidRef.current?.play().then(() => setPlaying(true)).catch(() => {});
-  }, []);
+  }, [r]);
 
   // Preload videos only when the section is close to viewport. This keeps the
   // landing page light, but makes reel previews/playback ready when customers scroll here.
@@ -50,7 +56,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
     if (!section) return;
     const links: HTMLLinkElement[] = [];
     const preload = () => {
-      reels.forEach((reel) => {
+      reels.filter((reel) => !isYouTubeReel(reel)).forEach((reel) => {
         if (document.querySelector(`link[rel="preload"][href="${reel.src}"]`)) return;
         const link = document.createElement("link");
         link.rel = "preload";
@@ -78,6 +84,10 @@ export default function Reels({ reels }: { reels: Reel[] }) {
 
   // playback control: desktop autoplays, mobile plays only when in view
   useEffect(() => {
+    if (isYouTubeReel(r)) {
+      setPlaying(true);
+      return;
+    }
     const v = vidRef.current;
     if (!v) return;
     if (!isMobile) {
@@ -99,7 +109,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
     );
     io.observe(v);
     return () => io.disconnect();
-  }, [isMobile, active, play]);
+  }, [isMobile, active, play, r]);
 
   function select(i: number) {
     setActive(i);
@@ -171,21 +181,37 @@ export default function Reels({ reels }: { reels: Reel[] }) {
           {/* player */}
           <Reveal className="relative aspect-[9/11] max-h-[60vh] min-w-0 overflow-hidden rounded-4xl border border-line bg-ink shadow-soft sm:aspect-[16/10] sm:max-h-none lg:aspect-auto lg:min-h-[560px]">
             <AnimatePresence mode="wait">
-              <motion.video
-                key={r.src}
-                ref={vidRef}
-                src={r.src}
-                poster={r.cover}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease: EASE }}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+              {isYouTubeReel(r) ? (
+                <motion.iframe
+                  key={r.embedUrl || r.src}
+                  src={r.embedUrl || r.src}
+                  title={r.title || r.caption || "YouTube Short"}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  loading="lazy"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6, ease: EASE }}
+                  className="absolute inset-0 h-full w-full border-0 object-cover"
+                />
+              ) : (
+                <motion.video
+                  key={r.src}
+                  ref={vidRef}
+                  src={r.src}
+                  poster={r.cover}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6, ease: EASE }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              )}
             </AnimatePresence>
 
             {/* prev / next arrows on the player */}
@@ -223,7 +249,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
             </button>
 
             {/* mobile play button (shown when paused) */}
-            {isMobile && !playing && (
+            {!isYouTubeReel(r) && isMobile && !playing && (
               <button
                 type="button"
                 onClick={play}
@@ -281,7 +307,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
           >
             {reels.map((reel, i) => {
               const isActive = i === active;
-              const product = productForReel(i);
+              const product = reel.product || productForReel(i);
               return (
                 <div key={reel.src} className="w-[88px] shrink-0 snap-start sm:w-[110px] lg:w-full">
                   <button
