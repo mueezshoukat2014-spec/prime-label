@@ -1,7 +1,7 @@
 import "server-only";
 import { sql } from "@/lib/db";
 import { products as staticProducts, gallery, reels as staticReels, STATIC_CONTENT, normalizeMediaUrl, type Reel } from "@/lib/content";
-import { normaliseManagedVideos, youtubeEmbedUrl, youtubeThumbUrl, youtubeWatchUrl } from "@/lib/youtube";
+import { normaliseManagedVideos } from "@/lib/video";
 
 export async function getProducts() {
   try {
@@ -94,23 +94,20 @@ export async function getGallery() {
 
 export async function getReels(): Promise<Reel[]> {
   try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'youtubeShorts' LIMIT 1`;
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'managedVideos' LIMIT 1`;
     if (rows.length) {
       const managed = normaliseManagedVideos(JSON.parse(String(rows[0]?.value || "[]"))).filter(
         (video) => video.active
       );
       if (managed.length) {
         return managed.map((video) => ({
-          kind: "youtube" as const,
-          src: youtubeEmbedUrl(video.youtubeId),
-          embedUrl: youtubeEmbedUrl(video.youtubeId),
-          watchUrl: youtubeWatchUrl(video.youtubeId),
-          cover: youtubeThumbUrl(video.youtubeId),
+          kind: "uploaded" as const,
+          src: video.url,
+          cover: "",
           caption: video.caption,
           title: video.title,
           product: video.product,
-          shortcode: `youtube-${video.youtubeId}`,
-          youtubeId: video.youtubeId,
+          shortcode: `uploaded-${video.id}`,
           plays: null,
         }));
       }

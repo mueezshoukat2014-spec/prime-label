@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
-import { extractYouTubeId, normaliseManagedVideos, youtubeWatchUrl } from "@/lib/youtube";
+import { normaliseManagedVideos } from "@/lib/video";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const KEY = "youtubeShorts";
+const KEY = "managedVideos";
 
 function unauthorized() {
   return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
@@ -39,24 +39,9 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const incoming = Array.isArray(body.videos) ? body.videos.slice(0, 12) : [];
-
-    const cleaned = incoming.map((row: any, index: number) => {
-      const url = String(row.url || "").trim();
-      const youtubeId = extractYouTubeId(url || row.youtubeId || "");
-      if (!youtubeId) {
-        throw new Error(`Video ${index + 1}: please enter a valid YouTube Shorts, YouTube, youtu.be or video ID link.`);
-      }
-      return {
-        id: String(row.id || `yt-${youtubeId}-${Date.now()}-${index}`),
-        url: url || youtubeWatchUrl(youtubeId),
-        youtubeId,
-        title: String(row.title || `YouTube Short ${index + 1}`).trim().slice(0, 120),
-        caption: String(row.caption || "Watch our product process in motion.").trim().slice(0, 300),
-        product: String(row.product || "Woven Labels").trim().slice(0, 120),
-        active: row.active !== false,
-        sort: index,
-      };
-    });
+    const cleaned = normaliseManagedVideos(
+      incoming.map((row: any, index: number) => ({ ...row, sort: index }))
+    );
 
     await sql`
       INSERT INTO site_content (key, value)

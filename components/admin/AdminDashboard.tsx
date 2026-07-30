@@ -36,7 +36,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "faqs", label: "FAQs" },
   { id: "testimonials", label: "Testimonials" },
   { id: "gallery", label: "Gallery / Portfolio" },
-  { id: "videos", label: "Videos / Shorts" },
+  { id: "videos", label: "Videos" },
   { id: "quotegen", label: "Quote Generator" },
   { id: "settings", label: "Site Settings" },
 ];

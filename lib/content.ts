@@ -32,10 +32,7 @@ export type Reel = {
   caption: string;
   plays: number | null;
   shortcode: string;
-  kind?: "local" | "youtube";
-  youtubeId?: string;
-  embedUrl?: string;
-  watchUrl?: string;
+  kind?: "local" | "uploaded";
   title?: string;
   product?: string;
 };
@@ -60,8 +57,8 @@ export type SiteContent = {
   announcementText: string;
   /** "true" shows the promo bar. Stored as a string in site_content. */
   announcementEnabled: string;
-  /** JSON array of admin-managed YouTube Shorts for the video section. */
-  youtubeShorts: string;
+  /** JSON array of admin-managed uploaded videos for the video section. */
+  managedVideos: string;
 };
 
 const profile = (profileData as any[])[0] || {};
@@ -85,7 +82,7 @@ export const STATIC_CONTENT = {
   notificationEmail: "mueezshoukat2014@gmail.com",
   announcementText: "",
   announcementEnabled: "false",
-  youtubeShorts: "[]",
+  managedVideos: "[]",
 } satisfies SiteContent;
 
 // next/image requires local paths to start with "/", but uploaded
