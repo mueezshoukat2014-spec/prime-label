@@ -27,10 +27,25 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   const [isMobile, setIsMobile] = useState(false);
   const [playing, setPlaying] = useState(false);
   const vidRef = useRef<HTMLVideoElement>(null);
+  const youtubeRef = useRef<HTMLIFrameElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const r = reels[active];
   const activeProduct = r.product || productForReel(active);
+
+  const sendYouTubeCommand = useCallback((func: string, args: unknown[] = []) => {
+    youtubeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({ event: "command", func, args }),
+      "https://www.youtube-nocookie.com"
+    );
+  }, []);
+
+  const forceYouTubePlayback = useCallback(() => {
+    sendYouTubeCommand("mute");
+    sendYouTubeCommand("setVolume", [0]);
+    sendYouTubeCommand("playVideo");
+    setPlaying(true);
+  }, [sendYouTubeCommand]);
 
   // detect mobile (<768px)
   useEffect(() => {
@@ -43,11 +58,11 @@ export default function Reels({ reels }: { reels: Reel[] }) {
 
   const play = useCallback(() => {
     if (isYouTubeReel(r)) {
-      setPlaying(true);
+      forceYouTubePlayback();
       return;
     }
     vidRef.current?.play().then(() => setPlaying(true)).catch(() => {});
-  }, [r]);
+  }, [r, forceYouTubePlayback]);
 
   // Preload videos only when the section is close to viewport. This keeps the
   // landing page light, but makes reel previews/playback ready when customers scroll here.
@@ -85,8 +100,15 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   // playback control: desktop autoplays, mobile plays only when in view
   useEffect(() => {
     if (isYouTubeReel(r)) {
-      setPlaying(true);
-      return;
+      forceYouTubePlayback();
+      const t1 = window.setTimeout(forceYouTubePlayback, 450);
+      const t2 = window.setTimeout(forceYouTubePlayback, 1200);
+      const t3 = window.setTimeout(forceYouTubePlayback, 2500);
+      return () => {
+        window.clearTimeout(t1);
+        window.clearTimeout(t2);
+        window.clearTimeout(t3);
+      };
     }
     const v = vidRef.current;
     if (!v) return;
@@ -109,7 +131,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
     );
     io.observe(v);
     return () => io.disconnect();
-  }, [isMobile, active, play, r]);
+  }, [isMobile, active, play, r, forceYouTubePlayback]);
 
   function select(i: number) {
     setActive(i);
@@ -184,16 +206,18 @@ export default function Reels({ reels }: { reels: Reel[] }) {
               {isYouTubeReel(r) ? (
                 <motion.iframe
                   key={r.embedUrl || r.src}
+                  ref={youtubeRef}
                   src={r.embedUrl || r.src}
                   title="Prime Labels product video"
                   allow="autoplay; encrypted-media; picture-in-picture"
                   referrerPolicy="strict-origin-when-cross-origin"
-                  loading="lazy"
+                  loading="eager"
+                  onLoad={forceYouTubePlayback}
                   initial={{ opacity: 0, scale: 1.04 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.6, ease: EASE }}
-                  className="pointer-events-none absolute inset-0 h-full w-full border-0 object-cover"
+                  className="pointer-events-none absolute left-1/2 top-1/2 h-[calc(100%+220px)] w-[calc(100%+260px)] -translate-x-1/2 -translate-y-1/2 border-0"
                 />
               ) : (
                 <motion.video
@@ -218,8 +242,9 @@ export default function Reels({ reels }: { reels: Reel[] }) {
               <>
                 {/* Covers YouTube's top title overlay and bottom-right watermark area.
                     The iframe is pointer-events-none, so visitors cannot pause/open YouTube. */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-ink via-ink/90 to-transparent" />
-                <div className="pointer-events-none absolute bottom-0 right-0 z-10 h-24 w-44 bg-gradient-to-tl from-ink via-ink/95 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-gradient-to-b from-ink via-ink/95 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 right-0 z-10 h-28 w-56 bg-gradient-to-tl from-ink via-ink/95 to-transparent" />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink/10 backdrop-blur-[1px]" />
                 <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-line" />
               </>
             )}
