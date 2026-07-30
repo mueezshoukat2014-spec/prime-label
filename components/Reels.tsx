@@ -185,15 +185,15 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 <motion.iframe
                   key={r.embedUrl || r.src}
                   src={r.embedUrl || r.src}
-                  title={r.title || r.caption || "YouTube Short"}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  title="Prime Labels product video"
+                  allow="autoplay; encrypted-media; picture-in-picture"
                   referrerPolicy="strict-origin-when-cross-origin"
                   loading="lazy"
                   initial={{ opacity: 0, scale: 1.04 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.6, ease: EASE }}
-                  className="absolute inset-0 h-full w-full border-0 object-cover"
+                  className="pointer-events-none absolute inset-0 h-full w-full border-0 object-cover"
                 />
               ) : (
                 <motion.video
@@ -213,6 +213,16 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 />
               )}
             </AnimatePresence>
+
+            {isYouTubeReel(r) && (
+              <>
+                {/* Covers YouTube's top title overlay and bottom-right watermark area.
+                    The iframe is pointer-events-none, so visitors cannot pause/open YouTube. */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-ink via-ink/90 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 right-0 z-10 h-24 w-44 bg-gradient-to-tl from-ink via-ink/95 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-line" />
+              </>
+            )}
 
             {/* prev / next arrows on the player */}
             <button
