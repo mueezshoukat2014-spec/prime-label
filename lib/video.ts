@@ -47,23 +47,24 @@ export function buildVideoPath(originalName: string): string {
 
 export function normaliseManagedVideos(raw: unknown): ManagedVideo[] {
   const list = Array.isArray(raw) ? raw : [];
-  return list
-    .map((item, index) => {
-      const row = (item || {}) as Partial<ManagedVideo>;
-      const url = String(row.url || "").trim();
-      if (!url) return null;
-      return {
-        id: String(row.id || `video-${index}`),
-        url,
-        title: String(row.title || `Product video ${index + 1}`).slice(0, 120),
-        caption: String(row.caption || row.title || "Watch our product process in motion.").slice(0, 300),
-        product: String(row.product || "Woven Labels").slice(0, 120),
-        active: row.active !== false,
-        sort: Number.isFinite(Number(row.sort)) ? Number(row.sort) : index,
-        fileName: row.fileName ? String(row.fileName).slice(0, 180) : undefined,
-        size: Number.isFinite(Number(row.size)) ? Number(row.size) : undefined,
-      } satisfies ManagedVideo;
-    })
-    .filter((v): v is ManagedVideo => !!v)
-    .sort((a, b) => a.sort - b.sort);
+  const videos: ManagedVideo[] = [];
+
+  list.forEach((item, index) => {
+    const row = (item || {}) as Partial<ManagedVideo>;
+    const url = String(row.url || "").trim();
+    if (!url) return;
+    videos.push({
+      id: String(row.id || `video-${index}`),
+      url,
+      title: String(row.title || `Product video ${index + 1}`).slice(0, 120),
+      caption: String(row.caption || row.title || "Watch our product process in motion.").slice(0, 300),
+      product: String(row.product || "Woven Labels").slice(0, 120),
+      active: row.active !== false,
+      sort: Number.isFinite(Number(row.sort)) ? Number(row.sort) : index,
+      fileName: row.fileName ? String(row.fileName).slice(0, 180) : undefined,
+      size: Number.isFinite(Number(row.size)) ? Number(row.size) : undefined,
+    });
+  });
+
+  return videos.sort((a, b) => a.sort - b.sort);
 }
