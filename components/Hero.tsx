@@ -128,7 +128,7 @@ export default function Hero() {
       <div className="grain-bg pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-soft-light" />
 
       {/* floating product cluster (desktop) */}
-      <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      <div className="hero-floaters pointer-events-none absolute inset-0 hidden lg:block">
         {FLOATERS.map((f, i) => (
           <Floater key={i} f={f} sx={sx} sy={sy} />
         ))}
@@ -136,7 +136,7 @@ export default function Hero() {
 
       {/* content */}
       <div className="container-lux relative z-10 flex min-h-[100svh] flex-col justify-center pt-28 pb-40">
-        <div className="max-w-3xl">
+        <div className="hero-content max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -149,7 +149,7 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          <h1 className="display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
+          <h1 className="hero-title display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
             <TextReveal text="Every great" delay={0.04} />
             <TextReveal text="brand starts" delay={0.1} />
             <span className="block overflow-hidden">
@@ -161,7 +161,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.24 }}
-            className="mt-8 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted sm:text-base"
+            className="hero-copy mt-8 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted sm:text-base"
           >
             High-density woven and satin labels, premium hang tags, custom
             packaging and the finishing details that clothing brands trust to
@@ -172,7 +172,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.32 }}
-            className="mt-10 flex flex-wrap items-center gap-4"
+            className="hero-actions mt-10 flex flex-wrap items-center gap-4"
           >
             <Link href="/quote" data-cursor="Quote">
               <Magnetic strength={0.4}>
@@ -204,7 +204,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.45 }}
-            className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-wide2 text-cream-dim"
+            className="hero-stats mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-wide2 text-cream-dim"
           >
             <span className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-champagne animate-pulse-soft" />

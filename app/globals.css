@@ -301,3 +301,110 @@ html[data-lang="ar"] .link-underline:hover::after {
 html[data-lang="ar"] .notranslate {
   direction: ltr;
 }
+
+
+/* ---------- Arabic / translated layout fixes ---------- */
+html[data-lang="ar"] {
+  overflow-x: clip;
+}
+
+html[data-lang="ar"] .container-lux {
+  direction: rtl;
+}
+
+html[data-lang="ar"] .hero-content {
+  max-width: min(760px, 100%);
+  margin-inline-start: auto;
+  text-align: right;
+}
+
+html[data-lang="ar"] .hero-title {
+  font-size: clamp(3.2rem, 9.5vw, 7.2rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.01em !important;
+  max-width: 9ch;
+  text-wrap: balance;
+}
+
+html[data-lang="ar"] .hero-copy {
+  max-width: 620px;
+  margin-inline-start: auto;
+  line-height: 1.95;
+  font-size: 1rem;
+}
+
+html[data-lang="ar"] .hero-actions,
+html[data-lang="ar"] .hero-stats {
+  justify-content: flex-start;
+  direction: rtl;
+}
+
+html[data-lang="ar"] .hero-floaters {
+  opacity: 0.55;
+  transform: translateX(-5vw) scale(0.88);
+}
+
+html[data-lang="ar"] .btn-primary,
+html[data-lang="ar"] .btn-ghost {
+  letter-spacing: 0;
+  line-height: 1.25;
+  white-space: normal;
+  text-align: center;
+}
+
+html[data-lang="ar"] .display {
+  line-height: 1.18;
+}
+
+html[data-lang="ar"] p,
+html[data-lang="ar"] li,
+html[data-lang="ar"] span,
+html[data-lang="ar"] a,
+html[data-lang="ar"] button {
+  overflow-wrap: anywhere;
+}
+
+html[data-lang="ar"] .eyebrow {
+  text-transform: none;
+  line-height: 1.6;
+}
+
+html[data-lang="ar"] [class*="grid-cols-[360px_1fr]"] {
+  direction: rtl;
+}
+
+@media (max-width: 1024px) {
+  html[data-lang="ar"] .hero-content {
+    max-width: 100%;
+    text-align: center;
+  }
+  html[data-lang="ar"] .hero-title {
+    margin-inline: auto;
+    font-size: clamp(3rem, 13vw, 5.8rem) !important;
+    line-height: 1.16 !important;
+    max-width: 8ch;
+  }
+  html[data-lang="ar"] .hero-copy {
+    margin-inline: auto;
+    font-size: 0.95rem;
+  }
+  html[data-lang="ar"] .hero-actions,
+  html[data-lang="ar"] .hero-stats {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  html[data-lang="ar"] .hero-title {
+    font-size: clamp(2.55rem, 17vw, 4.25rem) !important;
+    line-height: 1.2 !important;
+  }
+  html[data-lang="ar"] .hero-copy {
+    line-height: 1.8;
+  }
+  html[data-lang="ar"] .btn-primary,
+  html[data-lang="ar"] .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
