@@ -141,8 +141,19 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   }, [active]);
 
   return (
-    <section className="relative border-t border-line py-20 sm:py-28">
-      <div className="container-lux">
+    <section className="relative overflow-hidden border-t border-line py-20 sm:py-28">
+      <div className="pointer-events-none absolute inset-y-16 left-0 hidden w-[26vw] lg:block">
+        <div className="absolute left-10 top-1/2 h-[70%] w-px -translate-y-1/2 bg-gradient-to-b from-transparent via-champagne/55 to-transparent shadow-[0_0_32px_rgba(201,168,106,0.6)]" />
+        <div className="absolute left-4 top-[18%] h-28 w-28 rounded-full border border-champagne/15 bg-champagne/[0.035] blur-[1px]" />
+        <div className="absolute left-20 bottom-[12%] h-44 w-44 rounded-full bg-champagne/[0.045] blur-[70px]" />
+      </div>
+      <div className="pointer-events-none absolute inset-y-16 right-0 hidden w-[26vw] lg:block">
+        <div className="absolute right-10 top-1/2 h-[70%] w-px -translate-y-1/2 bg-gradient-to-b from-transparent via-champagne/55 to-transparent shadow-[0_0_32px_rgba(201,168,106,0.6)]" />
+        <div className="absolute right-4 top-[22%] h-28 w-28 rounded-full border border-champagne/15 bg-champagne/[0.035] blur-[1px]" />
+        <div className="absolute right-20 bottom-[10%] h-44 w-44 rounded-full bg-champagne/[0.045] blur-[70px]" />
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-champagne/10 to-transparent lg:block" />
+      <div className="container-lux relative">
         <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <Reveal>
             <div>
