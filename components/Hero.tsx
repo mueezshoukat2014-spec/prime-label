@@ -152,9 +152,7 @@ export default function Hero() {
           <h1 className="hero-title display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
             <TextReveal text="Every great" delay={0.04} />
             <TextReveal text="brand starts" delay={0.1} />
-            <span className="block overflow-hidden">
-              <TextReveal text="with a label." className="gradient-text italic" delay={0.16} />
-            </span>
+            <TextReveal text="with a label." className="block gradient-text italic" delay={0.16} />
           </h1>
 
           <motion.p
