@@ -112,6 +112,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const headerStore = headers();
   const cookieStore = cookies();
+  const currentPath = headerStore.get("x-pathname") ?? "";
+  const isAdmin = currentPath.startsWith("/admin");
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
@@ -119,12 +121,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const isInitialArabic =
     langPreference === "ar" ||
     (!langPreference && (storedLang === "ar" || autoArabic));
-  const initialLang = isInitialArabic ? "ar" : "en";
+  const initialLang = isAdmin ? "en" : isInitialArabic ? "ar" : "en";
+  const initialDir = isAdmin ? "ltr" : isInitialArabic ? "rtl" : "ltr";
 
   return (
     <html
       lang={initialLang}
-      dir={isInitialArabic ? "rtl" : "ltr"}
+      dir={initialDir}
       data-lang={initialLang}
       className={`${fraunces.variable} ${manrope.variable} ${cairo.variable}`}
       suppressHydrationWarning

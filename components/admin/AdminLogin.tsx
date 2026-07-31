@@ -28,7 +28,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink px-6">
+    <div className="notranslate flex min-h-screen items-center justify-center bg-ink px-6" translate="no" dir="ltr">
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-champagne/10 blur-[130px]" />
       <form onSubmit={onSubmit} className="glass relative w-full max-w-sm rounded-4xl p-8">
         <div className="mb-7 text-center">

@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-ink text-cream">
+    <div className="notranslate min-h-screen bg-ink text-cream" translate="no" dir="ltr">
       <header className="sticky top-0 z-30 border-b border-line bg-ink-2/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
