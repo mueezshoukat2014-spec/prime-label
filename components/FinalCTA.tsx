@@ -36,9 +36,7 @@ export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; i
         </Reveal>
         <h2 className="display mx-auto mt-8 max-w-4xl text-5xl leading-[1.04] tracking-tight sm:text-7xl lg:text-[5.5rem]">
           <TextReveal text="Make your brand" />
-          <span className="gradient-text italic">
-            <TextReveal text="unforgettable." delay={0.15} />
-          </span>
+          <span className="block gradient-text italic">unforgettable.</span>
         </h2>
         <Reveal delay={0.2}>
           <p className="mx-auto mt-7 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted">
