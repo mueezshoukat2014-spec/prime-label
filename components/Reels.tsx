@@ -161,8 +161,8 @@ export default function Reels({ reels }: { reels: Reel[] }) {
           </p>
         </div>
 
-        <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <Reveal className="relative aspect-[9/16] max-h-[82vh] min-w-0 overflow-hidden rounded-4xl border border-line bg-ink shadow-soft sm:aspect-[16/10] sm:max-h-none lg:aspect-auto lg:min-h-[560px]">
+        <div className="grid min-w-0 justify-center gap-6 lg:grid-cols-[minmax(280px,460px)_300px] lg:items-start">
+          <Reveal className="relative aspect-[9/16] w-full max-w-[430px] min-w-0 overflow-hidden rounded-4xl border border-line bg-ink shadow-soft sm:max-w-[460px] lg:h-[72vh] lg:max-h-[680px] lg:min-h-[520px]">
             <AnimatePresence mode="wait">
               <motion.video
                 key={r.src}
@@ -222,12 +222,12 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="hidden lg:block"><path d="M3 10l5-5 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
 
-              <div ref={listRef} className="flex min-w-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto lg:max-h-[480px] lg:flex-none lg:snap-none lg:flex-col lg:overflow-y-auto lg:pr-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div ref={listRef} className="flex min-w-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto lg:max-h-[560px] lg:flex-none lg:snap-none lg:flex-col lg:overflow-y-auto lg:pr-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {reels.map((reel, i) => {
                   const isActive = i === active;
                   const product = reel.product || productForReel(i);
                   return (
-                    <div key={reel.src} className="w-[88px] shrink-0 snap-start sm:w-[110px] lg:w-full">
+                    <div key={reel.src} className="w-[88px] shrink-0 snap-start sm:w-[104px] lg:w-full">
                       <button ref={(el) => { thumbRefs.current[i] = el; }} onClick={() => select(i)} className={`group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border transition-all duration-500 ${isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"}`}>
                         {reel.cover ? (
                           <Image src={reel.cover} alt={reel.caption} fill sizes="(max-width:1024px) 40vw, 300px" quality={58} className="object-cover transition-transform duration-700 group-hover:scale-105" />
