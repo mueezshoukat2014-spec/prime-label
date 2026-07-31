@@ -46,6 +46,9 @@ export default function FloatingWhatsApp({ href }: { href?: string }) {
           transition={{ duration: 1.6, repeat: 3, ease: "easeOut", repeatDelay: 0.2 }}
         />
       )}
+      <span className="pointer-events-none absolute bottom-full right-0 mb-3 whitespace-nowrap rounded-full border border-champagne/25 bg-ink/95 px-3 py-1.5 text-[11px] font-medium text-cream opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:-translate-y-1 group-hover:opacity-100 group-focus-visible:-translate-y-1 group-focus-visible:opacity-100">
+        Chat on WhatsApp
+      </span>
       <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#35E279] to-[#128C4A] shadow-[0_0_22px_-8px_rgba(37,211,102,0.9)] transition-transform duration-500 group-hover:scale-110">
         <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
