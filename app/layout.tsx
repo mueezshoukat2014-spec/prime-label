@@ -3,6 +3,7 @@ import { Fraunces, Manrope, Cairo } from "next/font/google";
 import "./globals.css";
 import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import FloatingLanguage from "@/components/FloatingLanguage";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MetaPixelRouteTracker from "@/components/MetaPixel";
@@ -143,6 +144,7 @@ if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
 n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
 s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
+fbq('set', 'autoConfig', false, '${META_PIXEL_ID}');
 fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');`,
             }}
@@ -173,6 +175,7 @@ fbq('track', 'PageView');`,
           />
           <TabAttention />
           {children}
+          <FloatingLanguage />
           <FloatingWhatsApp href={s.whatsapp} />
         </ToastProvider>
         <script
