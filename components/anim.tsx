@@ -171,7 +171,13 @@ export function Counter({
   const display =
     to >= 1000 ? Math.round(val).toLocaleString("en-US") : Math.round(val).toString();
   return (
-    <span ref={ref} className={className}>
+    <span
+      ref={ref}
+      className={`notranslate inline-block tabular-nums ${className || ""}`}
+      translate="no"
+      dir="ltr"
+      data-counter-value={to}
+    >
       {prefix}
       {display}
       {suffix}

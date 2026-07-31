@@ -70,7 +70,7 @@ export default function Loader() {
             </div>
             <div className="mt-4 flex w-44 items-center justify-between text-[10px] uppercase tracking-widest2 text-cream-dim">
               <span>Prime Labels</span>
-              <span className="tabular-nums text-champagne/80">
+              <span className="notranslate tabular-nums text-champagne/80" translate="no" dir="ltr">
                 {Math.round(progress)}%
               </span>
             </div>

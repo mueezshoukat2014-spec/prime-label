@@ -408,3 +408,12 @@ html[data-lang="ar"] [class*="grid-cols-[360px_1fr]"] {
     justify-content: center;
   }
 }
+
+
+html[data-lang="ar"] [data-counter-value],
+html[data-lang="ar"] .tabular-nums.notranslate {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--font-body), system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
