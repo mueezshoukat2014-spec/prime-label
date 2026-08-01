@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 const SOURCE_LANG = "en";
 const TARGET_LANG = "ar";
@@ -188,14 +188,18 @@ function shouldAutoArabic() {
 
 
 function SaudiFlagIcon() {
+  // Unique id per instance: Navbar + floating button can mount this twice on
+  // the same page, and duplicate SVG ids break the clip in some browsers.
+  const uid = useId().replace(/[^a-zA-Z0-9-]/g, "");
+  const clipId = `sa-flag-clip-${uid}`;
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden className="shrink-0 rounded-full shadow-sm">
       <defs>
-        <clipPath id="sa-flag-clip">
+        <clipPath id={clipId}>
           <circle cx="12" cy="12" r="11" />
         </clipPath>
       </defs>
-      <g clipPath="url(#sa-flag-clip)">
+      <g clipPath={`url(#${clipId})`}>
         <rect width="24" height="24" fill="#006C35" />
         <path
           d="M6.2 10.2h11.6M7 8.1h10M8.1 12.1h7.8"
@@ -218,14 +222,16 @@ function SaudiFlagIcon() {
 }
 
 function UkFlagIcon() {
+  const uid = useId().replace(/[^a-zA-Z0-9-]/g, "");
+  const clipId = `uk-flag-clip-${uid}`;
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden className="shrink-0 rounded-full shadow-sm">
       <defs>
-        <clipPath id="uk-flag-clip">
+        <clipPath id={clipId}>
           <circle cx="12" cy="12" r="11" />
         </clipPath>
       </defs>
-      <g clipPath="url(#uk-flag-clip)">
+      <g clipPath={`url(#${clipId})`}>
         <rect width="24" height="24" fill="#012169" />
         <path d="M-2 0l28 24M26 0L-2 24" stroke="#fff" strokeWidth="5" />
         <path d="M-2 0l28 24M26 0L-2 24" stroke="#C8102E" strokeWidth="2.5" />
