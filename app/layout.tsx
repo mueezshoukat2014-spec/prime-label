@@ -59,8 +59,10 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "Premium custom woven labels, satin labels, hang tags, stickers, packaging and garment branding accessories for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
     keywords: [...PRIMARY_KEYWORDS],
-    authors: [{ name }],
-    creator: name,
+    applicationName: BRAND_NAME,
+    authors: [{ name: BRAND_NAME }],
+    creator: BRAND_NAME,
+    publisher: BRAND_NAME,
     manifest: "/site.webmanifest",
     icons: {
       icon: [
@@ -88,16 +90,26 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: name,
       locale: "en_US",
       alternateLocale: ["ar_SA", "en_GB", "en_AE"],
-      images: [{ url: "/photos/brand-logo.jpg", width: 1200, height: 630, alt: name }],
+      images: [{ url: "/icon.png", width: 512, height: 512, alt: BRAND_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description:
         "Custom woven labels, hang tags, stickers and packaging for clothing brands across Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
-      images: ["/photos/brand-logo.jpg"],
+      images: ["/icon.png"],
     },
-    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
   };
 }
 
