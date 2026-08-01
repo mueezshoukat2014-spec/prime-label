@@ -33,6 +33,14 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers } });
 
+  // Baseline security hardening headers. A strict Content-Security-Policy is
+  // intentionally left out for now — Meta Pixel, Google Translate and Vercel
+  // Blob video sources all need whitelisting before one can be enforced.
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
   if (pathname.startsWith("/admin") || pathname.startsWith("/api")) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
   }
