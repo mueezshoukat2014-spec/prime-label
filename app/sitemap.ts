@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const base = "https://primelabelsintl.com";
-const lastModified = new Date("2026-07-30T00:00:00.000Z");
+const lastModified = new Date("2026-08-01T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
