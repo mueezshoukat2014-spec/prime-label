@@ -37,7 +37,7 @@ export async function GET() {
                    COUNT(*) FILTER (WHERE type = 'pageview')::int AS pageviews
             FROM analytics_events
             WHERE created_at > now() - interval '30 days'`,
-        sql`SELECT COALESCE(NULLIFF(country, ''), 'Unknown') AS country,
+        sql`SELECT CASE WHEN country IS NULL OR country = '' THEN 'Unknown' ELSE country END AS country,
                    COUNT(*)::int AS visitors
             FROM analytics_sessions
             WHERE last_seen > now() - interval '30 days'
