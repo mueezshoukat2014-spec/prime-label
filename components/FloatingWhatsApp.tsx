@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { normalizeWaLink } from "@/lib/whatsapp";
+import { trackEvent } from "@/lib/track";
 
 /**
  * Floating WhatsApp action button, fixed bottom-right on every page.
@@ -24,6 +25,7 @@ export default function FloatingWhatsApp({ href }: { href?: string }) {
   return (
     <motion.a
       href={waHref}
+      onClick={() => trackEvent("whatsapp_click")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"

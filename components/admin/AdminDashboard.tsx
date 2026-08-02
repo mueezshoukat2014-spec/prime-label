@@ -5,6 +5,7 @@ import ProductManager from "@/components/admin/ProductManager";
 import AppliedBadge from "@/components/admin/AppliedBadge";
 import GalleryManager from "@/components/admin/GalleryManager";
 import VideoManager from "@/components/admin/VideoManager";
+import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import QuoteGenerator from "@/components/admin/QuoteGenerator";
 import SiteSettings from "@/components/admin/SiteSettings";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
@@ -17,6 +18,7 @@ const label = "mb-1.5 block text-[10px] uppercase tracking-wide2 text-cream-dim"
 
 type Tab =
   | "overview"
+  | "analytics"
   | "leads"
   | "messages"
   | "products"
@@ -29,6 +31,7 @@ type Tab =
   | "settings";
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "analytics", label: "Analytics" },
   { id: "leads", label: "Leads" },
   { id: "messages", label: "Messages" },
   { id: "products", label: "Products" },
@@ -92,6 +95,7 @@ export default function AdminDashboard() {
 
         <div className="min-w-0 flex-1">
           {tab === "overview" && <Overview onJump={setTab} />}
+          {tab === "analytics" && <AnalyticsPanel />}
           {tab === "leads" && <Leads />}
           {tab === "messages" && <Messages />}
           {tab === "products" && <ProductManager />}

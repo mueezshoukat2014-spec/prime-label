@@ -7,6 +7,7 @@ import FloatingLanguage from "@/components/FloatingLanguage";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MetaPixelRouteTracker from "@/components/MetaPixel";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
 import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd } from "@/lib/seo";
@@ -184,6 +185,7 @@ fbq('track', 'PageView');`,
         )}
         <ToastProvider>
           <MetaPixelRouteTracker />
+          <AnalyticsTracker />
           <AnnouncementBar
             text={
               String(s.announcementEnabled) === "true"

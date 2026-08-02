@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { normalizeWaLink } from "@/lib/whatsapp";
 import { trackContact } from "@/lib/fbq";
+import { trackEvent } from "@/lib/track";
 
 const inputCls =
   "w-full rounded-xl border border-line bg-surface/40 px-4 py-3.5 text-[14px] text-cream placeholder:text-cream-dim/60 outline-none transition-colors duration-300 focus:border-champagne/50 focus:bg-surface/70";
@@ -24,6 +25,7 @@ export default function ContactForm({ whatsapp }: { whatsapp?: string }) {
       });
       if (!res.ok) throw new Error();
       trackContact("Contact Form Submit");
+      trackEvent("contact_submit");
       setStatus("success");
       (e.target as HTMLFormElement).reset();
     } catch {
