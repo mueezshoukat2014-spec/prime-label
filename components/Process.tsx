@@ -83,8 +83,10 @@ export default function Process() {
 
           {/* steps */}
           <div ref={stepsRef} className="relative">
-            {/* timeline track */}
-            <div className="absolute left-[27px] top-2 bottom-2 w-px bg-line lg:left-0">
+            {/* timeline track — flips to the right edge in Arabic (RTL): the
+                step circles move right in RTL while plain "left-*" would strand
+                the line on the left and overlap the step text */}
+            <div className="absolute left-[27px] top-2 bottom-2 w-px bg-line rtl:left-auto rtl:right-[27px] lg:left-0 lg:rtl:left-auto lg:rtl:right-0">
               {/* golden neon fill that grows on scroll */}
               <motion.div
                 style={{ height: fillHeight }}
