@@ -6,7 +6,6 @@ import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
 import type { Product } from "@/lib/content";
 import { waProductLink } from "@/lib/whatsapp";
-import SwipeHint from "@/components/SwipeHint";
 
 export default function ProductsShowcase({ products }: { products: Product[] }) {
   const [active, setActive] = useState(0);
@@ -101,11 +100,6 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
               })}
               </div>
             </div>
-            {products.length > 1 && (
-              <div className="mt-3 flex justify-center lg:hidden">
-                <SwipeHint />
-              </div>
-            )}
             <div className="mt-6 hidden items-center gap-3 md:flex">
               <button
                 onClick={prev}
