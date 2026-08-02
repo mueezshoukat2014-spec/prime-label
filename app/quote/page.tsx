@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SiteShell from "@/components/SiteShell";
 import Footer from "@/components/Footer";
 import QuoteForm from "@/components/QuoteForm";
+import QuoteAutoScroll from "@/components/QuoteAutoScroll";
 import { Reveal, Magnetic } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { normalizeWaLink, waProductLink } from "@/lib/whatsapp";
@@ -32,8 +33,43 @@ export default async function QuotePage({
       }
     >
       <section className="relative overflow-hidden pt-36 pb-28 sm:pt-44">
+        <QuoteAutoScroll />
         <div className="pointer-events-none absolute -left-[10%] top-20 h-[400px] w-[400px] rounded-full bg-champagne/10 blur-[140px]" />
         <div className="container-lux relative">
+          <Reveal>
+            <div className="mb-10 flex justify-center sm:mb-12">
+              <a
+                href="#quote-form"
+                className="group inline-flex items-center gap-2.5 rounded-full border border-champagne/40 bg-champagne/10 px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md transition hover:border-champagne hover:bg-champagne/20 sm:text-[13px]"
+              >
+                <svg
+                  className="h-4 w-4 animate-bounce"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+                Swipe to place an order
+                <svg
+                  className="h-4 w-4 animate-bounce"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+            </div>
+          </Reveal>
           <div className="grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
             <div>
               <Reveal>
@@ -90,7 +126,7 @@ export default async function QuotePage({
             </div>
 
             <Reveal delay={0.15}>
-              <div className="glass rounded-4xl p-7 sm:p-10">
+              <div id="quote-form" className="glass scroll-mt-24 rounded-4xl p-7 sm:scroll-mt-28 sm:p-10">
                 <QuoteForm defaultProduct={product} whatsapp={site.whatsapp} />
               </div>
             </Reveal>
