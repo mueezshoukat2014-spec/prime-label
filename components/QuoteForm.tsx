@@ -181,7 +181,7 @@ function CountryFlagIcon({ country }: { country: CountryOption }) {
 type FormState = {
   name: string;
   phone: string;
-  product: string;
+  products: string[];
   otherProduct: string;
   email: string;
   quantity: string;
@@ -210,7 +210,7 @@ export default function QuoteForm({
   const [form, setForm] = useState<FormState>({
     name: "",
     phone: "",
-    product: seededProduct,
+    products: seededProduct ? [seededProduct] : [],
     otherProduct: "",
     email: "",
     quantity: "",
@@ -248,12 +248,10 @@ export default function QuoteForm({
         ? `Other — ${form.otherCountry.trim()}`
         : "Other"
       : form.country.trim();
-  const productForSubmission =
-    form.product === "Other"
-      ? form.otherProduct.trim()
-        ? `Other — ${form.otherProduct.trim()}`
-        : "Other"
-      : form.product;
+  const customOther = form.otherProduct.trim().replace(/,/g, " /"); // commas would break the submission list
+  const productForSubmission = form.products
+    .map((p) => (p === "Other" ? (customOther ? `Other — ${customOther}` : "Other") : p))
+    .join(", ");
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -281,13 +279,18 @@ export default function QuoteForm({
   }
 
 
-  function handleProductChange(product: string) {
-    setForm((f) => ({
-      ...f,
-      product,
-      otherProduct: product === "Other" ? f.otherProduct : "",
-    }));
+  function toggleProduct(item: string) {
     markTouched("product");
+    setForm((f) => {
+      const products = f.products.includes(item)
+        ? f.products.filter((p) => p !== item)
+        : [...f.products, item];
+      return {
+        ...f,
+        products,
+        otherProduct: products.includes("Other") ? f.otherProduct : "",
+      };
+    });
   }
 
   const markTouched = (k: TouchKey) => setTouched((t) => ({ ...t, [k]: true }));
@@ -297,17 +300,17 @@ export default function QuoteForm({
     () => ({
       name: touched.name ? validateName(form.name) : "",
       phone: touched.phone ? validatePhone(form.phone) : "",
-      product: touched.product ? validateCategory(form.product) : "",
+      product: touched.product ? validateCategory(productForSubmission) : "",
       email: touched.email ? validateEmail(form.email) : "",
     }),
-    [form.name, form.phone, form.product, form.email, touched]
+    [form.name, form.phone, productForSubmission, form.email, touched]
   );
 
-  // Button enables as soon as name + phone + category are valid.
+  // Button enables as soon as name + phone + at least one product are valid.
   // An invalid optional email still blocks, but blank never does.
   const ready = useMemo(
-    () => isQuoteReady(form) && !validateEmail(form.email),
-    [form]
+    () => isQuoteReady({ ...form, product: productForSubmission }) && !validateEmail(form.email),
+    [form, productForSubmission]
   );
 
   function acceptFile(chosen: File | null | undefined) {
@@ -335,7 +338,7 @@ export default function QuoteForm({
     // Reveal every error at once if they submit early.
     setTouched({ name: true, phone: true, product: true, email: true });
 
-    const errors = validateQuote(form);
+    const errors = validateQuote({ ...form, product: productForSubmission });
     if (form.country === "Other" && !form.otherCountry.trim()) {
       setStatus("error");
       const msg = "Please tell us which country you are based in.";
@@ -343,7 +346,7 @@ export default function QuoteForm({
       toast.error(msg);
       return;
     }
-    if (form.product === "Other" && !form.otherProduct.trim()) {
+    if (form.products.includes("Other") && !form.otherProduct.trim()) {
       setStatus("error");
       const msg = "Please describe the product or custom item you need.";
       setErr(msg);
@@ -645,12 +648,35 @@ export default function QuoteForm({
             </Field>
 
             <Field
-              label="Product category"
+              label="Products"
               required
               error={liveErrors.product}
+              hint="Tick as many as you need — one order can cover them all."
               htmlFor="q-product"
             >
               <input type="hidden" name="product" value={productForSubmission} />
+              {form.products.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-1.5">
+                  {form.products.map((p) => (
+                    <span
+                      key={p}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-champagne/40 bg-champagne/10 px-2.5 py-1 text-[11px] font-medium text-champagne"
+                    >
+                      {p}
+                      <button
+                        type="button"
+                        onClick={() => toggleProduct(p)}
+                        aria-label={`Remove ${p}`}
+                        className="flex h-3.5 w-3.5 items-center justify-center rounded-full text-champagne/70 transition-colors hover:bg-champagne/25 hover:text-cream"
+                      >
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" aria-hidden>
+                          <path d="M5 5l14 14M19 5L5 19" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="relative">
                 <button
                   id="q-product"
@@ -662,39 +688,61 @@ export default function QuoteForm({
                   aria-expanded={productOpen}
                   className={`${inputCls} ${liveErrors.product ? errBorder : okBorder} flex items-center justify-between gap-3 text-left backdrop-blur-xl`}
                 >
-                  <span className={form.product ? "truncate text-cream" : "truncate text-cream-dim/60"}>
-                    {form.product || "Select a category"}
+                  <span className={form.products.length ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                    {form.products.length
+                      ? `${form.products.length} product${form.products.length === 1 ? "" : "s"} selected`
+                      : "Select products — multiple allowed"}
                   </span>
                   <svg className={`shrink-0 text-cream-dim transition-transform ${productOpen ? "rotate-180" : ""}`} width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                     <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
                 {productOpen && (
-                  <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="listbox">
-                    {PRODUCT_CATEGORIES.map((item) => (
+                  <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="listbox" aria-multiselectable="true">
+                    {PRODUCT_CATEGORIES.map((item) => {
+                      const selected = form.products.includes(item);
+                      return (
+                        <button
+                          key={item}
+                          type="button"
+                          role="option"
+                          aria-selected={selected}
+                          onClick={() => toggleProduct(item)}
+                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
+                            selected ? "bg-champagne/12 text-cream" : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                          }`}
+                        >
+                          <span
+                            className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-all ${
+                              selected
+                                ? "border-champagne bg-champagne text-ink shadow-glow-sm"
+                                : "border-cream/25 text-transparent"
+                            }`}
+                            aria-hidden
+                          >
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M4 12l5 5L20 6" />
+                            </svg>
+                          </span>
+                          <span className="flex-1">{item}</span>
+                        </button>
+                      );
+                    })}
+                    <div className="sticky bottom-0 mt-1 border-t border-line/60 bg-ink/95 pb-0.5 pt-1.5">
                       <button
-                        key={item}
                         type="button"
-                        role="option"
-                        aria-selected={form.product === item}
-                        onClick={() => {
-                          handleProductChange(item);
-                          setProductOpen(false);
-                        }}
-                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
-                          form.product === item ? "bg-champagne/12 text-cream" : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
-                        }`}
+                        onClick={() => setProductOpen(false)}
+                        className="w-full rounded-xl bg-champagne/15 px-3 py-2 text-[12px] font-medium text-champagne transition-colors hover:bg-champagne/25"
                       >
-                        <span>{item}</span>
-                        {form.product === item && <span className="text-champagne">✓</span>}
+                        Done{form.products.length ? ` — ${form.products.length} selected` : ""}
                       </button>
-                    ))}
+                    </div>
                   </div>
                 )}
               </div>
             </Field>
 
-            {form.product === "Other" && (
+            {form.products.includes("Other") && (
               <Field
                 label="Custom product details"
                 required
@@ -897,7 +945,7 @@ export default function QuoteForm({
                 type="submit"
                 disabled={status === "loading" || !ready}
                 data-cursor="Send"
-                title={ready ? undefined : "Add your name, WhatsApp number and product category"}
+                title={ready ? undefined : "Add your name, WhatsApp number and at least one product"}
                 className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {status === "loading" ? (
@@ -917,7 +965,7 @@ export default function QuoteForm({
 
               {!ready && status !== "loading" && (
                 <span className="text-[12px] text-cream-dim">
-                  Name, WhatsApp number and category required
+                  Name, WhatsApp number and at least one product required
                 </span>
               )}
             </div>

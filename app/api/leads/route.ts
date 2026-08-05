@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         phone: str(form.get("phone"), 60),
         company: str(form.get("company"), 200),
         country: str(form.get("country"), 120),
-        product: str(form.get("product"), 120),
+        product: str(form.get("product"), 500),
         quantity: str(form.get("quantity"), 120),
         details: str(form.get("details"), 4000),
       };
@@ -66,13 +66,13 @@ export async function POST(req: Request) {
         phone: str(body.phone, 60),
         company: str(body.company, 200),
         country: str(body.country, 120),
-        product: str(body.product, 120),
+        product: str(body.product, 500),
         quantity: str(body.quantity, 120),
         details: str(body.details, 4000),
       };
     }
 
-    // Required: name, phone (WhatsApp) and product category.
+    // Required: name, phone (WhatsApp) and at least one product.
     // Optional: email, quantity, details, artwork, company, country.
     // Re-validated here because the browser can always be bypassed.
     const errors = validateQuote({

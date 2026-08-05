@@ -118,12 +118,24 @@ export function normalizePhone(raw: string): string {
   return value.startsWith("+") ? `+${digits}` : digits;
 }
 
-/** Product category — required, must be one of the offered options. */
+/**
+ * Product(s) — required. Accepts a single category, or a comma-separated
+ * list when the customer ticks several products in the form. Every entry
+ * must be one of the offered categories, or a free-text "Other — ..."
+ * description.
+ */
 export function validateCategory(raw: string): string {
   const value = raw.trim();
-  if (!value) return "Please choose a product category.";
-  if (!PRODUCT_CATEGORIES.includes(value as ProductCategory)) {
-    return "Please choose a product category from the list.";
+  if (!value) return "Please select at least one product.";
+  const items = value
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
+  if (items.length === 0) return "Please select at least one product.";
+  for (const item of items) {
+    if (PRODUCT_CATEGORIES.includes(item as ProductCategory)) continue;
+    if (item.startsWith("Other — ") && item.length > 8) continue;
+    return "Please choose your products from the list.";
   }
   return "";
 }
