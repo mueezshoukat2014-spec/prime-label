@@ -213,7 +213,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                       </a>
                     </div>
                     <p className="mt-3 text-[12px] text-cream-dim">
-                      Every order is custom-priced. Get a tailored quote within one business day.
+                      Every order is custom-priced. Get a tailored quote within 12 hours.
                     </p>
                   </div>
                 </motion.div>

@@ -98,7 +98,7 @@ const TRUST = [
     ),
   },
   {
-    label: "We reply within 1 business day",
+    label: "We reply within 12 hours",
     icon: (
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />

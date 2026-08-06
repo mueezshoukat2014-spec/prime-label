@@ -66,7 +66,7 @@ export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; i
             </a>
           </div>
           <p className="mt-5 text-center text-[12px] text-cream-dim">
-            Every order is custom-priced. Get a tailored quote within one business day.
+            Every order is custom-priced. Get a tailored quote within 12 hours.
           </p>
         </Reveal>
         <Reveal delay={0.4}>

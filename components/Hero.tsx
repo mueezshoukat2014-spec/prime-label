@@ -195,7 +195,7 @@ export default function Hero() {
             transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
             className="mt-4 text-[12px] text-cream-dim"
           >
-            Every order is custom-priced. Get a tailored quote within one business day.
+            Every order is custom-priced. Get a tailored quote within 12 hours.
           </motion.p>
 
           <motion.div

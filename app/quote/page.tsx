@@ -96,7 +96,7 @@ export default async function QuotePage({
                 <div className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line">
                   {[
                     { t: "Tailored pricing", d: "Built around your exact product and quantity." },
-                    { t: "Fast reply", d: "We usually respond within one business day." },
+                    { t: "Fast reply", d: "We usually respond within 12 hours." },
                     { t: "Worldwide shipping", d: "We deliver to brands across the globe." },
                   ].map((f) => (
                     <div key={f.t} className="bg-ink p-6">
