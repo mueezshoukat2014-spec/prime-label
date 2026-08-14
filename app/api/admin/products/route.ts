@@ -63,6 +63,9 @@ async function uploadImage(file: File): Promise<string> {
     .webp({ quality: 72, effort: 4 })
     .toBuffer();
 
+  // NOTE: cacheControlMaxAge is not set — new ISO-dated paths are unique per
+  // upload day, so a very long cache is not needed. Display already bypasses
+  // Vercel's image optimizer entirely, so no extra billable work happens here.
   const pathname = buildProductImagePath(file.name).replace(/\.[^.]+$/, ".webp");
   const blob = await put(pathname, optimised, {
     access: "public",
