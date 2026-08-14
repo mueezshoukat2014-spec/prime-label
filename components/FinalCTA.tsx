@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { Reveal, Magnetic, TextReveal } from "@/components/anim";
 import Link from "next/link";
 import { normalizeWaLink } from "@/lib/whatsapp";
@@ -11,14 +10,13 @@ export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; i
       {/* soft background image + treatments */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 opacity-[0.24]">
-          <Image
-            src="/photos/atelier-bg.jpg"
-            alt=""
-            fill
-            sizes="100vw"
-            quality={55}
-            className="scale-105 object-cover blur-[2px]"
-          />
+          <img
+  src="/photos/atelier-bg.jpg"
+  alt=""
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full scale-105 object-cover blur-[2px]"
+/>
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/55 to-ink" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_5%,rgba(8,8,10,0.7)_75%)]" />

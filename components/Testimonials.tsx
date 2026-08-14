@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Reveal } from "@/components/anim";
 
 export type Testimonial = {
@@ -31,7 +30,13 @@ function Avatar({ t }: { t: Testimonial }) {
   if (t.avatar) {
     return (
       <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-champagne/30">
-        <Image src={t.avatar} alt={t.name} fill sizes="44px" className="object-cover" />
+        <img
+  src={typeof t.avatar === "string" ? (t.avatar) : ""}
+  alt={t.name}
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
       </span>
     );
   }

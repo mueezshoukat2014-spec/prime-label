@@ -1,6 +1,5 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { useRef, useState } from "react";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
@@ -144,14 +143,13 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     transition={{ duration: 1.1, ease: EASE }}
                     className="absolute inset-0"
                   >
-                    <Image
-                      src={p.image}
-                      alt={p.title}
-                      fill
-                      sizes="(max-width:1024px) 90vw, 420px"
-                      quality={60}
-                      className="object-cover"
-                    />
+                    <img
+  src={typeof p.image === "string" ? (p.image) : ""}
+  alt={p.title}
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
                   </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-7">
@@ -244,14 +242,13 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                         transition={{ duration: 0.6, ease: EASE, delay: 0.2 + gi * 0.08 }}
                         className="group relative aspect-square overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25"
                       >
-                        <Image
-                          src={g}
-                          alt={`${p.title} ${gi + 1}`}
-                          fill
-                          sizes="(max-width:768px) 33vw, 260px"
-                          quality={82}
-                          className="object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
-                        />
+                        <img
+  src={typeof g === "string" ? (g) : ""}
+  alt={`${p.title} ${gi + 1}`}
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
+/>
                       </motion.div>
                     )
                   )}

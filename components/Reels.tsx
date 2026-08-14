@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { Reveal, EASE } from "@/components/anim";
 import SwipeHint from "@/components/SwipeHint";
@@ -241,7 +240,13 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                     <div key={reel.src} className="w-[88px] shrink-0 snap-start sm:w-[104px] lg:w-full">
                       <button ref={(el) => { thumbRefs.current[i] = el; }} onClick={() => select(i)} className={`group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border transition-all duration-500 ${isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"}`}>
                         {reel.cover ? (
-                          <Image src={reel.cover} alt={reel.caption} fill sizes="(max-width:1024px) 40vw, 300px" quality={58} className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                          <img
+  src={typeof reel.cover === "string" ? (reel.cover) : ""}
+  alt={reel.caption}
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+/>
                         ) : (
                           <video src={reel.src} muted playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover" />
                         )}

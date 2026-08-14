@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { Marquee, Reveal } from "@/components/anim";
 
 
@@ -21,11 +20,13 @@ function LogoItem({ logo }: { logo: BrandLogo }) {
   return (
     <div className="group flex shrink-0 items-center px-6 md:px-9" title={logo.name}>
       {logo.logoUrl ? (
-        <Image
+        <img
           src={logo.logoUrl}
           alt={logo.name}
           width={150}
           height={48}
+          loading="lazy"
+          decoding="async"
           className="h-7 w-auto opacity-55 brightness-150 grayscale transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] group-hover:opacity-100 group-hover:brightness-100 group-hover:grayscale-0 sm:h-8"
         />
       ) : (

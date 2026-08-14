@@ -1,6 +1,5 @@
 "use client";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
-import Image from "next/image";
 import { useEffect } from "react";
 import { TextReveal, Magnetic, Marquee, EASE } from "@/components/anim";
 import Link from "next/link";
@@ -37,14 +36,13 @@ function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: M
         animate={{ y: [0, -14, 0] }}
         transition={{ duration: 7 + f.delay, ease: "easeInOut", repeat: Infinity, delay: f.delay }}
       >
-        <Image
-          src={f.src}
-          alt={f.alt}
-          fill
-          sizes="240px"
-          quality={58}
-          className="object-cover"
-        />
+        <img
+  src={typeof f.src === "string" ? (f.src) : ""}
+  alt={f.alt}
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
       </motion.div>
     </motion.div>

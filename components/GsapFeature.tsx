@@ -1,6 +1,5 @@
 "use client";
 import { useLayoutEffect, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
@@ -60,14 +59,13 @@ export default function GsapFeature() {
   return (
     <section ref={root} className="relative flex min-h-[88vh] items-center overflow-hidden border-y border-line">
       <div ref={bg} className="absolute inset-0">
-        <Image
-          src="/photos/philosophy-bg.jpg"
-          alt="Premium woven label detail"
-          fill
-          sizes="100vw"
-          quality={60}
-          className="object-cover"
-        />
+        <img
+  src="/photos/philosophy-bg.jpg"
+  alt="Premium woven label detail"
+  loading="lazy"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
         <div className="absolute inset-0 bg-ink/75" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/60" />
       </div>

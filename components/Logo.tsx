@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 /**
  * Brand logo: the owner's Instagram profile picture inside a
@@ -17,13 +16,12 @@ export default function Logo({
       style={{ width: size, height: size }}
     >
       <span className="relative block h-full w-full overflow-hidden rounded-full bg-ink">
-        <Image
-          src="/photos/brand-logo.jpg"
-          alt="Prime Labels International logo"
-          fill
-          sizes={`${size}px`}
-          className="object-cover"
-        />
+        <img
+  src="/photos/brand-logo.jpg"
+  alt="Prime Labels International logo"
+  decoding="async"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
       </span>
     </span>
   );
