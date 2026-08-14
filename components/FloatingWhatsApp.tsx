@@ -36,7 +36,7 @@ export default function FloatingWhatsApp({ href }: { href?: string }) {
       transition={{ delay: 1.1, type: "spring", stiffness: 220, damping: 16 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.94 }}
-      className="group fixed bottom-6 right-6 z-[100] flex h-14 w-14 items-center justify-center rounded-full border border-[#25D366]/35 bg-ink/85 shadow-soft backdrop-blur-sm transition-[border-color,box-shadow] duration-500 hover:border-champagne/60 hover:shadow-[0_0_32px_-10px_rgba(37,211,102,0.9)] sm:bottom-7 sm:right-7"
+      className="group fixed bottom-5 right-4 z-[100] flex h-12 w-12 items-center justify-center rounded-full border border-[#25D366]/35 bg-ink/85 shadow-soft backdrop-blur-sm transition-[border-color,box-shadow] duration-500 hover:border-champagne/60 hover:shadow-[0_0_32px_-10px_rgba(37,211,102,0.9)] sm:bottom-7 sm:right-7 sm:h-14 sm:w-14"
     >
       {/* one-time pulse ring on load */}
       {!stopPulse && (

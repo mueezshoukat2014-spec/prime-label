@@ -10,12 +10,25 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
   const [active, setActive] = useState(0);
   const selectorRef = useRef<HTMLDivElement>(null);
   const p = products[active];
-  const selectProduct = (index: number) => setActive(index);
-  const prev = () => setActive((a) => (a - 1 + products.length) % products.length);
-  const next = () => setActive((a) => (a + 1) % products.length);
-  const scrollSelector = (dir: -1 | 1) => {
-    selectorRef.current?.scrollBy({ left: dir * 180, behavior: "smooth" });
+
+  // Smoothly center the active chip in the horizontal strip (mobile) without
+  // scrolling the page itself.
+  const centerActiveChip = (index: number) => {
+    requestAnimationFrame(() => {
+      const btn = selectorRef.current?.querySelector<HTMLButtonElement>(
+        `[data-idx="${index}"]`
+      );
+      btn?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    });
   };
+
+  const selectProduct = (index: number) => {
+    setActive(index);
+    centerActiveChip(index);
+  };
+  // Arrows change the ACTIVE PRODUCT (looping at both ends), not just the strip.
+  const prev = () => selectProduct((active - 1 + products.length) % products.length);
+  const next = () => selectProduct((active + 1) % products.length);
 
   return (
     <section id="products" className="relative py-20 sm:py-28">
@@ -46,32 +59,33 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
             <div className="relative rounded-[1.75rem] border border-champagne/20 bg-surface/35 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
               <button
                 type="button"
-                onClick={() => scrollSelector(-1)}
-                aria-label="Scroll product categories left"
-                className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/75 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                onClick={prev}
+                aria-label="Previous product"
+                className="absolute left-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
               <button
                 type="button"
-                onClick={() => scrollSelector(1)}
-                aria-label="Scroll product categories right"
-                className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/75 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                onClick={next}
+                aria-label="Next product"
+                className="absolute right-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
-              <div ref={selectorRef} className="relative flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto px-10 pb-2 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="pointer-events-none sticky left-0 z-10 -mr-8 hidden w-8 shrink-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:block" />
-              <div className="pointer-events-none sticky right-0 order-last z-10 -ml-16 hidden w-16 shrink-0 bg-gradient-to-l from-ink via-ink/80 to-transparent max-lg:block" />
+              <div ref={selectorRef} className="relative flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-2 overflow-x-auto px-9 pb-2 lg:flex-col lg:gap-3 lg:overflow-visible lg:px-0 lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="pointer-events-none sticky left-0 z-10 -mr-8 hidden w-8 shrink-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:hidden" />
+              <div className="pointer-events-none sticky right-0 order-last z-10 -ml-16 hidden w-16 shrink-0 bg-gradient-to-l from-ink via-ink/80 to-transparent max-lg:hidden" />
               {products.map((prod, i) => {
                 const isActive = i === active;
                 return (
                   <button
                     key={prod.slug}
+                    data-idx={i}
                     onClick={() => selectProduct(i)}
-                    className={`group relative flex shrink-0 snap-start items-center gap-4 rounded-2xl px-5 py-4 text-left transition-all duration-500 lg:w-full ${
+                    className={`group relative flex shrink-0 snap-start items-center gap-3 rounded-2xl px-4 py-3 text-left transition-all duration-500 lg:w-full lg:gap-4 lg:px-5 lg:py-4 ${
                       isActive ? "glass" : "hover:bg-cream/[0.03]"
-                    }`}
+                    } ${i === 0 ? "max-lg:ms-1" : ""} ${i === products.length - 1 ? "max-lg:me-1" : ""}`}
                   >
                     <span
                       className={`text-[11px] tabular-nums transition-colors ${
@@ -81,7 +95,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span
-                      className={`whitespace-nowrap text-[15px] font-medium transition-colors lg:whitespace-normal ${
+                      className={`whitespace-nowrap text-[13px] font-medium transition-colors sm:text-[14px] lg:whitespace-normal lg:text-[15px] ${
                         isActive ? "text-cream" : "text-cream-muted group-hover:text-cream"
                       }`}
                     >
@@ -98,6 +112,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 );
               })}
               </div>
+            </div>
+            {/* position dots + counter visible on mobile so arrows feel alive */}
+            <div className="mt-3 flex items-center justify-center gap-3 md:hidden">
+              <span className="text-[12px] tabular-nums text-cream-dim">
+                {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
+              </span>
             </div>
             <div className="mt-6 hidden items-center gap-3 md:flex">
               <button
@@ -129,12 +149,24 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: EASE }}
-                className="grid gap-6 sm:grid-cols-2"
+                className="grid min-w-0 gap-4 sm:grid-cols-2 sm:gap-6"
               >
-                {/* main image */}
+                {/* main image — title sits ABOVE the image on mobile so it can
+                    never be cropped or overlapped by the photo itself */}
+                <div className="min-w-0 sm:row-span-2">
+                  <motion.h3
+                    layout
+                    key={`title-${p.slug}`}
+                    initial={{ y: 14, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                    className="display mb-4 break-words text-2xl leading-tight text-cream sm:hidden"
+                  >
+                    {p.title}
+                  </motion.h3>
                 <motion.div
                   layout
-                  className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft sm:row-span-2"
+                  className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft"
                 >
                   <motion.div
                     key={p.image}
@@ -152,10 +184,11 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
 />
                   </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
-                  <div className="absolute bottom-0 left-0 p-7">
+                  <div className="absolute bottom-0 left-0 hidden p-7 sm:block">
                     <h3 className="display text-4xl text-cream">{p.title}</h3>
                   </div>
                 </motion.div>
+                </div>
 
                 {/* text + gallery */}
                 <motion.div
@@ -163,7 +196,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   initial={{ y: 24, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-                  className="flex flex-col justify-between rounded-3xl border border-line bg-surface/40 p-7"
+                  className="flex min-w-0 flex-col justify-between rounded-3xl border border-line bg-surface/40 p-5 sm:p-7"
                 >
                   <div>
                     <p className="display text-2xl italic text-champagne-bright">
@@ -225,7 +258,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   return (
                 <motion.div
                   layout
-                  className={`grid gap-3 sm:col-span-2 ${
+                  className={`grid min-w-0 gap-2 sm:col-span-2 sm:gap-3 ${
                     thumbs.length === 1
                       ? "grid-cols-1"
                       : thumbs.length === 2

@@ -13,7 +13,7 @@ export default function FloatingLanguage() {
       initial={{ opacity: 0, scale: 0.8, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 1.25, type: "spring", stiffness: 220, damping: 18 }}
-      className="fixed bottom-6 left-6 z-[100] rounded-full border border-champagne/30 bg-ink/85 p-1.5 shadow-[0_0_34px_-16px_rgba(201,168,106,0.9)] backdrop-blur-sm sm:bottom-7 sm:left-7"
+      className="fixed bottom-5 left-4 z-[100] scale-90 rounded-full border border-champagne/30 bg-ink/85 p-1.5 shadow-[0_0_34px_-16px_rgba(201,168,106,0.9)] backdrop-blur-sm sm:bottom-7 sm:left-7 sm:scale-100"
     >
       <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-champagne/15 via-transparent to-champagne-deep/10" />
       <div className="group relative">

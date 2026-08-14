@@ -27,6 +27,32 @@ body {
   color: var(--cream);
   font-family: var(--font-body), system-ui, sans-serif;
   overflow-x: clip;
+  width: 100%;
+}
+
+/* ---------- Mobile hardening ---------- */
+/* Requested explicit rules: nothing may push the page wider than the screen */
+@media (max-width: 1023px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  /* older sticky/scroll behaviour stays intact wherever clip is supported */
+  @supports (overflow: clip) {
+    html,
+    body {
+      overflow-x: clip;
+    }
+  }
+  /* fixed floating buttons must never cover the final page content */
+  body {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+  footer {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 ::selection {
