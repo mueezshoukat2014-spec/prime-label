@@ -63,7 +63,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
           </p>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[360px_1fr] lg:gap-16">
+        <div className="grid gap-5 lg:grid-cols-[360px_1fr] lg:gap-16">
           {/* selector */}
           <div className="flex min-w-0 flex-col">
             <div className="relative rounded-[1.75rem] border border-champagne/20 bg-surface/35 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
@@ -123,9 +123,9 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
               })}
               </div>
             </div>
-            {/* position dots + counter visible on mobile so arrows feel alive */}
-            <div className="mt-3 flex items-center justify-center gap-3 md:hidden">
-              <span className="text-[12px] tabular-nums text-cream-dim">
+            {/* position counter visible on mobile, tucked right under the strip */}
+            <div className="mt-1.5 flex items-center justify-center gap-3 md:hidden">
+              <span className="text-[11px] tabular-nums text-cream-dim">
                 {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
               </span>
             </div>
