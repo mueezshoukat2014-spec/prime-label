@@ -25,6 +25,16 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
   const selectProduct = (index: number) => {
     setActive(index);
     centerActiveChip(index);
+    // Mobile only: glide the page down a little so the selected product's
+    // title + image actually come into view. The selector strip stays just a
+    // short scroll above, so picking another product needs only a small nudge.
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+      requestAnimationFrame(() => {
+        document
+          .getElementById("product-showcase-top")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
   };
   // Arrows change the ACTIVE PRODUCT (looping at both ends), not just the strip.
   const prev = () => selectProduct((active - 1 + products.length) % products.length);
@@ -34,7 +44,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
     <section id="products" className="relative py-20 sm:py-28">
       <div className="container-lux">
         {/* header */}
-        <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="mb-8 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
           <Reveal>
           <div className="max-w-2xl">
             <span className="eyebrow">
@@ -157,10 +167,11 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   <motion.h3
                     layout
                     key={`title-${p.slug}`}
+                    id="product-showcase-top"
                     initial={{ y: 14, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
-                    className="display mb-4 break-words text-2xl leading-tight text-cream sm:hidden"
+                    className="display mb-3 scroll-mt-24 break-words text-2xl leading-tight text-cream sm:hidden"
                   >
                     {p.title}
                   </motion.h3>
