@@ -67,35 +67,35 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
           {/* selector — sticky on mobile so switching products never requires
               scrolling back up: the strip stays pinned under the navbar while
               the product details scroll beneath it. */}
-          <div className="flex min-w-0 flex-col max-lg:sticky max-lg:top-[84px] max-lg:z-[90]">
-            {/* one unified glass dock on mobile: counter + arrows + chips */}
-            <div className="relative rounded-[1.5rem] border border-champagne/25 bg-ink/90 p-2 shadow-[0_18px_50px_-18px_rgba(0,0,0,0.95),0_0_30px_-18px_rgba(201,168,106,0.6)] backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
-              {/* counter woven into the dock, mobile only */}
-              <div className="mb-1.5 flex items-center justify-center gap-3 pt-1 lg:hidden">
-                <span className="h-px w-10 bg-gradient-to-r from-transparent to-champagne/50" />
-                <span className="text-[10px] tracking-[0.3em] tabular-nums text-champagne/90">
+          <div className="flex min-w-0 flex-col max-lg:sticky max-lg:top-[76px] max-lg:z-[90]">
+            {/* compact glass dock on mobile: tiny counter + arrows + chips */}
+            <div className="relative rounded-2xl border border-champagne/15 bg-ink/90 p-1.5 shadow-[0_10px_30px_-14px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
+              {/* tiny counter, mobile only */}
+              <div className="mb-0.5 flex items-center justify-center gap-2 lg:hidden">
+                <span className="h-px w-5 bg-champagne/30" />
+                <span className="text-[9px] tracking-[0.25em] tabular-nums text-champagne/70">
                   {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
                 </span>
-                <span className="h-px w-10 bg-gradient-to-l from-transparent to-champagne/50" />
+                <span className="h-px w-5 bg-champagne/30" />
               </div>
               <div className="relative">
               <button
                 type="button"
                 onClick={prev}
                 aria-label="Previous product"
-                className="absolute left-0 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                className="absolute left-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/20 bg-ink/90 text-champagne backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
               <button
                 type="button"
                 onClick={next}
                 aria-label="Next product"
-                className="absolute right-0 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                className="absolute right-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/20 bg-ink/90 text-champagne backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
-              <div ref={selectorRef} className="relative flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-2 overflow-x-auto px-9 pb-2 lg:flex-col lg:gap-3 lg:overflow-visible lg:px-0 lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div ref={selectorRef} className="relative flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-1.5 overflow-x-auto px-8 pb-1 lg:flex-col lg:gap-3 lg:overflow-visible lg:px-0 lg:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <div className="pointer-events-none sticky left-0 z-10 -mr-8 hidden w-8 shrink-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:hidden" />
               <div className="pointer-events-none sticky right-0 order-last z-10 -ml-16 hidden w-16 shrink-0 bg-gradient-to-l from-ink via-ink/80 to-transparent max-lg:hidden" />
               {products.map((prod, i) => {
@@ -105,19 +105,19 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     key={prod.slug}
                     data-idx={i}
                     onClick={() => selectProduct(i)}
-                    className={`group relative flex shrink-0 snap-start items-center gap-3 rounded-2xl px-4 py-3 text-left transition-all duration-500 lg:w-full lg:gap-4 lg:px-5 lg:py-4 ${
+                    className={`group relative flex shrink-0 snap-start items-center gap-2 rounded-xl px-3 py-2 text-left transition-all duration-500 lg:w-full lg:gap-4 lg:rounded-2xl lg:px-5 lg:py-4 ${
                       isActive ? "glass" : "hover:bg-cream/[0.03]"
                     } ${i === 0 ? "max-lg:ms-1" : ""} ${i === products.length - 1 ? "max-lg:me-1" : ""}`}
                   >
                     <span
-                      className={`text-[11px] tabular-nums transition-colors ${
+                      className={`text-[10px] tabular-nums transition-colors lg:text-[11px] ${
                         isActive ? "text-champagne" : "text-cream-dim"
                       }`}
                     >
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span
-                      className={`whitespace-nowrap text-[13px] font-medium transition-colors sm:text-[14px] lg:whitespace-normal lg:text-[15px] ${
+                      className={`whitespace-nowrap text-[12px] font-medium transition-colors sm:text-[13px] lg:whitespace-normal lg:text-[15px] ${
                         isActive ? "text-cream" : "text-cream-muted group-hover:text-cream"
                       }`}
                     >
@@ -179,7 +179,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     initial={{ y: 14, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
-                    className="display mb-3 scroll-mt-[216px] break-words text-2xl leading-tight text-cream sm:hidden"
+                    className="display mb-3 scroll-mt-[172px] break-words text-2xl leading-tight text-cream sm:hidden"
                   >
                     {p.title}
                   </motion.h3>
