@@ -68,6 +68,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
               scrolling back up: the strip stays pinned under the navbar while
               the product details scroll beneath it. */}
           <div className="flex min-w-0 flex-col max-lg:sticky max-lg:top-[84px] max-lg:z-[90]">
+            {/* position counter visible on mobile, sitting right ABOVE the strip */}
+            <div className="mb-1.5 flex items-center justify-center gap-3 md:hidden">
+              <span className="rounded-full bg-ink/70 px-3 py-0.5 text-[11px] tabular-nums text-cream-dim backdrop-blur">
+                {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
+              </span>
+            </div>
             <div className="relative rounded-[1.75rem] border border-champagne/20 bg-ink/85 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
               <button
                 type="button"
@@ -124,12 +130,6 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 );
               })}
               </div>
-            </div>
-            {/* position counter visible on mobile, tucked right under the strip */}
-            <div className="mt-1.5 flex items-center justify-center gap-3 md:hidden">
-              <span className="rounded-full bg-ink/70 px-3 py-0.5 text-[11px] tabular-nums text-cream-dim backdrop-blur">
-                {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
-              </span>
             </div>
             <div className="mt-6 hidden items-center gap-3 md:flex">
               <button
