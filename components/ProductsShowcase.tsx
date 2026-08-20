@@ -68,18 +68,22 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
               scrolling back up: the strip stays pinned under the navbar while
               the product details scroll beneath it. */}
           <div className="flex min-w-0 flex-col max-lg:sticky max-lg:top-[84px] max-lg:z-[90]">
-            {/* position counter visible on mobile, sitting right ABOVE the strip */}
-            <div className="mb-1.5 flex items-center justify-center gap-3 md:hidden">
-              <span className="rounded-full bg-ink/70 px-3 py-0.5 text-[11px] tabular-nums text-cream-dim backdrop-blur">
-                {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
-              </span>
-            </div>
-            <div className="relative rounded-[1.75rem] border border-champagne/20 bg-ink/85 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
+            {/* one unified glass dock on mobile: counter + arrows + chips */}
+            <div className="relative rounded-[1.5rem] border border-champagne/25 bg-ink/90 p-2 shadow-[0_18px_50px_-18px_rgba(0,0,0,0.95),0_0_30px_-18px_rgba(201,168,106,0.6)] backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
+              {/* counter woven into the dock, mobile only */}
+              <div className="mb-1.5 flex items-center justify-center gap-3 pt-1 lg:hidden">
+                <span className="h-px w-10 bg-gradient-to-r from-transparent to-champagne/50" />
+                <span className="text-[10px] tracking-[0.3em] tabular-nums text-champagne/90">
+                  {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
+                </span>
+                <span className="h-px w-10 bg-gradient-to-l from-transparent to-champagne/50" />
+              </div>
+              <div className="relative">
               <button
                 type="button"
                 onClick={prev}
                 aria-label="Previous product"
-                className="absolute left-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                className="absolute left-0 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
@@ -87,7 +91,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 type="button"
                 onClick={next}
                 aria-label="Next product"
-                className="absolute right-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
+                className="absolute right-0 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/25 bg-ink/90 text-champagne shadow-glow-sm backdrop-blur transition-transform active:scale-95 lg:hidden"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
@@ -130,6 +134,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 );
               })}
               </div>
+              </div>
             </div>
             <div className="mt-6 hidden items-center gap-3 md:flex">
               <button
@@ -164,8 +169,9 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                 className="grid min-w-0 gap-4 sm:grid-cols-2 sm:gap-6"
               >
                 {/* main image — title sits ABOVE the image on mobile so it can
-                    never be cropped or overlapped by the photo itself */}
-                <div className="min-w-0 sm:row-span-2">
+                    never be cropped or overlapped by the photo itself.
+                    Mobile order: image (1) → gallery carousel (2) → details (3). */}
+                <div className="min-w-0 max-sm:order-1 sm:row-span-2">
                   <motion.h3
                     layout
                     key={`title-${p.slug}`}
@@ -173,7 +179,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     initial={{ y: 14, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
-                    className="display mb-3 scroll-mt-[196px] break-words text-2xl leading-tight text-cream sm:hidden"
+                    className="display mb-3 scroll-mt-[216px] break-words text-2xl leading-tight text-cream sm:hidden"
                   >
                     {p.title}
                   </motion.h3>
@@ -209,9 +215,14 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   initial={{ y: 24, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-                  className="flex min-w-0 flex-col justify-between rounded-3xl border border-line bg-surface/40 p-5 sm:p-7"
+                  className="relative flex min-w-0 flex-col justify-between overflow-hidden rounded-3xl border border-champagne/15 bg-surface/40 p-5 max-sm:order-3 sm:p-7"
                 >
+                  <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-champagne/60 to-transparent" />
                   <div>
+                    <span className="mb-3 flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-champagne/80 sm:hidden">
+                      <span className="h-px w-6 bg-champagne/50" />
+                      The details
+                    </span>
                     <p className="display text-2xl italic text-champagne-bright">
                       {p.tagline}
                     </p>
@@ -271,12 +282,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   return (
                 <motion.div
                   layout
-                  className={`grid min-w-0 gap-2 sm:col-span-2 sm:gap-3 ${
+                  className={`min-w-0 max-sm:order-2 max-sm:flex max-sm:snap-x max-sm:snap-mandatory max-sm:gap-3 max-sm:overflow-x-auto max-sm:pb-1 max-sm:[-ms-overflow-style:none] max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden sm:grid sm:col-span-2 sm:gap-3 ${
                     thumbs.length === 1
-                      ? "grid-cols-1"
+                      ? "sm:grid-cols-1"
                       : thumbs.length === 2
-                        ? "grid-cols-2"
-                        : "grid-cols-3"
+                        ? "sm:grid-cols-2"
+                        : "sm:grid-cols-3"
                   }`}
                 >
                   {thumbs.map(
@@ -286,7 +297,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.6, ease: EASE, delay: 0.2 + gi * 0.08 }}
-                        className="group relative aspect-square overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25"
+                        className="group relative aspect-square overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25 max-sm:w-[62%] max-sm:shrink-0 max-sm:snap-center"
                       >
                         <img
   src={typeof g === "string" ? (g) : ""}
