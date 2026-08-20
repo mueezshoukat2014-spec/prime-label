@@ -51,7 +51,7 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
         )}
       </Marquee>
 
-      <div className="container-lux grid gap-12 py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="container-lux grid gap-10 py-14 sm:gap-12 sm:py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Logo size={42} />

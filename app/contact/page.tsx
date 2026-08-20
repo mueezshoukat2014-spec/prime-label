@@ -32,7 +32,7 @@ export default async function ContactPage() {
         <Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />
       }
     >
-      <section className="relative overflow-hidden pt-36 pb-28 sm:pt-44">
+      <section className="relative overflow-hidden pt-28 pb-16 sm:pt-44 sm:pb-28">
         <div className="pointer-events-none absolute right-0 top-10 h-[420px] w-[420px] rounded-full bg-champagne/8 blur-[150px]" />
         <div className="container-lux relative">
           <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
@@ -62,11 +62,11 @@ export default async function ContactPage() {
                         {c.label}
                       </div>
                       {c.href ? (
-                        <a href={c.href} target="_blank" rel="noopener noreferrer" className="mt-2 block text-[15px] text-cream transition-colors hover:text-champagne">
+                        <a href={c.href} target="_blank" rel="noopener noreferrer" className="mt-2 block break-all text-[14px] text-cream transition-colors hover:text-champagne sm:text-[15px]">
                           {c.value}
                         </a>
                       ) : (
-                        <div className="mt-2 text-[15px] text-cream">{c.value}</div>
+                        <div className="mt-2 break-words text-[14px] text-cream sm:text-[15px]">{c.value}</div>
                       )}
                     </div>
                   ))}

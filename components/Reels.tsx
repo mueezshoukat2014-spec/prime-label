@@ -140,7 +140,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   }, [active]);
 
   return (
-    <section className="relative overflow-hidden border-t border-line py-20 sm:py-28">
+    <section className="relative overflow-hidden border-t border-line py-14 sm:py-28">
       <div className="pointer-events-none absolute inset-y-16 left-0 hidden w-[26vw] lg:block">
         <div className="absolute left-10 top-1/2 h-[70%] w-px -translate-y-1/2 bg-gradient-to-b from-transparent via-champagne/55 to-transparent shadow-[0_0_32px_rgba(201,168,106,0.6)]" />
         <div className="absolute left-4 top-[18%] h-28 w-28 rounded-full border border-champagne/15 bg-champagne/[0.035] blur-[1px]" />

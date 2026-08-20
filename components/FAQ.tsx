@@ -8,7 +8,7 @@ export default function FAQ({ items }: { items: { q: string; a: string }[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative border-t border-line py-20 sm:py-28">
+    <section id="faq" className="relative border-t border-line py-14 sm:py-28">
       <div className="container-lux">
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
           <div className="lg:sticky lg:top-28 lg:h-fit">

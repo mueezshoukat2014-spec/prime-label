@@ -68,7 +68,7 @@ export default function GallerySection({
   }, [lightbox, close, next, prev]);
 
   return (
-    <section id="gallery" className="relative border-t border-line py-20 sm:py-28">
+    <section id="gallery" className="relative border-t border-line py-14 sm:py-28">
       <div className="container-lux">
         <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <Reveal>

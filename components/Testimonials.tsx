@@ -127,7 +127,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
   const canScroll = list.length > perView;
 
   return (
-    <section className="relative overflow-hidden border-t border-line py-20 sm:py-28">
+    <section className="relative overflow-hidden border-t border-line py-14 sm:py-28">
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-champagne/5 blur-[90px] md:blur-[150px]" />
       <div className="container-lux relative">
         <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">

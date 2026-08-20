@@ -128,7 +128,7 @@ export default async function GccCustomLabelsPage() {
         </div>
       </section>
 
-      <section className="py-20 sm:py-28">
+      <section className="py-14 sm:py-28">
         <div className="container-lux grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div>

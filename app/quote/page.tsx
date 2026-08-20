@@ -32,7 +32,7 @@ export default async function QuotePage({
         <Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />
       }
     >
-      <section className="relative overflow-hidden pt-36 pb-28 sm:pt-44">
+      <section className="relative overflow-hidden pt-28 pb-16 sm:pt-44 sm:pb-28">
         <QuoteAutoScroll />
         <div className="pointer-events-none absolute -left-[10%] top-20 h-[400px] w-[400px] rounded-full bg-champagne/10 blur-[140px]" />
         <div className="container-lux relative">

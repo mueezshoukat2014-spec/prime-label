@@ -41,7 +41,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
   const next = () => selectProduct((active + 1) % products.length);
 
   return (
-    <section id="products" className="relative py-20 sm:py-28">
+    <section id="products" className="relative py-14 sm:py-28">
       <div className="container-lux">
         {/* header */}
         <div className="mb-8 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
@@ -51,8 +51,8 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
               <span className="h-px w-8 bg-champagne/60" />
               What we make
             </span>
-            <h2 className="display mt-5 text-5xl leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
-              Branding, down to <br />
+            <h2 className="display mt-5 text-[2.6rem] leading-[1.02] tracking-tight sm:text-6xl sm:leading-[0.98] lg:text-7xl">
+              Branding, down to <br className="hidden sm:block" />
               <span className="gradient-text italic">the last thread.</span>
             </h2>
           </div>
@@ -158,7 +158,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
           </div>
 
           {/* showcase */}
-          <Reveal delay={0.1} className="relative min-h-[560px]">
+          <Reveal delay={0.1} className="relative lg:min-h-[560px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={p.slug}

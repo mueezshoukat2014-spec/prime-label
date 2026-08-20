@@ -6,7 +6,7 @@ import { normalizeWaLink } from "@/lib/whatsapp";
 export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; instagram: string }) {
   const waHref = normalizeWaLink(whatsapp);
   return (
-    <section className="relative overflow-hidden border-t border-line py-24 sm:py-36">
+    <section className="relative overflow-hidden border-t border-line py-16 sm:py-36">
       {/* soft background image + treatments */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 opacity-[0.24]">

@@ -26,7 +26,7 @@ const services = [
 
 export default function SeoMarketSection() {
   return (
-    <section className="relative border-t border-line py-20 sm:py-28" id="gcc-branding">
+    <section className="relative border-t border-line py-14 sm:py-28" id="gcc-branding">
       <div className="container-lux">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>

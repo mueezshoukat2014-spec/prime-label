@@ -133,7 +133,7 @@ export default function Hero() {
       </div>
 
       {/* content */}
-      <div className="container-lux relative z-10 flex min-h-[100svh] flex-col justify-center pt-28 pb-40">
+      <div className="container-lux relative z-10 flex min-h-[100svh] flex-col justify-center pt-24 pb-32 sm:pt-28 sm:pb-40">
         <div className="hero-content max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}

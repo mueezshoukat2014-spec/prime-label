@@ -24,7 +24,7 @@ export default async function GalleryPage() {
         <Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />
       }
     >
-      <section className="pt-36 sm:pt-44">
+      <section className="pt-28 sm:pt-44">
         <div className="container-lux">
           <Reveal>
             <span className="eyebrow">

@@ -49,7 +49,7 @@ export default function Process() {
   const headOpacity = useTransform(fillH, [0, 0.02, 0.99, 1], [0, 1, 1, 0]);
 
   return (
-    <section id="process" className="relative border-t border-line py-20 sm:py-28">
+    <section id="process" className="relative border-t border-line py-14 sm:py-28">
       <div className="container-lux">
         <div ref={ref} className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           {/* sticky title */}
