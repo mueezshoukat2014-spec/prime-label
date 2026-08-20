@@ -25,9 +25,9 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
   const selectProduct = (index: number) => {
     setActive(index);
     centerActiveChip(index);
-    // Mobile only: glide the page down a little so the selected product's
-    // title + image actually come into view. The selector strip stays just a
-    // short scroll above, so picking another product needs only a small nudge.
+    // Mobile only: the selector strip is sticky (pinned under the navbar), so
+    // switching products never requires scrolling back up. We still glide the
+    // page so the newly selected product's title lands right below the strip.
     if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
       requestAnimationFrame(() => {
         document
@@ -64,9 +64,11 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[360px_1fr] lg:gap-16">
-          {/* selector */}
-          <div className="flex min-w-0 flex-col">
-            <div className="relative rounded-[1.75rem] border border-champagne/20 bg-surface/35 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
+          {/* selector — sticky on mobile so switching products never requires
+              scrolling back up: the strip stays pinned under the navbar while
+              the product details scroll beneath it. */}
+          <div className="flex min-w-0 flex-col max-lg:sticky max-lg:top-[84px] max-lg:z-[90]">
+            <div className="relative rounded-[1.75rem] border border-champagne/20 bg-ink/85 p-2 shadow-soft backdrop-blur-xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
               <button
                 type="button"
                 onClick={prev}
@@ -125,7 +127,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
             </div>
             {/* position counter visible on mobile, tucked right under the strip */}
             <div className="mt-1.5 flex items-center justify-center gap-3 md:hidden">
-              <span className="text-[11px] tabular-nums text-cream-dim">
+              <span className="rounded-full bg-ink/70 px-3 py-0.5 text-[11px] tabular-nums text-cream-dim backdrop-blur">
                 {String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
               </span>
             </div>
@@ -171,7 +173,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     initial={{ y: 14, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
-                    className="display mb-3 scroll-mt-24 break-words text-2xl leading-tight text-cream sm:hidden"
+                    className="display mb-3 scroll-mt-[196px] break-words text-2xl leading-tight text-cream sm:hidden"
                   >
                     {p.title}
                   </motion.h3>
