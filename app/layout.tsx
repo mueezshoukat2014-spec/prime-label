@@ -153,19 +153,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
 
         {META_PIXEL_ID && (
+          <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
+        )}
+        <link rel="preconnect" href="https://pf7ehmyjhm559fb0.public.blob.vercel-storage.com" crossOrigin="anonymous" />
+        {META_PIXEL_ID && (
           <script
             id="meta-pixel-base"
             dangerouslySetInnerHTML={{
               __html: `
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
-s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+f.__plLoadPixel=function(){if(f.__plPixelLoaded)return;f.__plPixelLoaded=1;
+t=b.createElement(e);t.async=!0;t.src=v;
+s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('set', 'autoConfig', false, '${META_PIXEL_ID}');
 fbq('init', '${META_PIXEL_ID}');
-fbq('track', 'PageView');`,
+fbq('track', 'PageView');
+(function(){var go=function(){window.__plLoadPixel&&window.__plLoadPixel()};
+if(document.readyState==='complete'){setTimeout(go,1200)}
+else{window.addEventListener('load',function(){setTimeout(go,1200)},{once:true})}
+['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
+window.addEventListener(ev,go,{once:true,passive:true})});})();`,
             }}
           />
         )}
