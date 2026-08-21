@@ -16,28 +16,37 @@ export default function Loader() {
       return;
     }
 
-    let p = 12;
+    // Real loading progress: the loader stays until the FULL page (images,
+    // fonts, everything) has finished loading — window "load" event — with a
+    // 6s safety cap so an extremely slow connection never traps the visitor.
+    let p = 8;
+    let finished = false;
     const started = Date.now();
     const finish = () => {
+      if (finished) return;
+      finished = true;
       const elapsed = Date.now() - started;
+      // keep a tiny minimum so the entrance never "blinks" on fast networks
       window.setTimeout(() => {
         setProgress(100);
         window.setTimeout(() => {
           setDone(true);
           sessionStorage.setItem("pl_loaded", "1");
-        }, 160);
-      }, Math.max(0, 400 - elapsed));
+        }, 200);
+      }, Math.max(0, 500 - elapsed));
     };
 
+    // Progress creeps toward 94% while the page is genuinely still loading,
+    // easing off as it gets closer so it feels like real measured progress.
     const tick = setInterval(() => {
-      p = Math.min(92, p + 16);
-      setProgress(p);
-    }, 70);
+      p = Math.min(94, p + Math.max(0.6, (94 - p) * 0.09));
+      setProgress(Math.round(p));
+    }, 120);
 
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
 
-    const hardCap = window.setTimeout(finish, 750);
+    const hardCap = window.setTimeout(finish, 6000);
     return () => {
       clearInterval(tick);
       clearTimeout(hardCap);
