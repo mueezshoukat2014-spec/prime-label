@@ -60,8 +60,21 @@ export default function Loader() {
             transition={{ duration: 0.8, ease: EASE }}
             className="relative flex flex-col items-center"
           >
-            <Logo size={66} />
-            <div className="mt-5 h-px w-44 overflow-hidden bg-cream/10">
+            {/* breathing gold aura behind the monogram */}
+            <motion.span
+              aria-hidden
+              className="absolute -top-10 h-44 w-44 rounded-full bg-champagne/15 blur-2xl"
+              animate={{ opacity: [0.5, 1, 0.5], scale: [0.92, 1.06, 0.92] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, ease: EASE }}
+            >
+              <Logo size={96} glow={false} />
+            </motion.div>
+            <div className="mt-7 h-px w-44 overflow-hidden bg-cream/10">
               <motion.div
                 className="h-full bg-gradient-to-r from-champagne-deep via-champagne to-champagne-bright"
                 animate={{ width: `${progress}%` }}
