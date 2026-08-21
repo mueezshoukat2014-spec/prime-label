@@ -256,6 +256,23 @@ body {
     background: rgba(13, 13, 16, 0.96);
   }
 }
+/* Marquee: GPU-composited CSS loop — starts instantly, immune to main-thread
+   jank during hydration (the "broken for 2-4s after load" fix). */
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
 /* On touch devices, stop continuous animations (spin/pulse/float) which force
    constant repainting on WebKit and cause freezing. */
 @media (hover: none) and (pointer: coarse) {

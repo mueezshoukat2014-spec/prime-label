@@ -185,7 +185,9 @@ export function Counter({
   );
 }
 
-/* ---------- Marquee: infinite horizontal scroll ---------- */
+/* ---------- Marquee: infinite horizontal scroll ----------
+   Pure CSS animation (compositor thread): starts instantly on page load and
+   never stutters while the main thread is busy hydrating. */
 export function Marquee({
   children,
   className,
@@ -199,18 +201,26 @@ export function Marquee({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { margin: "200px" });
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  // Default RUNNING so the server-rendered HTML animates from the very first
+  // frame; only pause once React is live and knows the strip is offscreen.
+  const paused = hydrated && !inView;
   return (
     <div ref={ref} className={`relative flex overflow-hidden ${className ?? ""}`}>
-      <motion.div
-        className="flex shrink-0"
-        animate={inView ? { x: reverse ? ["-50%", "0%"] : ["0%", "-50%"] } : { x: 0 }}
-        transition={{ duration: speed, ease: "linear", repeat: Infinity }}
+      <div
+        className="marquee-track flex shrink-0"
+        style={{
+          animationDuration: `${speed}s`,
+          animationDirection: reverse ? "reverse" : "normal",
+          animationPlayState: paused ? "paused" : "running",
+        }}
       >
         <div className="flex shrink-0">{children}</div>
         <div className="flex shrink-0" aria-hidden>
           {children}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
