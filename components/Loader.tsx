@@ -25,19 +25,19 @@ export default function Loader() {
         window.setTimeout(() => {
           setDone(true);
           sessionStorage.setItem("pl_loaded", "1");
-        }, 220);
-      }, Math.max(0, 650 - elapsed));
+        }, 160);
+      }, Math.max(0, 400 - elapsed));
     };
 
     const tick = setInterval(() => {
-      p = Math.min(92, p + 11);
+      p = Math.min(92, p + 16);
       setProgress(p);
-    }, 90);
+    }, 70);
 
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
 
-    const hardCap = window.setTimeout(finish, 1200);
+    const hardCap = window.setTimeout(finish, 750);
     return () => {
       clearInterval(tick);
       clearTimeout(hardCap);
@@ -51,7 +51,7 @@ export default function Loader() {
         <motion.div
           className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-ink"
           exit={{ y: "-100%" }}
-          transition={{ duration: 0.55, ease: EASE }}
+          transition={{ duration: 0.45, ease: EASE }}
         >
           <div className="pointer-events-none absolute inset-0 bg-radial-fade opacity-60" />
           <motion.div

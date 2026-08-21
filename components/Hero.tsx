@@ -154,9 +154,9 @@ export default function Hero() {
           </h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0.35, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.24 }}
+            transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
             className="hero-copy mt-8 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted sm:text-base"
           >
             High-density woven and satin labels, premium hang tags, custom
