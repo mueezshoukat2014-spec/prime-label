@@ -196,16 +196,24 @@ type TouchKey = "name" | "phone" | "product" | "email";
 export default function QuoteForm({
   defaultProduct = "",
   whatsapp,
+  productChoices,
 }: {
   defaultProduct?: string;
   whatsapp?: string;
+  /** Admin-managed product list; falls back to the built-in categories. */
+  productChoices?: string[];
 }) {
+  const productList: string[] =
+    productChoices && productChoices.length > 0 ? productChoices : [...PRODUCT_CATEGORIES];
   const fallbackWa = defaultProduct
     ? waProductLink(defaultProduct)
     : normalizeWaLink(whatsapp);
 
-  // Map an incoming ?product= title onto a real dropdown category.
-  const seededProduct = resolveCategory(defaultProduct);
+  // Map an incoming ?product= title onto a real dropdown option: prefer an
+  // exact match in the admin-managed list, then the built-in alias mapping.
+  const trimmedDefault = defaultProduct.trim();
+  const exactInList = productList.find((p) => p.toLowerCase() === trimmedDefault.toLowerCase());
+  const seededProduct = exactInList || resolveCategory(defaultProduct);
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -300,7 +308,7 @@ export default function QuoteForm({
     () => ({
       name: touched.name ? validateName(form.name) : "",
       phone: touched.phone ? validatePhone(form.phone) : "",
-      product: touched.product ? validateCategory(productForSubmission) : "",
+      product: touched.product ? validateCategory(productForSubmission, productList) : "",
       email: touched.email ? validateEmail(form.email) : "",
     }),
     [form.name, form.phone, productForSubmission, form.email, touched]
@@ -309,8 +317,8 @@ export default function QuoteForm({
   // Button enables as soon as name + phone + at least one product are valid.
   // An invalid optional email still blocks, but blank never does.
   const ready = useMemo(
-    () => isQuoteReady({ ...form, product: productForSubmission }) && !validateEmail(form.email),
-    [form, productForSubmission]
+    () => isQuoteReady({ ...form, product: productForSubmission }, productList) && !validateEmail(form.email),
+    [form, productForSubmission, productList]
   );
 
   function acceptFile(chosen: File | null | undefined) {
@@ -699,7 +707,7 @@ export default function QuoteForm({
                 </button>
                 {productOpen && (
                   <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="listbox" aria-multiselectable="true">
-                    {PRODUCT_CATEGORIES.map((item) => {
+                    {productList.map((item) => {
                       const selected = form.products.includes(item);
                       return (
                         <button

@@ -19,6 +19,24 @@ export const PRODUCT_CATEGORIES = [
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 
 /**
+ * Parse the admin-managed quote product list (stored in site_content as
+ * `quoteProducts`, one product per line). Falls back to the built-in
+ * PRODUCT_CATEGORIES when unset. "Other" is always appended so customers can
+ * always describe something custom.
+ */
+export function parseQuoteProducts(raw: string | null | undefined): string[] {
+  const lines = String(raw ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim().replace(/,/g, " /")) // commas would break the submission list
+    .filter(Boolean)
+    .filter((l, i, arr) => arr.indexOf(l) === i) // dedupe
+    .slice(0, 40);
+  const list = lines.length > 0 ? lines : [...PRODUCT_CATEGORIES.filter((c) => c !== "Other")];
+  if (!list.some((l) => l.toLowerCase() === "other")) list.push("Other");
+  return list;
+}
+
+/**
  * Catalogue product titles that don't exactly match a dropdown category.
  * Lets "Request a quote for X" deep links preselect the right option instead
  * of silently falling back to "Select a category".
@@ -124,7 +142,7 @@ export function normalizePhone(raw: string): string {
  * must be one of the offered categories, or a free-text "Other — ..."
  * description.
  */
-export function validateCategory(raw: string): string {
+export function validateCategory(raw: string, allowed?: string[]): string {
   const value = raw.trim();
   if (!value) return "Please select at least one product.";
   const items = value
@@ -134,7 +152,11 @@ export function validateCategory(raw: string): string {
   if (items.length === 0) return "Please select at least one product.";
   for (const item of items) {
     if (PRODUCT_CATEGORIES.includes(item as ProductCategory)) continue;
+    if (allowed && allowed.includes(item)) continue;
     if (item.startsWith("Other — ") && item.length > 8) continue;
+    // Entries are short human-readable product names; anything absurdly long
+    // or scripty is rejected even when the admin list can't be loaded here.
+    if (allowed === undefined && item.length >= 2 && item.length <= 80 && !/[<>{}[\]\\]/.test(item)) continue;
     return "Please choose your products from the list.";
   }
   return "";
@@ -169,7 +191,7 @@ export type QuoteErrors = Partial<Record<"name" | "phone" | "product" | "email",
  * Validate the whole form. Only name, phone and product can block submission;
  * email is validated but a blank value is fine.
  */
-export function validateQuote(input: QuoteInput): QuoteErrors {
+export function validateQuote(input: QuoteInput, allowedProducts?: string[]): QuoteErrors {
   const errors: QuoteErrors = {};
 
   const name = validateName(input.name || "");
@@ -178,7 +200,7 @@ export function validateQuote(input: QuoteInput): QuoteErrors {
   const phone = validatePhone(input.phone || "");
   if (phone) errors.phone = phone;
 
-  const product = validateCategory(input.product || "");
+  const product = validateCategory(input.product || "", allowedProducts);
   if (product) errors.product = product;
 
   const email = validateEmail(input.email || "");
@@ -188,10 +210,10 @@ export function validateQuote(input: QuoteInput): QuoteErrors {
 }
 
 /** True when the three required fields are valid (drives the submit button). */
-export function isQuoteReady(input: QuoteInput): boolean {
+export function isQuoteReady(input: QuoteInput, allowedProducts?: string[]): boolean {
   return (
     !validateName(input.name || "") &&
     !validatePhone(input.phone || "") &&
-    !validateCategory(input.product || "")
+    !validateCategory(input.product || "", allowedProducts)
   );
 }

@@ -53,6 +53,8 @@ type Field = {
   type?: string;
   placeholder?: string;
   wide?: boolean;
+  /** Render a multi-line textarea instead of a single-line input. */
+  multiline?: boolean;
 };
 
 const FIELDS: Field[] = [
@@ -82,6 +84,17 @@ const FIELDS: Field[] = [
     wide: true,
     hint: "Shown in a gold bar at the very top of every page. Leave empty to hide.",
     placeholder: "Free worldwide shipping on orders over 5000 pcs",
+  },
+  {
+    key: "quoteProducts",
+    label: "Quote form product list",
+    wide: true,
+    multiline: true,
+    hint:
+      "One product per line — this is the list customers pick from on the quote form. " +
+      "\"Other\" is always added automatically at the end. Leave empty to use the standard list " +
+      "(Woven Labels, Satin Labels, Tag Cards, Hang Tags, Packaging Boxes, Custom Stickers, Zipper Bags, Woven Patches, Steel Logo Tags).",
+    placeholder: "Woven Labels\nSatin Labels\nHang Tags\nCustom Stickers",
   },
 ];
 
@@ -228,14 +241,25 @@ export default function SiteSettings() {
                 {f.label}
                 {isDirty && <span className="ml-2 text-champagne">• edited</span>}
               </span>
-              <input
-                type={f.type || "text"}
-                disabled={saving}
-                placeholder={f.placeholder}
-                className={`${input} ${isDirty ? "border-champagne/50" : ""}`}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
+              {f.multiline ? (
+                <textarea
+                  rows={7}
+                  disabled={saving}
+                  placeholder={f.placeholder}
+                  className={`${input} min-h-[150px] resize-y font-mono text-[12.5px] leading-relaxed ${isDirty ? "border-champagne/50" : ""}`}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                />
+              ) : (
+                <input
+                  type={f.type || "text"}
+                  disabled={saving}
+                  placeholder={f.placeholder}
+                  className={`${input} ${isDirty ? "border-champagne/50" : ""}`}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                />
+              )}
               {f.hint && (
                 <span className="mt-1.5 block text-[11.5px] leading-snug text-cream-dim">
                   {f.hint}

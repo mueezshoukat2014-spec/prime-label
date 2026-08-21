@@ -23,6 +23,7 @@ const ALLOWED_KEYS = new Set([
   "website",
   "serviceArea",
   "shipping",
+  "quoteProducts",
 ]);
 
 /**
@@ -30,7 +31,7 @@ const ALLOWED_KEYS = new Set([
  * Everything else is protected: an empty submission is treated as
  * "not edited" and the stored value is kept.
  */
-const MAY_BE_EMPTY = new Set(["phone", "announcementText", "announcementEnabled"]);
+const MAY_BE_EMPTY = new Set(["phone", "announcementText", "announcementEnabled", "quoteProducts"]);
 
 /** Common typos of the big free mail providers, mapped to the real thing. */
 const DOMAIN_TYPOS: Record<string, string> = {

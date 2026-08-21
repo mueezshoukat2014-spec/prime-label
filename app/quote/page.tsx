@@ -5,6 +5,7 @@ import QuoteForm from "@/components/QuoteForm";
 import QuoteAutoScroll from "@/components/QuoteAutoScroll";
 import { Reveal, Magnetic } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
+import { parseQuoteProducts } from "@/lib/quote-validation";
 import { normalizeWaLink, waProductLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
@@ -127,7 +128,11 @@ export default async function QuotePage({
 
             <Reveal delay={0.15}>
               <div id="quote-form" className="glass scroll-mt-24 rounded-4xl p-7 sm:scroll-mt-28 sm:p-10">
-                <QuoteForm defaultProduct={product} whatsapp={site.whatsapp} />
+                <QuoteForm
+                  defaultProduct={product}
+                  whatsapp={site.whatsapp}
+                  productChoices={parseQuoteProducts((site as Record<string, string>).quoteProducts)}
+                />
               </div>
             </Reveal>
           </div>

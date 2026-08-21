@@ -8,7 +8,7 @@ import {
   formatBytes,
   validateArtwork,
 } from "@/lib/upload-rules";
-import { normalizePhone, validateQuote } from "@/lib/quote-validation";
+import { normalizePhone, parseQuoteProducts, validateQuote } from "@/lib/quote-validation";
 import { sendQuoteAlert } from "@/lib/notify";
 
 export const runtime = "nodejs";
@@ -75,12 +75,23 @@ export async function POST(req: Request) {
     // Required: name, phone (WhatsApp) and at least one product.
     // Optional: email, quantity, details, artwork, company, country.
     // Re-validated here because the browser can always be bypassed.
-    const errors = validateQuote({
-      name: fields.name,
-      phone: fields.phone,
-      product: fields.product,
-      email: fields.email,
-    });
+    // The allowed product list is admin-managed (site_content.quoteProducts).
+    let allowedProducts: string[] | undefined;
+    try {
+      const rows = await sql`SELECT value FROM site_content WHERE key = 'quoteProducts'`;
+      allowedProducts = parseQuoteProducts(rows[0]?.value);
+    } catch {
+      allowedProducts = undefined; // DB hiccup: fall back to lenient validation
+    }
+    const errors = validateQuote(
+      {
+        name: fields.name,
+        phone: fields.phone,
+        product: fields.product,
+        email: fields.email,
+      },
+      allowedProducts
+    );
 
     if (Object.keys(errors).length > 0) {
       const first =
