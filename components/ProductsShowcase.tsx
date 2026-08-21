@@ -282,7 +282,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   return (
                 <motion.div
                   layout
-                  className={`min-w-0 max-sm:order-2 max-sm:flex max-sm:snap-x max-sm:snap-mandatory max-sm:gap-3 max-sm:overflow-x-auto max-sm:pb-1 max-sm:[-ms-overflow-style:none] max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden sm:grid sm:col-span-2 sm:gap-3 ${
+                  className={`min-w-0 max-sm:order-2 max-sm:flex max-sm:snap-x max-sm:snap-mandatory max-sm:gap-3 max-sm:overflow-x-auto max-sm:pb-1 max-sm:[-ms-overflow-style:none] max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden sm:grid sm:gap-3 ${
                     thumbs.length === 1
                       ? "sm:grid-cols-1"
                       : thumbs.length === 2
