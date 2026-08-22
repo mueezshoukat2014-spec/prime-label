@@ -23,15 +23,22 @@ export default function GallerySection({
   items,
   limit,
   showAllLink = true,
+  categoryNames,
 }: {
   items: GalleryItem[];
   limit?: number;
   showAllLink?: boolean;
+  /** slug -> display name map from the DB; falls back to the built-in labels. */
+  categoryNames?: Record<string, string>;
 }) {
+  const labelFor = useMemo(
+    () => (slug: string) => categoryNames?.[slug] || CAT_LABELS[slug] || "",
+    [categoryNames]
+  );
   const cats = useMemo(() => {
     const c = Array.from(new Set(items.map((i) => i.category)));
-    return ["all", ...c.filter((x) => CAT_LABELS[x]).slice(0, 7)];
-  }, [items]);
+    return ["all", ...c.filter((x) => x && labelFor(x)).slice(0, 9)];
+  }, [items, labelFor]);
 
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -93,7 +100,7 @@ export default function GallerySection({
                     : "border-line text-cream-muted hover:border-cream/20 hover:text-cream"
                 }`}
               >
-                {c === "all" ? "All" : CAT_LABELS[c] || c}
+                {c === "all" ? "All" : labelFor(c) || c}
               </button>
             ))}
           </div>
@@ -118,7 +125,7 @@ export default function GallerySection({
 />
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <span className="line-clamp-2 text-left text-[12px] uppercase tracking-widest2 text-cream-muted">
-                  {item.caption || CAT_LABELS[item.category] || "Custom branding by Prime Labels"}
+                  {item.caption || labelFor(item.category) || "Custom branding by Prime Labels"}
                 </span>
               </div>
               <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full glass-strong opacity-0 transition-opacity duration-500 group-hover:opacity-100">

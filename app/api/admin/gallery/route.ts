@@ -87,7 +87,37 @@ export async function GET() {
       ORDER BY sort, id DESC
     `;
     const cats = await sql`SELECT slug, name FROM categories ORDER BY id`;
-    return NextResponse.json({ ok: true, images: rows, categories: cats });
+
+    // The original static photo set, with any saved admin overrides applied.
+    // These are editable (caption/category/hide) but never deletable from
+    // storage because the files live in the repo.
+    let overrides: Record<string, { caption: string | null; category: string | null; hidden: boolean }> = {};
+    try {
+      const ov = await sql`SELECT shortcode, caption, category, hidden FROM gallery_overrides`;
+      ov.forEach((o: any) => {
+        overrides[String(o.shortcode)] = {
+          caption: o.caption,
+          category: o.category,
+          hidden: !!o.hidden,
+        };
+      });
+    } catch {
+      /* table may not exist yet */
+    }
+    const { gallery } = await import("@/lib/content");
+    const statics = gallery.map((g: any) => {
+      const o = overrides[String(g.shortcode)];
+      return {
+        shortcode: String(g.shortcode),
+        url: String(g.src),
+        caption: o?.caption ?? String(g.caption ?? ""),
+        category: o?.category ?? String(g.category ?? ""),
+        hidden: o?.hidden ?? false,
+        edited: !!o,
+      };
+    });
+
+    return NextResponse.json({ ok: true, images: rows, categories: cats, statics });
   } catch (e: unknown) {
     console.error("Gallery list failed:", e instanceof Error ? e.message : e);
     return NextResponse.json({ ok: false, error: "Could not load the gallery." }, { status: 500 });
@@ -148,6 +178,46 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json().catch(() => ({}));
+
+    // ---- static (repo) photo edit: stored as an override row ----
+    if (typeof body.shortcode === "string" && body.shortcode.trim()) {
+      const shortcode = body.shortcode.trim().slice(0, 80);
+      const { gallery } = await import("@/lib/content");
+      const item = (gallery as any[]).find((g) => String(g.shortcode) === shortcode);
+      if (!item) {
+        return NextResponse.json({ ok: false, error: "Photo not found." }, { status: 404 });
+      }
+      await sql`CREATE TABLE IF NOT EXISTS gallery_overrides (
+        shortcode TEXT PRIMARY KEY,
+        caption TEXT,
+        category TEXT,
+        hidden BOOLEAN NOT NULL DEFAULT FALSE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )`;
+      const hasCaption = Object.prototype.hasOwnProperty.call(body, "caption");
+      const hasCategory = Object.prototype.hasOwnProperty.call(body, "category");
+      const hasHidden = Object.prototype.hasOwnProperty.call(body, "hidden");
+      const caption = hasCaption ? String(body.caption ?? "").slice(0, 300) : null;
+      const category = hasCategory ? String(body.category ?? "").slice(0, 120) : null;
+      const hidden = hasHidden ? !!body.hidden : null;
+      await sql`
+        INSERT INTO gallery_overrides (shortcode, caption, category, hidden)
+        VALUES (
+          ${shortcode},
+          ${hasCaption ? caption : String(item.caption ?? "")},
+          ${hasCategory ? category : String(item.category ?? "")},
+          ${hasHidden ? hidden : false}
+        )
+        ON CONFLICT (shortcode) DO UPDATE SET
+          caption  = CASE WHEN ${hasCaption}  THEN ${caption}  ELSE gallery_overrides.caption  END,
+          category = CASE WHEN ${hasCategory} THEN ${category} ELSE gallery_overrides.category END,
+          hidden   = CASE WHEN ${hasHidden}   THEN ${hidden}   ELSE gallery_overrides.hidden   END,
+          updated_at = now()
+      `;
+      syncPublicPages();
+      return NextResponse.json({ ok: true });
+    }
+
     const id = Number(body.id);
     if (!Number.isFinite(id)) {
       return NextResponse.json({ ok: false, error: "Missing image." }, { status: 400 });

@@ -66,6 +66,29 @@ export async function getTestimonials() {
  * static set alone is returned, so the page can never come back empty.
  */
 export async function getGallery() {
+  // Admin edits to the original static photos (caption/category/hidden) are
+  // stored as overrides keyed by the photo's shortcode.
+  let staticSet = gallery;
+  try {
+    const ov = await sql`SELECT shortcode, caption, category, hidden FROM gallery_overrides`;
+    if (ov.length) {
+      const map = new Map(ov.map((o: any) => [String(o.shortcode), o]));
+      staticSet = gallery
+        .map((g: any) => {
+          const o = map.get(String(g.shortcode));
+          if (!o) return g;
+          if (o.hidden) return null;
+          return {
+            ...g,
+            caption: o.caption ?? g.caption,
+            category: o.category ?? g.category,
+          };
+        })
+        .filter(Boolean) as typeof gallery;
+    }
+  } catch {
+    /* overrides unavailable: show the untouched static set */
+  }
   try {
     const rows = await sql`
       SELECT id, url, caption, category, width, height
@@ -83,14 +106,26 @@ export async function getGallery() {
         w: (r.width as number) ?? undefined,
         h: (r.height as number) ?? undefined,
       }));
-      return [...uploaded, ...gallery];
+      return [...uploaded, ...staticSet];
     }
   } catch {
     /* fall through to the static set */
   }
-  return gallery;
+  return staticSet;
 }
 
+
+/** slug -> display name map for gallery category chips. */
+export async function getCategoryNames(): Promise<Record<string, string>> {
+  try {
+    const rows = await sql`SELECT slug, name FROM categories ORDER BY id`;
+    const map: Record<string, string> = {};
+    rows.forEach((r: any) => (map[String(r.slug)] = String(r.name)));
+    return map;
+  } catch {
+    return {};
+  }
+}
 
 export async function getReels(): Promise<Reel[]> {
   try {

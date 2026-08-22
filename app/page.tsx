@@ -20,6 +20,7 @@ import {
   getTestimonials,
   getSiteContent,
   getGallery,
+  getCategoryNames,
   getReels,
 } from "@/lib/data";
 import { SITE_URL, BRAND_NAME, GCC_COUNTRIES, SEO_PRODUCTS } from "@/lib/seo";
@@ -44,13 +45,14 @@ const BRAND_LOGOS = [
 ];
 
 export default async function Home() {
-  const [products, faqs, testimonials, site, gallery, reels] = await Promise.all([
+  const [products, faqs, testimonials, site, gallery, reels, categoryNames] = await Promise.all([
     getProducts(),
     getFaqs(),
     getTestimonials(),
     getSiteContent(),
     getGallery(),
     getReels(),
+    getCategoryNames(),
   ]);
 
   const homeJsonLd = [
@@ -111,7 +113,7 @@ export default async function Home() {
       <GsapFeature />
       <Reels reels={reels} />
       <Process />
-      <GallerySection items={gallery} limit={8} />
+      <GallerySection items={gallery} limit={8} categoryNames={categoryNames} />
       <Testimonials items={testimonials as any} />
       <FAQ items={faqs} />
       <FinalCTA whatsapp={site.whatsapp} instagram={site.instagram} />

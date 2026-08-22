@@ -3,7 +3,7 @@ import SiteShell from "@/components/SiteShell";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import { Reveal } from "@/components/anim";
-import { getSiteContent, getGallery } from "@/lib/data";
+import { getSiteContent, getGallery, getCategoryNames } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Gallery of Custom Labels, Hang Tags & Packaging",
@@ -17,7 +17,11 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const [site, gallery] = await Promise.all([getSiteContent(), getGallery()]);
+  const [site, gallery, categoryNames] = await Promise.all([
+    getSiteContent(),
+    getGallery(),
+    getCategoryNames(),
+  ]);
   return (
     <SiteShell
       footer={
@@ -46,7 +50,7 @@ export default async function GalleryPage() {
           </Reveal>
         </div>
       </section>
-      <GallerySection items={gallery} showAllLink={false} />
+      <GallerySection items={gallery} showAllLink={false} categoryNames={categoryNames} />
     </SiteShell>
   );
 }

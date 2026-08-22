@@ -20,7 +20,16 @@ type GalleryRow = {
   created_at: string;
 };
 
-type Category = { slug: string; name: string };
+type Category = { id?: number; slug: string; name: string };
+
+type StaticRow = {
+  shortcode: string;
+  url: string;
+  caption: string;
+  category: string;
+  hidden: boolean;
+  edited: boolean;
+};
 
 const input =
   "w-full rounded-lg border border-line bg-surface/40 px-3.5 py-2.5 text-[13px] text-cream outline-none transition-colors focus:border-champagne/50";
@@ -38,11 +47,23 @@ function Spinner({ size = 14 }: { size?: number }) {
 export default function GalleryManager() {
   const toast = useToast();
   const [rows, setRows] = useState<GalleryRow[]>([]);
+  const [statics, setStatics] = useState<StaticRow[]>([]);
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [applied, setApplied] = useState(false);
   const [filter, setFilter] = useState("");
+  const [showStatics, setShowStatics] = useState(false);
+  const [staticFilter, setStaticFilter] = useState("");
+  const [staticShown, setStaticShown] = useState(24);
+
+  // category manager
+  const [showCatManager, setShowCatManager] = useState(false);
+  const [newCat, setNewCat] = useState("");
+  const [catBusy, setCatBusy] = useState(false);
+  const [renamingCat, setRenamingCat] = useState<Category | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const [pendingCatDelete, setPendingCatDelete] = useState<Category | null>(null);
 
   // upload form
   const [pending, setPending] = useState<File[]>([]);
@@ -68,6 +89,7 @@ export default function GalleryManager() {
       if (j?.ok) {
         setRows(j.images || []);
         setCats(j.categories || []);
+        setStatics(j.statics || []);
       } else {
         toast.error(j?.error || "Could not load the gallery.");
       }
@@ -160,6 +182,95 @@ export default function GalleryManager() {
     }
   }
 
+  async function patchStatic(shortcode: string, changes: Record<string, unknown>) {
+    // optimistic
+    setStatics((rs) =>
+      rs.map((r) => (r.shortcode === shortcode ? ({ ...r, ...changes, edited: true } as StaticRow) : r))
+    );
+    try {
+      const res = await fetch("/api/admin/gallery", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shortcode, ...changes }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not save.");
+      flash();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Could not save.");
+      load();
+    }
+  }
+
+  async function addCategory() {
+    const name = newCat.trim();
+    if (name.length < 2 || catBusy) return;
+    setCatBusy(true);
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not add the category.");
+      setCats((c) => [...c, j.category]);
+      setNewCat("");
+      toast.success(`Category "${name}" added.`);
+      flash();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Could not add the category.");
+    } finally {
+      setCatBusy(false);
+    }
+  }
+
+  async function renameCategory() {
+    if (!renamingCat?.id || catBusy) return;
+    const name = renameValue.trim();
+    if (name.length < 2) return;
+    setCatBusy(true);
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: renamingCat.id, name }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not rename.");
+      setCats((c) => c.map((x) => (x.id === renamingCat.id ? j.category : x)));
+      setRenamingCat(null);
+      toast.success("Category renamed.");
+      flash();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Could not rename.");
+    } finally {
+      setCatBusy(false);
+    }
+  }
+
+  async function deleteCategory() {
+    if (!pendingCatDelete?.id || catBusy) return;
+    setCatBusy(true);
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: pendingCatDelete.id }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not delete.");
+      toast.success(`Category "${pendingCatDelete.name}" deleted. Its photos are now Uncategorised.`);
+      setPendingCatDelete(null);
+      await load();
+      flash();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Could not delete.");
+    } finally {
+      setCatBusy(false);
+    }
+  }
+
   async function confirmDelete() {
     if (!pendingDelete) return;
     setDeleting(true);
@@ -194,6 +305,87 @@ export default function GalleryManager() {
           </p>
         </div>
         <AppliedBadge show={applied} />
+      </div>
+
+      {/* ---------------- categories ---------------- */}
+      <div className="rounded-2xl border border-line bg-surface/30 p-5">
+        <button
+          type="button"
+          onClick={() => setShowCatManager((v) => !v)}
+          className="flex w-full items-center justify-between text-left"
+        >
+          <div>
+            <h2 className="display text-xl">Categories</h2>
+            <p className="mt-1 text-[12.5px] text-cream-dim">
+              {cats.length} categor{cats.length === 1 ? "y" : "ies"} — used for gallery filters on the website.
+            </p>
+          </div>
+          <svg
+            className={`shrink-0 text-cream-dim transition-transform ${showCatManager ? "rotate-180" : ""}`}
+            width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {showCatManager && (
+          <div className="mt-4 space-y-3">
+            <div className="flex flex-wrap gap-2">
+              {cats.map((c) => (
+                <span
+                  key={c.slug}
+                  className="flex items-center gap-1.5 rounded-full border border-line bg-ink/50 py-1 pl-3.5 pr-1.5 text-[12px] text-cream"
+                >
+                  {c.name}
+                  <button
+                    type="button"
+                    title="Rename"
+                    onClick={() => {
+                      setRenamingCat(c);
+                      setRenameValue(c.name);
+                    }}
+                    className="rounded-full p-1 text-cream-dim transition-colors hover:bg-cream/10 hover:text-champagne"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M4 20h4L19.5 8.5a2.1 2.1 0 00-3-3L5 17v3z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    title="Delete"
+                    onClick={() => setPendingCatDelete(c)}
+                    className="rounded-full p-1 text-cream-dim transition-colors hover:bg-red-500/15 hover:text-red-300"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                className={input}
+                value={newCat}
+                onChange={(e) => setNewCat(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCategory()}
+                placeholder="New category name e.g. Leather Patches"
+                disabled={catBusy}
+              />
+              <button
+                type="button"
+                onClick={addCategory}
+                disabled={catBusy || newCat.trim().length < 2}
+                className="shrink-0 rounded-lg border border-champagne/40 bg-champagne/10 px-4 py-2 text-[12.5px] text-champagne transition-colors hover:bg-champagne/20 disabled:opacity-50"
+              >
+                {catBusy ? <Spinner size={13} /> : "Add"}
+              </button>
+            </div>
+            <p className="text-[11.5px] text-cream-dim">
+              Deleting a category never deletes photos — they simply become Uncategorised.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* ---------------- upload ---------------- */}
@@ -418,6 +610,227 @@ export default function GalleryManager() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ---------------- original static photos ---------------- */}
+      {statics.length > 0 && (
+        <div className="rounded-2xl border border-line bg-surface/30 p-5">
+          <button
+            type="button"
+            onClick={() => setShowStatics((v) => !v)}
+            className="flex w-full items-center justify-between text-left"
+          >
+            <div>
+              <h2 className="display text-xl">Original photos ({statics.length})</h2>
+              <p className="mt-1 text-[12.5px] text-cream-dim">
+                The built-in Instagram photo set. Edit captions and categories, or hide any photo from the website.
+              </p>
+            </div>
+            <svg
+              className={`shrink-0 text-cream-dim transition-transform ${showStatics ? "rotate-180" : ""}`}
+              width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden
+            >
+              <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {showStatics && (
+            <div className="mt-4 space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => { setStaticFilter(""); setStaticShown(24); }}
+                  className={`rounded-full border px-3.5 py-1.5 text-[12px] transition-colors ${
+                    staticFilter === "" ? "border-champagne/60 text-champagne" : "border-line text-cream-muted hover:border-champagne/40"
+                  }`}
+                >
+                  All ({statics.length})
+                </button>
+                {cats.map((c) => {
+                  const n = statics.filter((s) => s.category === c.slug).length;
+                  if (!n) return null;
+                  return (
+                    <button
+                      key={c.slug}
+                      onClick={() => { setStaticFilter(c.slug); setStaticShown(24); }}
+                      className={`rounded-full border px-3.5 py-1.5 text-[12px] transition-colors ${
+                        staticFilter === c.slug ? "border-champagne/60 text-champagne" : "border-line text-cream-muted hover:border-champagne/40"
+                      }`}
+                    >
+                      {c.name} ({n})
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => { setStaticFilter("hidden"); setStaticShown(24); }}
+                  className={`rounded-full border px-3.5 py-1.5 text-[12px] transition-colors ${
+                    staticFilter === "hidden" ? "border-champagne/60 text-champagne" : "border-line text-cream-muted hover:border-champagne/40"
+                  }`}
+                >
+                  Hidden ({statics.filter((s) => s.hidden).length})
+                </button>
+              </div>
+
+              {(() => {
+                const list =
+                  staticFilter === ""
+                    ? statics
+                    : staticFilter === "hidden"
+                      ? statics.filter((s) => s.hidden)
+                      : statics.filter((s) => s.category === staticFilter);
+                const visible = list.slice(0, staticShown);
+                return (
+                  <>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {visible.map((s) => (
+                        <div key={s.shortcode} className="overflow-hidden rounded-2xl border border-line bg-surface/30">
+                          <div className="relative aspect-[4/3] bg-ink">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={s.url} alt={s.caption || ""} loading="lazy" className={`h-full w-full object-cover ${s.hidden ? "opacity-40" : ""}`} />
+                            {s.hidden && (
+                              <span className="absolute left-2 top-2 rounded bg-ink/85 px-2 py-1 text-[10px] uppercase tracking-wide text-red-300">
+                                Hidden
+                              </span>
+                            )}
+                            {s.edited && !s.hidden && (
+                              <span className="absolute left-2 top-2 rounded bg-ink/85 px-2 py-1 text-[10px] uppercase tracking-wide text-champagne">
+                                Edited
+                              </span>
+                            )}
+                          </div>
+                          <div className="space-y-2.5 p-3.5">
+                            <input
+                              className={input}
+                              defaultValue={s.caption || ""}
+                              placeholder="Caption"
+                              onBlur={(e) => {
+                                if (e.target.value !== (s.caption || "")) patchStatic(s.shortcode, { caption: e.target.value });
+                              }}
+                            />
+                            <select
+                              className={input}
+                              value={s.category || ""}
+                              onChange={(e) => patchStatic(s.shortcode, { category: e.target.value })}
+                            >
+                              <option value="" className="bg-ink">
+                                Uncategorised
+                              </option>
+                              {cats.map((c) => (
+                                <option key={c.slug} value={c.slug} className="bg-ink">
+                                  {c.name}
+                                </option>
+                              ))}
+                            </select>
+                            <label className="flex items-center gap-2 pt-1 text-[12px] text-cream-muted">
+                              <input
+                                type="checkbox"
+                                checked={!s.hidden}
+                                onChange={(e) => patchStatic(s.shortcode, { hidden: !e.target.checked })}
+                                className="h-3.5 w-3.5 accent-[#C9A86A]"
+                              />
+                              Visible on website
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {list.length > staticShown && (
+                      <button
+                        type="button"
+                        onClick={() => setStaticShown((n) => n + 24)}
+                        className="mx-auto block rounded-full border border-line px-5 py-2 text-[12.5px] text-cream-muted transition-colors hover:border-champagne/50 hover:text-champagne"
+                      >
+                        Show more ({list.length - staticShown} left)
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ---------------- rename category modal ---------------- */}
+      {renamingCat && (
+        <div
+          className="fixed inset-0 z-[2500] flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => !catBusy && setRenamingCat(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-champagne/30 bg-surface-2 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="display text-xl text-cream">Rename category</h3>
+            <p className="mt-2 text-[13px] text-cream-muted">
+              The new name appears everywhere on the website; the photos stay linked.
+            </p>
+            <input
+              className={`${input} mt-4`}
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && renameCategory()}
+              autoFocus
+              disabled={catBusy}
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setRenamingCat(null)}
+                disabled={catBusy}
+                className="rounded-lg border border-line px-4 py-2 text-[12.5px] text-cream-muted hover:border-champagne/40 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={renameCategory}
+                disabled={catBusy || renameValue.trim().length < 2}
+                className="flex items-center gap-2 rounded-lg border border-champagne/40 bg-champagne/15 px-4 py-2 text-[12.5px] text-champagne hover:bg-champagne/25 disabled:opacity-50"
+              >
+                {catBusy && <Spinner size={13} />}
+                {catBusy ? "Saving…" : "Rename"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------- delete category modal ---------------- */}
+      {pendingCatDelete && (
+        <div
+          className="fixed inset-0 z-[2500] flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => !catBusy && setPendingCatDelete(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-red-500/30 bg-surface-2 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="display text-xl text-cream">Delete “{pendingCatDelete.name}”?</h3>
+            <p className="mt-2 text-[13px] leading-relaxed text-cream-muted">
+              No photos are deleted — everything in this category simply becomes Uncategorised,
+              and the filter chip disappears from the website.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setPendingCatDelete(null)}
+                disabled={catBusy}
+                className="rounded-lg border border-line px-4 py-2 text-[12.5px] text-cream-muted hover:border-champagne/40 disabled:opacity-50"
+              >
+                Keep it
+              </button>
+              <button
+                onClick={deleteCategory}
+                disabled={catBusy}
+                className="flex items-center gap-2 rounded-lg border border-red-500/40 bg-red-500/15 px-4 py-2 text-[12.5px] text-red-200 hover:bg-red-500/25 disabled:opacity-50"
+              >
+                {catBusy && <Spinner size={13} />}
+                {catBusy ? "Deleting…" : "Delete category"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
