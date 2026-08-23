@@ -195,10 +195,13 @@ type TouchKey = "name" | "phone" | "product" | "email";
 
 export default function QuoteForm({
   defaultProduct = "",
+  defaultDetails = "",
   whatsapp,
   productChoices,
 }: {
   defaultProduct?: string;
+  /** Pre-filled order details (e.g. configurator selection from a product page). */
+  defaultDetails?: string;
   whatsapp?: string;
   /** Admin-managed product list; falls back to the built-in categories. */
   productChoices?: string[];
@@ -222,7 +225,7 @@ export default function QuoteForm({
     otherProduct: "",
     email: "",
     quantity: "",
-    details: "",
+    details: defaultDetails.trim().slice(0, 2000),
     company: "",
     country: "",
     otherCountry: "",

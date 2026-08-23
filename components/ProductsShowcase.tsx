@@ -179,20 +179,29 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     initial={{ y: 14, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, ease: EASE }}
-                    className="display mb-3 scroll-mt-[172px] break-words text-2xl leading-tight text-cream sm:hidden"
+                    className="mb-3 flex scroll-mt-[172px] items-center justify-between gap-3 sm:hidden"
                   >
-                    {p.title}
+                    <span className="display break-words text-2xl leading-tight text-cream">{p.title}</span>
+                    <Link
+                      href={`/products/${p.slug}`}
+                      className="shrink-0 rounded-full border border-champagne/40 px-3.5 py-1.5 text-[10.5px] uppercase tracking-wide2 text-champagne"
+                    >
+                      Details →
+                    </Link>
                   </motion.h3>
                 <motion.div
                   layout
-                  className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft"
+                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft"
                 >
+                  <Link href={`/products/${p.slug}`} data-cursor="View" aria-label={`View ${p.title} details`} className="absolute inset-0 z-10 block">
+                    <span className="sr-only">{p.title}</span>
+                  </Link>
                   <motion.div
                     key={p.image}
                     initial={{ scale: 1.12, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 1.1, ease: EASE }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
                   >
                     <img
   src={typeof p.image === "string" ? (p.image) : ""}
@@ -203,8 +212,11 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
 />
                   </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
-                  <div className="absolute bottom-0 left-0 hidden p-7 sm:block">
+                  <div className="absolute bottom-0 left-0 hidden w-full items-end justify-between p-7 sm:flex">
                     <h3 className="display text-4xl text-cream">{p.title}</h3>
+                    <span className="pointer-events-none rounded-full border border-champagne/40 bg-ink/70 px-4 py-2 text-[11px] uppercase tracking-wide2 text-champagne opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                      View details →
+                    </span>
                   </div>
                 </motion.div>
                 </div>
