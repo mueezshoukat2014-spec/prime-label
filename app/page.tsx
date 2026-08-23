@@ -23,7 +23,7 @@ import {
   getCategoryNames,
   getReels,
 } from "@/lib/data";
-import { SITE_URL, BRAND_NAME, GCC_COUNTRIES, SEO_PRODUCTS } from "@/lib/seo";
+import { SITE_URL, BRAND_NAME, GCC_COUNTRIES, SEO_PRODUCTS, productsJsonLd } from "@/lib/seo";
 
 // The catalogue is edited from the admin dashboard, so the homepage must read
 // from Neon on each request instead of being frozen at build time. Without
@@ -94,6 +94,8 @@ export default async function Home() {
       serviceType: SEO_PRODUCTS,
       areaServed: GCC_COUNTRIES.map((name) => ({ "@type": "Country", name })),
     },
+    // Product rich results: material, MOQ and custom-quote offers per product.
+    productsJsonLd(products as any[]),
   ];
 
   return (

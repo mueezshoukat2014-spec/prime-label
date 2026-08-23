@@ -116,3 +116,87 @@ export const offerCatalogJsonLd = {
     },
   })),
 };
+
+/** Materials per product slug — feeds Product JSON-LD `material`. */
+const PRODUCT_MATERIALS: Record<string, string> = {
+  "woven-labels": "High-density damask polyester yarn",
+  "satin-labels": "Soft satin polyester",
+  "hang-tags": "Premium 300-400 GSM art board",
+  "custom-stickers": "Vinyl / matte / transparent adhesive",
+  "brand-packaging": "Rigid and corrugated board",
+  "zipper-bags": "Frosted / matte PE and PVC",
+  "woven-patches": "Embroidered polyester twill",
+  "steel-logo-tags": "Laser-engraved stainless steel",
+};
+
+/**
+ * Product JSON-LD for the live catalogue (rendered on the homepage).
+ * MOQ is expressed via eligibleQuantity on a custom-quote offer, because
+ * every order is custom priced.
+ */
+export function productsJsonLd(
+  products: Array<{
+    slug: string;
+    title: string;
+    tagline?: string;
+    description?: string;
+    image?: string;
+    moq?: number | null;
+  }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE_URL}/#product-list`,
+    name: "Custom garment branding products",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        "@id": `${SITE_URL}/#product-${p.slug}`,
+        name: p.title,
+        description: p.description || p.tagline || `${p.title} by ${BRAND_NAME}`,
+        image: p.image?.startsWith("http") ? p.image : `${SITE_URL}${p.image || "/icon.png"}`,
+        brand: { "@id": `${SITE_URL}/#organization` },
+        material: PRODUCT_MATERIALS[p.slug],
+        url: `${SITE_URL}/quote?product=${encodeURIComponent(p.title)}`,
+        offers: {
+          "@type": "Offer",
+          url: `${SITE_URL}/quote?product=${encodeURIComponent(p.title)}`,
+          priceCurrency: "USD",
+          price: "0",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            price: "0",
+            priceCurrency: "USD",
+            description: "Custom quoted per order — tailored quote within 12 hours",
+          },
+          availability: "https://schema.org/InStock",
+          eligibleQuantity: p.moq
+            ? { "@type": "QuantitativeValue", minValue: p.moq, unitText: "units" }
+            : undefined,
+          areaServed: DEMAND_MARKETS.map((m) => ({ "@type": "Country", name: m })),
+          seller: { "@id": `${SITE_URL}/#organization` },
+        },
+      },
+    })),
+  };
+}
+
+/** BreadcrumbList JSON-LD for sub-pages. */
+export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      ...items.map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 2,
+        name: it.name,
+        item: `${SITE_URL}${it.path}`,
+      })),
+    ],
+  };
+}

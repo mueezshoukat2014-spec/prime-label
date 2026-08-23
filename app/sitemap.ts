@@ -1,9 +1,14 @@
 import type { MetadataRoute } from "next";
 
 const base = "https://primelabelsintl.com";
-const lastModified = new Date("2026-08-01T00:00:00.000Z");
 
+/**
+ * Core sitemap. lastModified reflects the current deployment so Google
+ * re-crawls after every release (each deploy regenerates this route).
+ * The image sitemap is referenced separately from robots.ts.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
   return [
     { url: base, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },

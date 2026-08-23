@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import { Reveal } from "@/components/anim";
 import { getGallery, getSiteContent } from "@/lib/data";
-import { GCC_COUNTRIES, SEO_PRODUCTS, SITE_URL, BRAND_NAME } from "@/lib/seo";
+import { GCC_COUNTRIES, SEO_PRODUCTS, SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Custom Woven Labels & Packaging for Saudi Arabia, UAE & GCC",
@@ -59,17 +59,20 @@ const arabicTerms = [
 
 export default async function GccCustomLabelsPage() {
   const [site, gallery] = await Promise.all([getSiteContent(), getGallery()]);
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "@id": `${SITE_URL}/gcc-custom-labels#service`,
-    name: "Custom clothing labels and brand packaging for GCC fashion brands",
-    provider: { "@id": `${SITE_URL}/#organization` },
-    areaServed: GCC_COUNTRIES.map((name) => ({ "@type": "Country", name })),
-    serviceType: SEO_PRODUCTS,
-    description:
-      "Premium woven labels, satin labels, hang tags, stickers and brand packaging accessories for clothing brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain and Oman.",
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${SITE_URL}/gcc-custom-labels#service`,
+      name: "Custom clothing labels and brand packaging for GCC fashion brands",
+      provider: { "@id": `${SITE_URL}/#organization` },
+      areaServed: GCC_COUNTRIES.map((name) => ({ "@type": "Country", name })),
+      serviceType: SEO_PRODUCTS,
+      description:
+        "Premium woven labels, satin labels, hang tags, stickers and brand packaging accessories for clothing brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain and Oman.",
+    },
+    breadcrumbJsonLd([{ name: "GCC Custom Labels", path: "/gcc-custom-labels" }]),
+  ];
 
   return (
     <SiteShell footer={<Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />}>
