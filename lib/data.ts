@@ -115,6 +115,16 @@ export async function getGallery() {
 }
 
 
+/** Admin PDP override for one product (null when not customised). */
+export async function getPdpOverride(slug: string) {
+  try {
+    const rows = await sql`SELECT slug, h1, intro, folds, finishes, specs, faqs FROM pdp_content WHERE slug = ${slug} LIMIT 1`;
+    return rows[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** slug -> display name map for gallery category chips. */
 export async function getCategoryNames(): Promise<Record<string, string>> {
   try {

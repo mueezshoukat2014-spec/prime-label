@@ -209,6 +209,78 @@ export const PDP: Record<string, PdpContent> = {
   },
 };
 
+/* ------------------------------------------------------------------ */
+/* Admin overrides: stored in the pdp_content table as plain text      */
+/* fields and parsed with these helpers.                               */
+/* ------------------------------------------------------------------ */
+
+/** One option per line. */
+export function parseLines(raw: string | null | undefined): string[] {
+  return String(raw ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .slice(0, 20);
+}
+
+/** "Label | Value" per line. */
+export function parseSpecs(raw: string | null | undefined): PdpSpec[] {
+  return String(raw ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.includes("|"))
+    .map((l) => {
+      const i = l.indexOf("|");
+      return { label: l.slice(0, i).trim(), value: l.slice(i + 1).trim() };
+    })
+    .filter((s) => s.label && s.value)
+    .slice(0, 30);
+}
+
+/** Q: ...\nA: ... blocks separated by blank lines. */
+export function parseFaqs(raw: string | null | undefined): PdpFaq[] {
+  const out: PdpFaq[] = [];
+  const blocks = String(raw ?? "").split(/\n\s*\n/);
+  for (const b of blocks) {
+    const qm = b.match(/^\s*Q:\s*([\s\S]*?)\n\s*A:\s*([\s\S]*)$/i);
+    if (qm) out.push({ q: qm[1].trim(), a: qm[2].trim() });
+  }
+  return out.slice(0, 12);
+}
+
+export function linesToText(list: string[]): string {
+  return list.join("\n");
+}
+export function specsToText(specs: PdpSpec[]): string {
+  return specs.map((s) => `${s.label} | ${s.value}`).join("\n");
+}
+export function faqsToText(faqs: PdpFaq[]): string {
+  return faqs.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n");
+}
+
+export type PdpOverrideRow = {
+  slug: string;
+  h1: string | null;
+  intro: string | null;
+  folds: string | null;
+  finishes: string | null;
+  specs: string | null;
+  faqs: string | null;
+};
+
+/** Merge a DB override row over the built-in defaults. Blank fields keep defaults. */
+export function mergePdpContent(base: PdpContent, ov: PdpOverrideRow | null | undefined): PdpContent {
+  if (!ov) return base;
+  return {
+    h1: ov.h1?.trim() || base.h1,
+    intro: ov.intro?.trim() || base.intro,
+    folds: ov.folds?.trim() ? parseLines(ov.folds) : base.folds,
+    finishes: ov.finishes?.trim() ? parseLines(ov.finishes) : base.finishes,
+    specs: ov.specs?.trim() ? parseSpecs(ov.specs) : base.specs,
+    faqs: ov.faqs?.trim() ? parseFaqs(ov.faqs) : base.faqs,
+  };
+}
+
 /** Safe accessor with a sensible generic fallback. */
 export function getPdpContent(slug: string, title: string): PdpContent {
   return (

@@ -5,8 +5,8 @@ import SiteShell from "@/components/SiteShell";
 import Footer from "@/components/Footer";
 import ProductPdp from "@/components/pdp/ProductPdp";
 import { Reveal } from "@/components/anim";
-import { getProducts, getSiteContent } from "@/lib/data";
-import { getPdpContent } from "@/lib/pdp-content";
+import { getProducts, getSiteContent, getPdpOverride } from "@/lib/data";
+import { getPdpContent, mergePdpContent, type PdpOverrideRow } from "@/lib/pdp-content";
 import { SITE_URL, BRAND_NAME, DEMAND_MARKETS, breadcrumbJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const product = await findProduct(params.slug);
   if (!product) return { title: "Product not found" };
-  const content = getPdpContent(product.slug, product.title);
+  const content = mergePdpContent(
+    getPdpContent(product.slug, product.title),
+    (await getPdpOverride(product.slug)) as PdpOverrideRow | null
+  );
   const url = `${SITE_URL}/products/${product.slug}`;
   const title = `${content.h1} | Low MOQ ${product.moq ?? 100} — ${BRAND_NAME}`;
   const description = `${content.intro.slice(0, 140)} Free 24h digital proof, DDP express delivery to KSA, UAE, GCC, UK & USA.`;
@@ -51,14 +54,18 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const [product, site, allProducts] = await Promise.all([
+  const [product, site, allProducts, override] = await Promise.all([
     findProduct(params.slug),
     getSiteContent(),
     getProducts(),
+    getPdpOverride(params.slug),
   ]);
   if (!product) notFound();
 
-  const content = getPdpContent(product.slug, product.title);
+  const content = mergePdpContent(
+    getPdpContent(product.slug, product.title),
+    override as PdpOverrideRow | null
+  );
   const url = `${SITE_URL}/products/${product.slug}`;
 
   const jsonLd = [
