@@ -93,7 +93,7 @@ const FIELDS: Field[] = [
     hint:
       "One product per line — this is the list customers pick from on the quote form. " +
       "\"Other\" is always added automatically at the end. Leave empty to use the standard list " +
-      "(Woven Labels, Satin Labels, Tag Cards, Hang Tags, Packaging Boxes, Custom Stickers, Zipper Bags, Woven Patches, Steel Logo Tags).",
+      "(Woven Labels, Satin Labels, Tag Cards, Hang Tags, Brand Packaging, Custom Stickers, Zipper Bags, Woven Patches, Steel Logo Tags).",
     placeholder: "Woven Labels\nSatin Labels\nHang Tags\nCustom Stickers",
   },
 ];

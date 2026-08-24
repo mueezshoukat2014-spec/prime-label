@@ -11,7 +11,7 @@ const REEL_PRODUCTS = [
   "Hang Tags",
   "Satin Labels",
   "Custom Stickers",
-  "Packaging Boxes",
+  "Brand Packaging",
   "Zipper Bags",
   "Woven Patches",
   "Steel Logo Tags",

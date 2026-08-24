@@ -105,14 +105,14 @@ export const PDP: Record<string, PdpContent> = {
   stickers: {
     h1: "Custom Brand Stickers & Seals",
     intro:
-      "Vinyl, matte, transparent and foil stickers that finish your packaging — tissue seals, box stickers, thank-you seals and logo decals.",
+      "Vinyl, matte, transparent and foil stickers that finish your packaging — tissue seals, packaging stickers, thank-you seals and logo decals.",
     folds: [],
     finishes: ["Glossy Vinyl", "Matte", "Transparent", "Gold / Silver Foil", "Holographic"],
     specs: [
       { label: "Material", value: "Waterproof vinyl / matte / clear PET" },
       { label: "Adhesive", value: "Strong permanent or removable low-tack" },
       { label: "Cut", value: "Kiss-cut sheets, die-cut singles or rolls" },
-      { label: "Sizes", value: "From 20mm seals to large box decals" },
+      { label: "Sizes", value: "From 20mm seals to large packaging decals" },
       ...SHARED_LOGISTICS,
     ],
     faqs: [
@@ -124,24 +124,24 @@ export const PDP: Record<string, PdpContent> = {
     ],
   },
   "brand-packaging": {
-    h1: "Custom Brand Packaging & Boxes",
+    h1: "Custom Brand Packaging Accessories",
     intro:
-      "Rigid boxes, mailers and tissue sets that turn an order into an unboxing moment — engineered for DTC fashion brands that want to be remembered.",
+      "Satin ribbons, textured thank-you cards, sticker seals and luxury paper bags that turn an order into an unboxing moment — coordinated around your brand identity.",
     folds: [],
-    finishes: ["Rigid Box", "Corrugated Mailer", "Folding Carton", "Tissue + Sticker Set", "Soft-Touch Lamination + Foil"],
+    finishes: ["Satin Ribbon", "Thank-You Cards", "Sticker Seals", "Luxury Paper Bags", "Custom Tissue", "Foil + Embossing"],
     specs: [
-      { label: "Board", value: "Rigid greyboard / E-flute corrugated / folding carton" },
-      { label: "Print", value: "Full-colour litho + foil, embossing, spot-UV" },
-      { label: "Sizes", value: "Fully custom dimensions engineered to your garments" },
-      { label: "Extras", value: "Custom tissue, ribbon pulls, magnetic closures, inserts" },
+      { label: "Package items", value: "Custom ribbons, thank-you cards, sticker seals, paper bags, tissue" },
+      { label: "Material", value: "High-grade satin, textured cardstock, premium kraft / art paper" },
+      { label: "Print", value: "Full-colour offset/digital + foil stamping, embossing" },
+      { label: "Extras", value: "Pantone-matched colors across the whole packaging set" },
       ...SHARED_LOGISTICS,
     ],
     faqs: [
-      { q: "What is the minimum packaging order?", a: "100 units for mailers and cartons; rigid boxes typically start at 200–300 units — your quote confirms exact tiers." },
-      { q: "Can you match my box to my label set?", a: "Yes — we produce labels, tags, tissue and boxes as one coordinated brand kit with consistent Pantone colors." },
-      { q: "Do you provide structural design?", a: "Yes, free — send your garment dimensions and we engineer the dieline, then send a 3D digital mockup for approval." },
-      { q: "How are boxes shipped to me?", a: "Flat-packed to save freight (mailers/cartons) or protected bulk cartons for rigid boxes, DDP to your door." },
-      { q: "How long does production take?", a: "10–14 working days after proof approval, plus 4–8 days express freight depending on destination." },
+      { q: "What is the minimum packaging order?", a: "100 units per item (cards, seals, ribbons); paper bags may vary by size — your quote confirms exact tiers." },
+      { q: "Can you match my packaging to my label set?", a: "Yes — we produce labels, tags, ribbons, cards and seals as one coordinated brand kit with consistent Pantone colors." },
+      { q: "Do you make packaging boxes?", a: "We focus on packaging accessories — ribbons, cards, seals, tissue and paper bags. We don't produce rigid boxes, keeping your shipping costs low." },
+      { q: "Can everything ship together with my labels?", a: "Yes — your full branding kit ships as one consolidated DDP shipment to your door." },
+      { q: "How long does production take?", a: "7–14 working days after proof approval, plus 3–8 days express delivery depending on destination." },
     ],
   },
   "zipper-bags": {

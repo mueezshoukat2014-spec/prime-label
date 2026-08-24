@@ -123,7 +123,7 @@ const PRODUCT_MATERIALS: Record<string, string> = {
   "satin-labels": "Soft satin polyester",
   "hang-tags": "Premium 300-400 GSM art board",
   "custom-stickers": "Vinyl / matte / transparent adhesive",
-  "brand-packaging": "Rigid and corrugated board",
+  "brand-packaging": "Satin ribbon, textured cardstock, premium kraft / art paper",
   "zipper-bags": "Frosted / matte PE and PVC",
   "woven-patches": "Embroidered polyester twill",
   "steel-logo-tags": "Laser-engraved stainless steel",

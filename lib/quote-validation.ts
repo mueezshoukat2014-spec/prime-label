@@ -8,7 +8,7 @@ export const PRODUCT_CATEGORIES = [
   "Satin Labels",
   "Tag Cards",
   "Hang Tags",
-  "Packaging Boxes",
+  "Brand Packaging",
   "Custom Stickers",
   "Zipper Bags",
   "Woven Patches",
@@ -42,9 +42,9 @@ export function parseQuoteProducts(raw: string | null | undefined): string[] {
  * of silently falling back to "Select a category".
  */
 const CATEGORY_ALIASES: Record<string, ProductCategory> = {
-  "brand packaging": "Packaging Boxes",
-  packaging: "Packaging Boxes",
-  "packaging boxes": "Packaging Boxes",
+  "brand packaging": "Brand Packaging",
+  packaging: "Brand Packaging",
+  "packaging boxes": "Brand Packaging",
   stickers: "Custom Stickers",
   "custom stickers": "Custom Stickers",
   patch: "Woven Patches",
