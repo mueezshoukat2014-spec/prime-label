@@ -26,7 +26,8 @@ export default function Navbar() {
         initial={{ y: -120 }}
         animate={{ y: 0 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="fixed inset-x-0 top-0 z-[120]"
+        className="fixed inset-x-0 z-[120]"
+        style={{ top: "var(--announce-offset, 0px)" }}
       >
         <div
           className={`transition-all duration-500 ${

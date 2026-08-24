@@ -8,6 +8,8 @@
   --champagne: #c9a86a;
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Manrope", "Helvetica Neue", sans-serif;
+  /* Height of the visible announcement bar; the fixed navbar sits below it. */
+  --announce-offset: 0px;
 }
 
 * {
