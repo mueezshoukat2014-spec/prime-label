@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProducts } from "@/lib/data";
+import { MARKETS } from "@/lib/markets";
 
 const base = "https://primelabelsintl.com";
 
@@ -28,6 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
+    ...MARKETS.map((m) => ({
+      url: `${base}/${m.slug}`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    })),
     ...productUrls,
     { url: `${base}/gallery`, lastModified, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/contact`, lastModified, changeFrequency: "monthly", priority: 0.7 },

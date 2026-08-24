@@ -8,11 +8,11 @@ const COLS = [
   {
     title: "Products",
     links: [
-      { label: "Woven Labels", href: "/#products" },
-      { label: "Satin Labels", href: "/#products" },
-      { label: "Hang Tags", href: "/#products" },
-      { label: "Brand Packaging", href: "/#products" },
-      { label: "Zipper Bags", href: "/#products" },
+      { label: "Woven Labels", href: "/products/woven-labels" },
+      { label: "Satin Labels", href: "/products/satin-labels" },
+      { label: "Hang Tags", href: "/products/hang-tags" },
+      { label: "Brand Packaging", href: "/products/brand-packaging" },
+      { label: "Zipper Bags", href: "/products/zipper-bags" },
     ],
   },
   {
@@ -23,6 +23,15 @@ const COLS = [
       { label: "About", href: "/#about" },
       { label: "FAQ", href: "/#faq" },
       { label: "GCC Custom Labels", href: "/gcc-custom-labels" },
+    ],
+  },
+  {
+    title: "Markets",
+    links: [
+      { label: "Saudi Arabia", href: "/custom-labels-saudi-arabia" },
+      { label: "UAE", href: "/custom-labels-uae" },
+      { label: "United Kingdom", href: "/custom-clothing-labels-uk" },
+      { label: "United States", href: "/custom-clothing-labels-usa" },
     ],
   },
   {
@@ -51,7 +60,7 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
         )}
       </Marquee>
 
-      <div className="container-lux grid gap-10 py-14 sm:gap-12 sm:py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="container-lux grid gap-10 py-14 sm:gap-12 sm:py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Logo size={42} />
