@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/anim";
+import ReviewForm from "@/components/ReviewForm";
 
 export type Testimonial = {
   name: string;
@@ -210,6 +211,9 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
             ))}
           </div>
         )}
+
+        {/* leave a review */}
+        <ReviewForm />
       </div>
     </section>
   );

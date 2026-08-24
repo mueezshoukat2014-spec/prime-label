@@ -741,9 +741,23 @@ function Testimonials() {
     reload();
   }
 
+  const pending = list.filter((t: any) => !t.approved);
+  const approved = list.filter((t: any) => t.approved);
+
   return (
     <div className="space-y-4">
-      <h1 className="display text-3xl">Testimonials</h1>
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="display text-3xl">Testimonials</h1>
+        {pending.length > 0 && (
+          <span className="rounded-full border border-champagne/40 bg-champagne/10 px-3 py-1 text-[11px] uppercase tracking-wide text-champagne">
+            {pending.length} new review{pending.length === 1 ? "" : "s"} awaiting approval
+          </span>
+        )}
+      </div>
+      <p className="text-[12.5px] text-cream-muted">
+        Customers can submit reviews from the website — they appear here as
+        “awaiting approval” and only go live when you tick “Show on site”.
+      </p>
       <Card>
         <h3 className="mb-3 text-[13px] font-medium">Add new</h3>
         <form onSubmit={add} className="grid gap-3 sm:grid-cols-2">
@@ -756,7 +770,15 @@ function Testimonials() {
           <button className="btn-primary !py-2.5 !px-5 text-[12px] sm:col-span-2">Add testimonial</button>
         </form>
       </Card>
-      {list.map((t: any) => (
+      {pending.length > 0 && (
+        <div className="space-y-3 rounded-2xl border border-champagne/30 bg-champagne/[0.04] p-4">
+          <h3 className="text-[12px] uppercase tracking-wide2 text-champagne">Awaiting approval</h3>
+          {pending.map((t: any) => (
+            <TestiRow key={t.id} t={t} onSave={save} onDelete={del} />
+          ))}
+        </div>
+      )}
+      {approved.map((t: any) => (
         <TestiRow key={t.id} t={t} onSave={save} onDelete={del} />
       ))}
       <Toast msg={toast} />
