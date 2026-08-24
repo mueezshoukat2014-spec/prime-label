@@ -28,6 +28,25 @@ export const VOLUME_TIERS = [
   "5,000+ units (Bulk)",
 ] as const;
 
+/**
+ * Volume tiers derived from the product's real MOQ (set in the admin panel).
+ * The first tier is always exactly the MOQ, followed by sensible step-ups,
+ * so a 500-MOQ product never shows a misleading "100 units" option.
+ */
+export function volumeTiersFor(moq: number | null | undefined): string[] {
+  const base = Math.max(1, Number(moq) || 100);
+  const fmt = (n: number) => n.toLocaleString("en-US");
+  // Step-up ladder starting from the MOQ.
+  const ladder = [base * 5, base * 10, base * 50];
+  const steps = ladder.filter((n) => n > base).slice(0, 3);
+  const tiers = [
+    `${fmt(base)} units (Low MOQ)`,
+    ...steps.slice(0, 2).map((n) => `${fmt(n)} units`),
+    `${fmt(steps[2] ?? base * 50)}+ units (Bulk)`,
+  ];
+  return tiers;
+}
+
 const SHARED_LOGISTICS: PdpSpec[] = [
   { label: "Quote turnaround", value: "Tailored quote within 12–24 hours" },
   { label: "Digital proof", value: "Free digital mockup within 24h — production starts only after your approval" },

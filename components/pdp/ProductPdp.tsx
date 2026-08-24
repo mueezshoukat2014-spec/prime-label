@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal, EASE } from "@/components/anim";
 import { waProductLink } from "@/lib/whatsapp";
-import { VOLUME_TIERS, type PdpContent } from "@/lib/pdp-content";
+import { volumeTiersFor, type PdpContent } from "@/lib/pdp-content";
 
 type PdpProduct = {
   slug: string;
@@ -274,7 +274,7 @@ export default function ProductPdp({
             <div>
               <p className="mb-2.5 text-[11px] uppercase tracking-wide2 text-cream-dim">Volume requirement</p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {VOLUME_TIERS.map((t) => (
+                {volumeTiersFor(product.moq).map((t) => (
                   <button
                     key={t}
                     type="button"
