@@ -75,10 +75,14 @@ export default function ProductPdp({
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [openSpec, setOpenSpec] = useState(true);
 
-  // zoom lens
+  // zoom lens — desktop (fine pointer) only; touch devices get a plain gallery
   const imgWrap = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const [canZoom, setCanZoom] = useState(false);
+  useEffect(() => {
+    setCanZoom(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  }, []);
 
   const { label: countdown, slots } = useBatchClock();
 
@@ -106,17 +110,21 @@ export default function ProductPdp({
         <div className="lg:sticky lg:top-28">
           <div
             ref={imgWrap}
-            className="relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-3xl border border-line shadow-soft"
-            onMouseEnter={() => setZoom(true)}
-            onMouseLeave={() => setZoom(false)}
-            onMouseMove={(e) => {
-              const r = imgWrap.current?.getBoundingClientRect();
-              if (!r) return;
-              setZoomPos({
-                x: ((e.clientX - r.left) / r.width) * 100,
-                y: ((e.clientY - r.top) / r.height) * 100,
-              });
-            }}
+            className={`relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft ${canZoom ? "cursor-zoom-in" : ""}`}
+            onMouseEnter={canZoom ? () => setZoom(true) : undefined}
+            onMouseLeave={canZoom ? () => setZoom(false) : undefined}
+            onMouseMove={
+              canZoom
+                ? (e) => {
+                    const r = imgWrap.current?.getBoundingClientRect();
+                    if (!r) return;
+                    setZoomPos({
+                      x: ((e.clientX - r.left) / r.width) * 100,
+                      y: ((e.clientY - r.top) / r.height) * 100,
+                    });
+                  }
+                : undefined
+            }
           >
             <AnimatePresence mode="wait">
               <motion.img
@@ -132,9 +140,11 @@ export default function ProductPdp({
               />
             </AnimatePresence>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
-            <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-ink/80 px-3 py-1 text-[10px] uppercase tracking-wide2 text-cream-dim backdrop-blur">
-              Hover to inspect texture
-            </span>
+            {canZoom && (
+              <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-ink/80 px-3 py-1 text-[10px] uppercase tracking-wide2 text-cream-dim backdrop-blur">
+                Hover to inspect texture
+              </span>
+            )}
           </div>
 
           {images.length > 1 && (
