@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getProducts } from "@/lib/data";
 import { MARKETS } from "@/lib/markets";
+import { getPublishedPosts } from "@/lib/blog";
 
 const base = "https://primelabelsintl.com";
 
@@ -25,6 +26,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     /* DB unreachable — core pages alone still ship */
   }
 
+  let blogUrls: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPublishedPosts();
+    blogUrls = [
+      { url: `${base}/blog`, lastModified, changeFrequency: "weekly" as const, priority: 0.8 },
+      ...posts.map((p) => ({
+        url: `${base}/blog/${p.slug}`,
+        lastModified: new Date(p.updated_at),
+        changeFrequency: "monthly" as const,
+        priority: 0.75,
+      })),
+    ];
+  } catch {
+    blogUrls = [{ url: `${base}/blog`, lastModified, changeFrequency: "weekly" as const, priority: 0.8 }];
+  }
+
   return [
     { url: base, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },
@@ -36,6 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     })),
     ...productUrls,
+    ...blogUrls,
     { url: `${base}/gallery`, lastModified, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/contact`, lastModified, changeFrequency: "monthly", priority: 0.7 },
   ];

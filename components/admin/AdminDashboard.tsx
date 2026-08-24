@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import Logo from "@/components/Logo";
 import ProductManager from "@/components/admin/ProductManager";
 import PdpManager from "@/components/admin/PdpManager";
+import BlogManager from "@/components/admin/BlogManager";
 import AppliedBadge from "@/components/admin/AppliedBadge";
 import GalleryManager from "@/components/admin/GalleryManager";
 import VideoManager from "@/components/admin/VideoManager";
@@ -24,6 +25,7 @@ type Tab =
   | "messages"
   | "products"
   | "pdp"
+  | "blog"
   | "content"
   | "faqs"
   | "testimonials"
@@ -38,6 +40,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "messages", label: "Messages" },
   { id: "products", label: "Products" },
   { id: "pdp", label: "Product Pages" },
+  { id: "blog", label: "Blog" },
   { id: "content", label: "Content & Copy" },
   { id: "faqs", label: "FAQs" },
   { id: "testimonials", label: "Testimonials" },
@@ -103,6 +106,7 @@ export default function AdminDashboard() {
           {tab === "messages" && <Messages />}
           {tab === "products" && <ProductManager />}
           {tab === "pdp" && <PdpManager />}
+          {tab === "blog" && <BlogManager />}
           {tab === "content" && <SiteContent />}
           {tab === "faqs" && <Faqs />}
           {tab === "testimonials" && <Testimonials />}
