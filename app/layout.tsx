@@ -79,6 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: url,
       languages: {
         "en": url,
+        "ar": `${url.replace(/\/$/, "")}/ar`,
         "x-default": url,
       },
     },

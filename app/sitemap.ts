@@ -46,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
+    { url: `${base}/ar`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     ...MARKETS.map((m) => ({
       url: `${base}/${m.slug}`,
       lastModified,

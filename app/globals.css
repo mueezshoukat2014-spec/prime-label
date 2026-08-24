@@ -320,6 +320,17 @@ html[data-lang="ar"] select {
   font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
 }
 
+/* Native Arabic page (/ar): apply the Arabic font stack per-element without
+   needing the html-level auto-translate flag. */
+.arabic-text,
+.arabic-display {
+  font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.arabic-display {
+  line-height: 1.3;
+}
+
 html[data-lang="ar"] .display,
 html[data-lang="ar"] .display-tight {
   font-family: var(--font-arabic), var(--font-display), serif;
