@@ -8,7 +8,6 @@ import AppliedBadge from "@/components/admin/AppliedBadge";
 import GalleryManager from "@/components/admin/GalleryManager";
 import VideoManager from "@/components/admin/VideoManager";
 import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
-import QuoteGenerator from "@/components/admin/QuoteGenerator";
 import SiteSettings from "@/components/admin/SiteSettings";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
 import ReplyModal, { type ReplyTarget } from "@/components/admin/ReplyModal";
@@ -31,7 +30,6 @@ type Tab =
   | "testimonials"
   | "gallery"
   | "videos"
-  | "quotegen"
   | "settings";
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -46,7 +44,6 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "testimonials", label: "Testimonials" },
   { id: "gallery", label: "Gallery / Portfolio" },
   { id: "videos", label: "Videos" },
-  { id: "quotegen", label: "Quote Generator" },
   { id: "settings", label: "Site Settings" },
 ];
 
@@ -112,7 +109,6 @@ export default function AdminDashboard() {
           {tab === "testimonials" && <Testimonials />}
           {tab === "gallery" && <GalleryManager />}
           {tab === "videos" && <VideoManager />}
-          {tab === "quotegen" && <QuoteGenerator />}
           {tab === "settings" && <SiteSettings />}
         </div>
       </div>
