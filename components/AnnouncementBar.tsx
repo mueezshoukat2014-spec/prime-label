@@ -23,7 +23,9 @@ export default function AnnouncementBar({ text }: { text: string }) {
   useEffect(() => {
     if (!text) return;
     try {
-      const dismissed = window.localStorage.getItem(DISMISS_KEY);
+      // Dismissal only lasts for the current browser session, so the promo
+      // returns on the next visit instead of disappearing forever.
+      const dismissed = window.sessionStorage.getItem(DISMISS_KEY);
       setOpen(dismissed !== text);
     } catch {
       setOpen(true); // storage blocked — still show it
@@ -57,7 +59,7 @@ export default function AnnouncementBar({ text }: { text: string }) {
   function dismiss() {
     setOpen(false);
     try {
-      window.localStorage.setItem(DISMISS_KEY, text);
+      window.sessionStorage.setItem(DISMISS_KEY, text);
     } catch {
       /* ignore */
     }

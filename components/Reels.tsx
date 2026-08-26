@@ -21,21 +21,12 @@ const productForReel = (index: number) => REEL_PRODUCTS[index % REEL_PRODUCTS.le
 
 export default function Reels({ reels }: { reels: Reel[] }) {
   const [active, setActive] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [playing, setPlaying] = useState(false);
   const vidRef = useRef<HTMLVideoElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const r = reels[active];
   const activeProduct = r.product || productForReel(active);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   const play = useCallback(() => {
     const video = vidRef.current;
@@ -78,41 +69,45 @@ export default function Reels({ reels }: { reels: Reel[] }) {
     };
   }, [reels]);
 
+  const pause = useCallback(() => {
+    const video = vidRef.current;
+    if (!video) return;
+    video.pause();
+    setPlaying(false);
+  }, []);
+
+  // No autoplay: videos start only when the visitor taps/clicks. If the
+  // playing video scrolls out of view, pause it to save battery/data.
   useEffect(() => {
     const v = vidRef.current;
     if (!v) return;
     v.muted = true;
     v.volume = 0;
-    if (!isMobile) {
-      play();
-      return;
-    }
+    setPlaying(false);
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) {
-            v.muted = true;
-            v.volume = 0;
-            v.play().then(() => setPlaying(true)).catch(() => {});
-          } else {
+          if (!e.isIntersecting) {
             v.pause();
             setPlaying(false);
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: 0.2 }
     );
     io.observe(v);
     return () => io.disconnect();
-  }, [isMobile, active, play]);
+  }, [active]);
 
   function select(i: number) {
+    // Explicit tap on a reel thumbnail — start that reel.
     setActive(i);
     requestAnimationFrame(() => play());
   }
 
   const go = useCallback(
     (dir: -1 | 1) => {
+      // Explicit prev/next click — keep the viewing session going.
       setActive((cur) => (cur + dir + reels.length) % reels.length);
       requestAnimationFrame(() => play());
     },
@@ -201,10 +196,17 @@ export default function Reels({ reels }: { reels: Reel[] }) {
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden><path d="M8 3v10M8 13l-4.5-4.5M8 13l4.5-4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
 
-            {isMobile && !playing && (
-              <button type="button" onClick={play} aria-label="Play reel" className="absolute left-1/2 top-1/2 z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full glass-strong text-cream transition-transform duration-300 hover:scale-110">
+            {/* click-to-play: overlay toggles play/pause on every device */}
+            <button
+              type="button"
+              onClick={() => (playing ? pause() : play())}
+              aria-label={playing ? "Pause reel" : "Play reel"}
+              className="absolute inset-0 z-10"
+            />
+            {!playing && (
+              <span className="pointer-events-none absolute left-1/2 top-1/2 z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full glass-strong text-cream">
                 <svg width="18" height="20" viewBox="0 0 18 20" fill="currentColor" aria-hidden><path d="M0 0v20l18-10L0 0z" /></svg>
-              </button>
+              </span>
             )}
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-ink/20" />
