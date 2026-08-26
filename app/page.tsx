@@ -107,9 +107,12 @@ export default async function Home() {
         <Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />
       }
     >
-      <Hero />
+      <Hero eyebrow={site.tagline} headline={site.heroHeadline} sub={site.heroSub} />
       <LogoStrip logos={BRAND_LOGOS} />
-      <About />
+      <About
+        statsRaw={(site as Record<string, string>).aboutStats}
+        aboutText={(site as Record<string, string>).aboutText}
+      />
       <ProductsShowcase products={products} />
       <SeoMarketSection />
       <GsapFeature />

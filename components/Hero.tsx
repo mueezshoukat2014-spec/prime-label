@@ -84,7 +84,39 @@ function DeliveryVanIcon({ className = "" }: { className?: string }) {
   );
 }
 
-export default function Hero() {
+export default function Hero({
+  eyebrow,
+  headline,
+  sub,
+}: {
+  /** Admin-editable via Content & Copy tab (tagline / heroHeadline / heroSub). */
+  eyebrow?: string;
+  headline?: string;
+  sub?: string;
+}) {
+  // Split the admin headline into two reveal lines + a gradient closer.
+  // "Every great brand starts with a label." -> "Every great" / "brand starts" / "with a label."
+  const words = (headline || "Every great brand starts with a label.").trim().split(/\s+/);
+  let line1 = "Every great";
+  let line2 = "brand starts";
+  let gradientLine = "with a label.";
+  if (words.length >= 6) {
+    gradientLine = words.slice(-3).join(" ");
+    const rest = words.slice(0, -3);
+    const mid = Math.ceil(rest.length / 2);
+    line1 = rest.slice(0, mid).join(" ");
+    line2 = rest.slice(mid).join(" ");
+  } else if (words.length >= 2) {
+    gradientLine = words.slice(-1).join(" ");
+    const rest = words.slice(0, -1);
+    const mid = Math.ceil(rest.length / 2);
+    line1 = rest.slice(0, mid).join(" ");
+    line2 = rest.slice(mid).join(" ");
+  }
+  const heroEyebrow = eyebrow?.trim() || "Custom Branding Studio";
+  const heroSub =
+    sub?.trim() ||
+    "High-density woven and satin labels, premium hang tags, custom packaging and the finishing details that clothing brands trust to look this good. Made with care, shipped worldwide.";
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 60, damping: 18 });
@@ -143,14 +175,14 @@ export default function Hero() {
           >
             <span className="eyebrow">
               <span className="h-px w-8 bg-champagne/60" />
-              Custom Branding Studio
+              {heroEyebrow}
             </span>
           </motion.div>
 
           <h1 className="hero-title display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
-            <TextReveal text="Every great" delay={0.04} />
-            <TextReveal text="brand starts" delay={0.1} />
-            <span className="block gradient-text italic">with a label.</span>
+            <TextReveal text={line1} delay={0.04} />
+            <TextReveal text={line2} delay={0.1} />
+            <span className="block gradient-text italic">{gradientLine}</span>
           </h1>
 
           <motion.p
@@ -159,9 +191,7 @@ export default function Hero() {
             transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
             className="hero-copy mt-8 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted sm:text-base"
           >
-            High-density woven and satin labels, premium hang tags, custom
-            packaging and the finishing details that clothing brands trust to
-            look this good. Made with care, shipped worldwide.
+            {heroSub}
           </motion.p>
 
           <motion.div

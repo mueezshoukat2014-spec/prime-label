@@ -86,6 +86,24 @@ const FIELDS: Field[] = [
     placeholder: "Free worldwide shipping on orders over 5000 pcs",
   },
   {
+    key: "aboutText",
+    label: "About / Studio paragraph (homepage)",
+    wide: true,
+    multiline: true,
+    hint: "The paragraph in the homepage 'The Studio' section. Leave empty to use the standard text.",
+    placeholder: "Prime Labels International is a custom branding studio for clothing and lifestyle brands...",
+  },
+  {
+    key: "aboutStats",
+    label: "Homepage stats (About section)",
+    wide: true,
+    multiline: true,
+    hint:
+      "One stat per line, format: number|label — e.g. 160+|Designs made. Use + or % after the number if needed. " +
+      "2 to 4 lines. Leave empty for the standard stats (8 Product lines, 160+ Designs made, 30+ Countries shipped, 99% Reorder rate).",
+    placeholder: "8|Product lines\n160+|Designs made\n30+|Countries shipped\n99%|Reorder rate",
+  },
+  {
     key: "quoteProducts",
     label: "Quote form product list",
     wide: true,

@@ -2,12 +2,34 @@
 import { motion } from "framer-motion";
 import { Reveal, Counter, EASE } from "@/components/anim";
 
-const STATS = [
+const DEFAULT_STATS = [
   { value: 8, suffix: "", label: "Product lines" },
   { value: 160, suffix: "+", label: "Designs made" },
   { value: 30, suffix: "+", label: "Countries shipped" },
   { value: 99, suffix: "%", label: "Reorder rate" },
 ];
+
+/**
+ * Admin-editable stats: site_content.aboutStats holds one "number|label" per
+ * line, e.g. "160+|Designs made". Invalid lines are skipped; empty setting
+ * falls back to the defaults.
+ */
+export function parseStats(raw?: string) {
+  const lines = String(raw ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.includes("|"));
+  const parsed = lines
+    .map((l) => {
+      const [num, ...rest] = l.split("|");
+      const label = rest.join("|").trim();
+      const m = String(num).trim().match(/^(\d+)\s*([+%]?)$/);
+      if (!m || !label) return null;
+      return { value: Number(m[1]), suffix: m[2] || "", label };
+    })
+    .filter(Boolean) as typeof DEFAULT_STATS;
+  return parsed.length >= 2 ? parsed.slice(0, 4) : DEFAULT_STATS;
+}
 
 const lineUp = (i: number) => ({
   initial: { opacity: 0, y: 24 },
@@ -16,7 +38,19 @@ const lineUp = (i: number) => ({
   transition: { duration: 0.8, ease: EASE, delay: i * 0.09 },
 });
 
-export default function About() {
+export default function About({
+  statsRaw,
+  aboutText,
+}: {
+  /** site_content.aboutStats — "number|label" per line. */
+  statsRaw?: string;
+  /** site_content.aboutText — the studio paragraph. */
+  aboutText?: string;
+}) {
+  const STATS = parseStats(statsRaw);
+  const paragraph =
+    aboutText?.trim() ||
+    "Prime Labels International is a custom branding studio for clothing and lifestyle brands. From high-density woven labels to packaging that turns an unboxing into a moment, we obsess over the details most people never notice, but every customer feels.";
   return (
     <section id="about" className="relative overflow-hidden border-t border-line py-14 sm:py-28">
       <div className="pointer-events-none absolute -right-[20%] top-0 h-[500px] w-[500px] rounded-full bg-champagne/8 blur-[55px] md:blur-[140px]" />
@@ -41,10 +75,7 @@ export default function About() {
           <div className="flex flex-col justify-end gap-8">
             <Reveal delay={0.2}>
               <p className="text-[15px] leading-relaxed text-cream-muted">
-                Prime Labels International is a custom branding studio for
-                clothing and lifestyle brands. From high-density woven labels to
-                packaging that turns an unboxing into a moment, we obsess over
-                the details most people never notice, but every customer feels.
+                {paragraph}
               </p>
             </Reveal>
             <Reveal delay={0.3}>
