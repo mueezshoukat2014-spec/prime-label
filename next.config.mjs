@@ -27,6 +27,23 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion'],
   },
+  /**
+   * Short memorable aliases for the geo landing pages.
+   * 301 (permanent) so search engines consolidate ranking onto the real URL.
+   */
+  async redirects() {
+    return [
+      { source: '/uk', destination: '/custom-clothing-labels-uk', permanent: true },
+      { source: '/usa', destination: '/custom-clothing-labels-usa', permanent: true },
+      { source: '/us', destination: '/custom-clothing-labels-usa', permanent: true },
+      { source: '/uae', destination: '/custom-labels-uae', permanent: true },
+      { source: '/dubai', destination: '/custom-labels-uae', permanent: true },
+      { source: '/saudi', destination: '/custom-labels-saudi-arabia', permanent: true },
+      { source: '/saudi-arabia', destination: '/custom-labels-saudi-arabia', permanent: true },
+      { source: '/ksa', destination: '/custom-labels-saudi-arabia', permanent: true },
+      { source: '/arabic', destination: '/ar', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
