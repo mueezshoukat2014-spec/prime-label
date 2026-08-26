@@ -294,7 +294,7 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
     <button
       type="button"
       onClick={toggle}
-      aria-label={isArabic ? "Switch website language to English" : "Switch website language to Arabic"}
+      aria-label={isArabic ? "English — switch website language" : "العربية — switch website language to Arabic"}
       title={isArabic ? "English" : "Arabic"}
       className={`notranslate group inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-surface/45 px-3.5 text-cream-muted shadow-soft backdrop-blur transition-all duration-300 hover:border-champagne/55 hover:text-champagne ${
         compact ? "px-3" : "px-3.5"

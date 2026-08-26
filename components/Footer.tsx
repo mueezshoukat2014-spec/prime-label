@@ -19,6 +19,7 @@ const COLS = [
     title: "Studio",
     links: [
       { label: "Our Work", href: "/gallery" },
+      { label: "Case Studies", href: "/work" },
       { label: "Process", href: "/#process" },
       { label: "About", href: "/#about" },
       { label: "FAQ", href: "/#faq" },
@@ -96,9 +97,9 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
 
         {COLS.map((col) => (
           <div key={col.title}>
-            <h4 className="text-[11px] uppercase tracking-widest2 text-cream-dim">
+            <h3 className="text-[11px] uppercase tracking-widest2 text-cream-dim">
               {col.title}
-            </h4>
+            </h3>
             <ul className="mt-5 flex flex-col gap-3">
               {col.links.map((l) => {
                 const external = /^https?:/i.test(l.href);

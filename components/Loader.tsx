@@ -46,7 +46,8 @@ export default function Loader() {
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
 
-    const hardCap = window.setTimeout(finish, 6000);
+    // 3s cap balances the "wait for full load" feel against mobile LCP.
+    const hardCap = window.setTimeout(finish, 3000);
     return () => {
       clearInterval(tick);
       clearTimeout(hardCap);

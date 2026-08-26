@@ -30,7 +30,7 @@ function LogoItem({ logo }: { logo: BrandLogo }) {
           className="h-7 w-auto opacity-55 brightness-150 grayscale transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] group-hover:opacity-100 group-hover:brightness-100 group-hover:grayscale-0 sm:h-8"
         />
       ) : (
-        <span className="select-none whitespace-nowrap font-body text-[15px] uppercase tracking-[0.22em] text-cream/40 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-cream sm:text-base">
+        <span className="select-none whitespace-nowrap font-body text-[15px] uppercase tracking-[0.22em] text-cream/60 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-cream sm:text-base">
           {logo.name}
         </span>
       )}

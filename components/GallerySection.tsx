@@ -118,7 +118,7 @@ export default function GallerySection({
             >
               <img
   src={typeof item.src === "string" ? (item.src) : ""}
-  alt={item.caption || item.category}
+  alt={`${item.caption || item.category || "Custom branding"} — Prime Labels work sample`}
   loading="lazy"
   decoding="async"
   className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"

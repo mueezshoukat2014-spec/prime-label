@@ -301,6 +301,19 @@ function Leads() {
                   Send Quote
                 </button>
                 {l.phone && <a href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hi, regarding your enquiry with Prime Labels International")}`} target="_blank" rel="noopener noreferrer" className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">WhatsApp</a>}
+                {l.phone && (
+                  <a
+                    href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                      `Hi ${l.name || ""}! Thank you for ordering with Prime Labels International. We'd love your feedback — it takes 30 seconds and helps small brands find us: https://primelabelsintl.com/#testimonials (tap "Share your experience"). Shukran! ✨`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Send a review request on WhatsApp"
+                    className="rounded-md border border-emerald-500/35 bg-emerald-500/[0.08] px-3 py-1.5 text-[12px] text-emerald-300 transition-colors hover:bg-emerald-500/[0.16]"
+                  >
+                    ★ Ask for review
+                  </a>
+                )}
                 <button onClick={() => del(l.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-1.5 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
               </div>
             </Card>

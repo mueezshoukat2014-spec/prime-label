@@ -128,7 +128,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
   const canScroll = list.length > perView;
 
   return (
-    <section className="relative overflow-hidden border-t border-line py-14 sm:py-28">
+    <section id="testimonials" className="relative overflow-hidden border-t border-line py-14 sm:py-28 scroll-mt-24">
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-champagne/5 blur-[90px] md:blur-[150px]" />
       <div className="container-lux relative">
         <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -198,16 +198,21 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
 
         {/* dots */}
         {canScroll && (
-          <div className="mt-8 flex items-center justify-center gap-2">
+          <div className="mt-8 flex items-center justify-center gap-1">
             {Array.from({ length: maxIndex + 1 }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIndex(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-400 ${
-                  i === clamped ? "w-8 bg-champagne" : "w-1.5 bg-cream/20 hover:bg-cream/40"
-                }`}
-              />
+                className="flex h-11 min-w-11 items-center justify-center rounded-full"
+              >
+                <span
+                  aria-hidden
+                  className={`block h-1.5 rounded-full transition-all duration-400 ${
+                    i === clamped ? "w-8 bg-champagne" : "w-1.5 bg-cream/20"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         )}

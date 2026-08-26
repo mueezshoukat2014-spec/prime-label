@@ -3,6 +3,7 @@ import { Fraunces, Manrope, Cairo } from "next/font/google";
 import "./globals.css";
 import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import LeadCapture from "@/components/LeadCapture";
 import FloatingLanguage from "@/components/FloatingLanguage";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
@@ -208,6 +209,7 @@ window.addEventListener(ev,go,{once:true,passive:true})});})();`,
           {children}
           <FloatingLanguage />
           <FloatingWhatsApp href={s.whatsapp} />
+          <LeadCapture whatsapp={s.whatsapp} />
         </ToastProvider>
         <script
           type="application/ld+json"
