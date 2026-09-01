@@ -21,7 +21,7 @@ const COLS = [
       { label: "Our Work", href: "/gallery" },
       { label: "Case Studies", href: "/work" },
       { label: "Process", href: "/#process" },
-      { label: "About", href: "/#about" },
+      { label: "About", href: "/about" },
       { label: "FAQ", href: "/#faq" },
       { label: "Blog", href: "/blog" },
       { label: "GCC Custom Labels", href: "/gcc-custom-labels" },

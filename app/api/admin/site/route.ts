@@ -26,6 +26,12 @@ const ALLOWED_KEYS = new Set([
   "quoteProducts",
   "aboutStats",
   "aboutText",
+  "aboutHeroTitle",
+  "aboutHeroSub",
+  "aboutStory",
+  "aboutImg1",
+  "aboutImg2",
+  "aboutImg3",
 ]);
 
 /**
@@ -40,6 +46,12 @@ const MAY_BE_EMPTY = new Set([
   "quoteProducts",
   "aboutStats",
   "aboutText",
+  "aboutHeroTitle",
+  "aboutHeroSub",
+  "aboutStory",
+  "aboutImg1",
+  "aboutImg2",
+  "aboutImg3",
 ]);
 
 /** Common typos of the big free mail providers, mapped to the real thing. */
