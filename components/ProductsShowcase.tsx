@@ -111,7 +111,7 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                   >
                     <span
                       className={`text-[10px] tabular-nums transition-colors lg:text-[11px] ${
-                        isActive ? "text-champagne" : "text-cream-dim"
+                        isActive ? "text-champagne" : "text-cream-muted"
                       }`}
                     >
                       {String(i + 1).padStart(2, "0")}

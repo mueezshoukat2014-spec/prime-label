@@ -1,6 +1,6 @@
 "use client";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TextReveal, Magnetic, Marquee, EASE } from "@/components/anim";
 import Link from "next/link";
 
@@ -122,7 +122,19 @@ export default function Hero({
   const sx = useSpring(mx, { stiffness: 60, damping: 18 });
   const sy = useSpring(my, { stiffness: 60, damping: 18 });
 
+  // Floaters are desktop-only (lg:). Skip mounting them entirely on small
+  // screens so mobile never pays their render/animation cost (TBT saving).
+  const [showFloaters, setShowFloaters] = useState(false);
   useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setShowFloaters(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!showFloaters) return;
     const onMove = (e: MouseEvent) => {
       const px = e.clientX / window.innerWidth - 0.5;
       const py = e.clientY / window.innerHeight - 0.5;
@@ -131,7 +143,7 @@ export default function Hero({
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
-  }, [mx, my]);
+  }, [mx, my, showFloaters]);
 
   return (
     <section id="hero" className="relative min-h-[100svh] w-full overflow-hidden">
@@ -157,9 +169,9 @@ export default function Hero({
       {/* grain */}
       <div className="grain-bg pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-soft-light" />
 
-      {/* floating product cluster (desktop) */}
+      {/* floating product cluster (desktop only — not mounted on mobile) */}
       <div className="hero-floaters pointer-events-none absolute inset-0 hidden lg:block">
-        {FLOATERS.map((f, i) => (
+        {showFloaters && FLOATERS.map((f, i) => (
           <Floater key={i} f={f} sx={sx} sy={sy} />
         ))}
       </div>

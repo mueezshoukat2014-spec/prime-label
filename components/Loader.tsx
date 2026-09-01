@@ -9,11 +9,22 @@ export default function Loader() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Lightweight first-session preloader: gives the site a polished entrance
-    // without blocking repeat visitors or ads traffic for too long.
-    if (sessionStorage.getItem("pl_loaded") === "1") {
-      setDone(true);
-      return;
+    // Cinematic preloader for FIRST-EVER visit only. Repeat visitors
+    // (localStorage) and same-session navigations (sessionStorage) skip it
+    // entirely — best mobile LCP for the traffic that already knows us.
+    try {
+      if (
+        sessionStorage.getItem("pl_loaded") === "1" ||
+        localStorage.getItem("pl_visited") === "1"
+      ) {
+        setDone(true);
+        try {
+          localStorage.setItem("pl_visited", "1");
+        } catch {}
+        return;
+      }
+    } catch {
+      /* storage blocked — show the loader normally */
     }
 
     // Real loading progress: the loader stays until the FULL page (images,
@@ -31,7 +42,10 @@ export default function Loader() {
         setProgress(100);
         window.setTimeout(() => {
           setDone(true);
-          sessionStorage.setItem("pl_loaded", "1");
+          try {
+            sessionStorage.setItem("pl_loaded", "1");
+            localStorage.setItem("pl_visited", "1");
+          } catch {}
         }, 200);
       }, Math.max(0, 500 - elapsed));
     };
