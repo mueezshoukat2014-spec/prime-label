@@ -121,7 +121,7 @@ export default async function ArabicPage() {
                 أقل كمية 100 قطعة، بروفة مجانية خلال 24 ساعة.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link href="/quote" className="btn-primary !py-3.5 !px-7 text-[13px] shadow-glow-sm">
+                <Link href="/ar/quote" className="btn-primary !py-3.5 !px-7 text-[13px] shadow-glow-sm">
                   اطلب تسعيرة الآن
                 </Link>
                 <a
@@ -159,7 +159,7 @@ export default async function ArabicPage() {
                 return (
                   <Reveal key={p.slug} delay={i * 0.04}>
                     <Link
-                      href={`/products/${p.slug}`}
+                      href={`/ar/products/${p.slug}`}
                       className="group block overflow-hidden rounded-2xl border border-line transition-all duration-300 hover:border-champagne/40"
                     >
                       <div className="relative aspect-square overflow-hidden">
@@ -281,7 +281,7 @@ export default async function ArabicPage() {
                   أرسل تصميمك والكمية المطلوبة — وستصلك تسعيرة مفصلة مع بروفة رقمية مجانية قبل الإنتاج.
                 </p>
                 <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
-                  <Link href="/quote" className="btn-primary !py-3.5 !px-7 text-[13px] shadow-glow-sm">
+                  <Link href="/ar/quote" className="btn-primary !py-3.5 !px-7 text-[13px] shadow-glow-sm">
                     اطلب تسعيرة الآن
                   </Link>
                   <a

@@ -3,6 +3,7 @@ import { getProducts } from "@/lib/data";
 import { MARKETS } from "@/lib/markets";
 import { getPublishedPosts } from "@/lib/blog";
 import { CASE_STUDIES } from "@/lib/case-studies";
+import { AR_PDP } from "@/lib/pdp-content-ar";
 
 const base = "https://primelabelsintl.com";
 
@@ -48,6 +49,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
     { url: `${base}/ar`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/ar/quote`, lastModified, changeFrequency: "weekly", priority: 0.85 },
+    ...Object.keys(AR_PDP).map((slug) => ({
+      url: `${base}/ar/products/${slug}`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
     ...MARKETS.map((m) => ({
       url: `${base}/${m.slug}`,
       lastModified,

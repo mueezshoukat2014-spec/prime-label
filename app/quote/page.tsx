@@ -15,7 +15,11 @@ export const metadata: Metadata = {
   keywords: ["custom labels quote", "woven labels Saudi Arabia", "hang tags UAE", "brand packaging GCC", "clothing labels quote"],
   alternates: {
     canonical: "https://primelabelsintl.com/quote",
-    languages: { en: "https://primelabelsintl.com/quote", "x-default": "https://primelabelsintl.com/quote" },
+    languages: {
+      en: "https://primelabelsintl.com/quote",
+      ar: "https://primelabelsintl.com/ar/quote",
+      "x-default": "https://primelabelsintl.com/quote",
+    },
   },
 };
 

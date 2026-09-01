@@ -8,6 +8,7 @@ import { Reveal } from "@/components/anim";
 import { getProducts, getSiteContent, getPdpOverride } from "@/lib/data";
 import { getPdpContent, mergePdpContent, type PdpOverrideRow } from "@/lib/pdp-content";
 import { SITE_URL, BRAND_NAME, DEMAND_MARKETS, breadcrumbJsonLd } from "@/lib/seo";
+import { AR_PDP } from "@/lib/pdp-content-ar";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,12 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: url, languages: { en: url, "x-default": url } },
+    alternates: {
+      canonical: url,
+      languages: AR_PDP[product.slug]
+        ? { en: url, ar: `${SITE_URL}/ar/products/${product.slug}`, "x-default": url }
+        : { en: url, "x-default": url },
+    },
     openGraph: {
       type: "website",
       url,
