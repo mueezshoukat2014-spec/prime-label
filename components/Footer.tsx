@@ -32,6 +32,8 @@ const COLS = [
     links: [
       { label: "Saudi Arabia", href: "/custom-labels-saudi-arabia" },
       { label: "UAE", href: "/custom-labels-uae" },
+      { label: "Qatar", href: "/custom-labels-qatar" },
+      { label: "Kuwait", href: "/custom-labels-kuwait" },
       { label: "United Kingdom", href: "/custom-clothing-labels-uk" },
       { label: "United States", href: "/custom-clothing-labels-usa" },
       { label: "العربية", href: "/ar" },

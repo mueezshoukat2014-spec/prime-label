@@ -41,6 +41,9 @@ const nextConfig = {
       { source: '/saudi', destination: '/custom-labels-saudi-arabia', permanent: true },
       { source: '/saudi-arabia', destination: '/custom-labels-saudi-arabia', permanent: true },
       { source: '/ksa', destination: '/custom-labels-saudi-arabia', permanent: true },
+      { source: '/qatar', destination: '/custom-labels-qatar', permanent: true },
+      { source: '/doha', destination: '/custom-labels-qatar', permanent: true },
+      { source: '/kuwait', destination: '/custom-labels-kuwait', permanent: true },
       { source: '/arabic', destination: '/ar', permanent: true },
     ];
   },

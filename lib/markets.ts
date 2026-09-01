@@ -201,6 +201,96 @@ export const MARKETS: Market[] = [
       },
     ],
   },
+  {
+    slug: "custom-labels-qatar",
+    country: "Qatar",
+    flag: "🇶🇦",
+    metaTitle: "Custom Clothing Labels Qatar | Woven Labels & Hang Tags Doha",
+    metaDescription:
+      "Premium custom woven labels, satin labels, hang tags & brand packaging for Qatari fashion brands. Low MOQ, free 24h digital proof, DDP express delivery to Doha & Qatar-wide.",
+    h1: "Custom Clothing Labels & Branding for Qatar",
+    intro:
+      "From Doha boutiques to modest-wear houses — high-density woven labels, soft satin labels, luxury hang tags and packaging accessories delivered DDP across Qatar with duties prepaid and no customs surprises.",
+    cities: ["Doha", "Al Rayyan", "Al Wakrah", "Lusail"],
+    delivery: "3–6 days express (DHL / Aramex), DDP — customs cleared & duties paid",
+    keywords: [
+      "clothing labels Qatar",
+      "woven labels Doha",
+      "garment labels Qatar",
+      "hang tags Doha",
+      "abaya labels Qatar",
+      "ليبل ملابس قطر",
+      "بطاقات تعليق الدوحة",
+    ],
+    personas: [
+      "Doha boutiques and concept stores building coordinated brand kits",
+      "Abaya and modest-wear designers needing skin-soft satin labels with Arabic text",
+      "Qatari streetwear and athleisure startups launching first drops",
+    ],
+    faqs: [
+      {
+        q: "Do you deliver custom labels to Doha?",
+        a: "Yes — express DDP delivery across Qatar in 3–6 days after production. Duties are prepaid, so nothing extra is collected at your door in Doha, Lusail or anywhere in Qatar.",
+      },
+      {
+        q: "What is the minimum order for Qatari brands?",
+        a: "Woven labels start at just 100 units — ideal for boutique collections. Satin labels and hang tags start at 500 units, with tiered pricing shown on every quote.",
+      },
+      {
+        q: "Can labels include Arabic text?",
+        a: "Absolutely — we weave and print Arabic, English or bilingual text, including care instructions, at no extra setup cost. Calligraphic logos are matched carefully on your free proof.",
+      },
+      {
+        q: "How fast can I get a full branding kit in Qatar?",
+        a: "Production runs 7–14 working days after proof approval plus 3–6 days express shipping — labels, tags, seals and ribbons ship together as one consolidated DDP parcel.",
+      },
+    ],
+  },
+  {
+    slug: "custom-labels-kuwait",
+    country: "Kuwait",
+    flag: "🇰🇼",
+    metaTitle: "Custom Clothing Labels Kuwait | Woven Labels & Hang Tags Kuwait City",
+    metaDescription:
+      "Custom woven labels, satin labels, hang tags & packaging accessories for Kuwaiti fashion brands. Low MOQ from 100 units, free 24h proof, DDP express delivery to Kuwait City.",
+    h1: "Custom Clothing Labels & Branding for Kuwait",
+    intro:
+      "Kuwaiti fashion brands get the same export-grade branding as global labels — damask woven labels, satin labels, foil hang tags and packaging accessories, delivered DDP to Kuwait City with duties prepaid.",
+    cities: ["Kuwait City", "Hawally", "Salmiya", "Al Ahmadi"],
+    delivery: "3–6 days express (DHL / Aramex), DDP — customs cleared & duties paid",
+    keywords: [
+      "clothing labels Kuwait",
+      "woven labels Kuwait City",
+      "garment labels Kuwait",
+      "hang tags Kuwait",
+      "abaya labels Kuwait",
+      "ليبل ملابس الكويت",
+      "تغليف براندات الكويت",
+    ],
+    personas: [
+      "Kuwaiti boutiques and dessert/fashion crossover brands wanting premium packaging",
+      "Modest-wear and abaya lines needing soft satin labels with bilingual care text",
+      "Online sellers on Instagram/WhatsApp upgrading to professional branding",
+    ],
+    faqs: [
+      {
+        q: "Do you ship custom labels to Kuwait?",
+        a: "Yes — express DDP delivery to Kuwait City and all governorates in 3–6 days after production, with customs and duties prepaid.",
+      },
+      {
+        q: "What MOQ applies for Kuwaiti brands?",
+        a: "Woven labels start at 100 units; satin labels, hang tags and stickers at 500. Every quote shows quantity tiers so you can pick the best value.",
+      },
+      {
+        q: "Can I order labels and packaging together?",
+        a: "That's our speciality — a coordinated kit (labels + hang tags + seals + ribbons + zipper bags) Pantone-matched and shipped as one parcel.",
+      },
+      {
+        q: "How do I get a price in Kuwait?",
+        a: "Send your design and quantity through the quote form or WhatsApp — a tailored DDP quote for Kuwait lands within 12–24 hours with a free digital proof.",
+      },
+    ],
+  },
 ];
 
 export function getMarket(slug: string): Market | null {
