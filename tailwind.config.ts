@@ -23,7 +23,7 @@ const config: Config = {
         cream: {
           DEFAULT: "#F4F0E8",
           muted: "#A59D8E",
-          dim: "#6F685D",
+          dim: "#8A8274",
         },
         champagne: {
           DEFAULT: "#C9A86A",
