@@ -32,6 +32,9 @@ const ALLOWED_KEYS = new Set([
   "aboutImg1",
   "aboutImg2",
   "aboutImg3",
+  "processSteps",
+  "ctaHeading",
+  "ctaSub",
 ]);
 
 /**
@@ -52,6 +55,9 @@ const MAY_BE_EMPTY = new Set([
   "aboutImg1",
   "aboutImg2",
   "aboutImg3",
+  "processSteps",
+  "ctaHeading",
+  "ctaSub",
 ]);
 
 /** Common typos of the big free mail providers, mapped to the real thing. */

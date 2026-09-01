@@ -3,7 +3,25 @@ import { Reveal, Magnetic, TextReveal } from "@/components/anim";
 import Link from "next/link";
 import { normalizeWaLink } from "@/lib/whatsapp";
 
-export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; instagram: string }) {
+export default function FinalCTA({
+  whatsapp,
+  instagram,
+  heading,
+  sub,
+}: {
+  whatsapp?: string;
+  instagram: string;
+  /** site_content.ctaHeading — last word becomes the gradient line. */
+  heading?: string;
+  /** site_content.ctaSub */
+  sub?: string;
+}) {
+  const words = (heading?.trim() || "Make your brand unforgettable.").replace(/\.$/, "").split(/\s+/);
+  const gradientWord = words.length > 1 ? `${words[words.length - 1]}.` : "unforgettable.";
+  const mainLine = words.length > 1 ? words.slice(0, -1).join(" ") : "Make your brand";
+  const subText =
+    sub?.trim() ||
+    "Tell us what you need and we will put together a tailored quote. No pressure, no jargon, just premium branding made for your label.";
   const waHref = normalizeWaLink(whatsapp);
   return (
     <section className="relative overflow-hidden border-t border-line py-16 sm:py-36">
@@ -33,13 +51,12 @@ export default function FinalCTA({ whatsapp, instagram }: { whatsapp?: string; i
           </span>
         </Reveal>
         <h2 className="display mx-auto mt-8 max-w-4xl text-5xl leading-[1.16] tracking-tight sm:text-7xl sm:leading-[1.14] lg:text-[5.5rem] lg:leading-[1.12]">
-          <TextReveal text="Make your brand" />
-          <span className="block pb-3 gradient-text italic sm:pb-4">unforgettable.</span>
+          <TextReveal text={mainLine} />
+          <span className="block pb-3 gradient-text italic sm:pb-4">{gradientWord}</span>
         </h2>
         <Reveal delay={0.2}>
           <p className="mx-auto mt-7 max-w-xl text-balance text-[15px] leading-relaxed text-cream-muted">
-            Tell us what you need and we will put together a tailored quote. No
-            pressure, no jargon, just premium branding made for your label.
+            {subText}
           </p>
         </Reveal>
         <Reveal delay={0.3}>

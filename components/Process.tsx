@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Reveal, EASE } from "@/components/anim";
 
-const STEPS = [
+const DEFAULT_STEPS = [
   {
     n: "01",
     title: "Share your vision",
@@ -26,7 +26,31 @@ const STEPS = [
   },
 ];
 
-export default function Process() {
+/**
+ * Admin override: site_content.processSteps — blocks of "Title" line followed
+ * by body lines, separated by a blank line. 2–6 steps supported.
+ */
+export function parseSteps(raw?: string) {
+  const blocks = String(raw ?? "")
+    .split(/\n\s*\n/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+  const parsed = blocks
+    .map((b, i) => {
+      const lines = b.split("\n").map((l) => l.trim()).filter(Boolean);
+      if (lines.length < 2) return null;
+      return {
+        n: String(i + 1).padStart(2, "0"),
+        title: lines[0].slice(0, 80),
+        body: lines.slice(1).join(" ").slice(0, 400),
+      };
+    })
+    .filter(Boolean) as typeof DEFAULT_STEPS;
+  return parsed.length >= 2 ? parsed.slice(0, 6) : DEFAULT_STEPS;
+}
+
+export default function Process({ stepsRaw }: { stepsRaw?: string }) {
+  const STEPS = parseSteps(stepsRaw);
   const ref = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({

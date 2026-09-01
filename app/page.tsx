@@ -117,11 +117,16 @@ export default async function Home() {
       <SeoMarketSection />
       <GsapFeature />
       <Reels reels={reels} />
-      <Process />
+      <Process stepsRaw={(site as Record<string, string>).processSteps} />
       <GallerySection items={gallery} limit={8} categoryNames={categoryNames} />
       <Testimonials items={testimonials as any} />
       <FAQ items={faqs} />
-      <FinalCTA whatsapp={site.whatsapp} instagram={site.instagram} />
+      <FinalCTA
+        whatsapp={site.whatsapp}
+        instagram={site.instagram}
+        heading={(site as Record<string, string>).ctaHeading}
+        sub={(site as Record<string, string>).ctaSub}
+      />
       <SectionDots />
     </SiteShell>
     </>

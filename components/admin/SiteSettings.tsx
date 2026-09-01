@@ -145,6 +145,31 @@ const FIELDS: Field[] = [
     placeholder: "/about/craft-packing.jpg",
   },
   {
+    key: "processSteps",
+    label: "Homepage — Process steps (How it works)",
+    wide: true,
+    multiline: true,
+    hint:
+      "Each step = first line is the TITLE, following lines are the description. Separate steps with a BLANK line. 2–6 steps. " +
+      "Leave empty for the standard 4 steps (Share your vision / Approve the craft / Precision production / Shipped worldwide).",
+    placeholder: "Share your vision\nTell us about your brand and what you need.\n\nApprove the craft\nWe prepare your artwork and you approve before production.",
+  },
+  {
+    key: "ctaHeading",
+    label: "Homepage — Final CTA heading",
+    wide: true,
+    hint: "The big closing heading. The LAST word automatically becomes the gold italic line. Empty = 'Make your brand unforgettable.'",
+    placeholder: "Make your brand unforgettable.",
+  },
+  {
+    key: "ctaSub",
+    label: "Homepage — Final CTA subtext",
+    wide: true,
+    multiline: true,
+    hint: "The paragraph under the closing heading. Empty = standard text.",
+    placeholder: "Tell us what you need and we will put together a tailored quote...",
+  },
+  {
     key: "quoteProducts",
     label: "Quote form product list",
     wide: true,
