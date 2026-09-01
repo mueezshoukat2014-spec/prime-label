@@ -69,7 +69,7 @@ const FIELDS: Field[] = [
     label: "Contact email",
     type: "email",
     hint: "Shown publicly on the contact page.",
-    placeholder: "hello@primelabelsintl.com",
+    placeholder: "primelabelsintl@gmail.com",
   },
   {
     key: "notificationEmail",

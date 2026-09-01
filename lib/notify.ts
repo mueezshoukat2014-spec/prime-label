@@ -13,7 +13,7 @@ import { sql } from "@/lib/db";
  */
 
 /** Fallback used when the DB has no value (e.g. first run before seeding). */
-export const DEFAULT_NOTIFICATION_EMAIL = "mueezshoukat2014@gmail.com";
+export const DEFAULT_NOTIFICATION_EMAIL = "primelabelsintl@gmail.com";
 
 /** Verified sender. Resend's shared domain works with no DNS setup. */
 const FROM = process.env.RESEND_FROM || "Prime Labels <onboarding@resend.dev>";

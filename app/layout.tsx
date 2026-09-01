@@ -93,14 +93,14 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: name,
       locale: "en_US",
       alternateLocale: ["ar_SA", "en_GB", "en_AE"],
-      images: [{ url: "/icon.png", width: 512, height: 512, alt: BRAND_NAME }],
+      images: [{ url: "/og-banner.jpg", width: 1200, height: 630, alt: BRAND_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description:
         "Custom woven labels, hang tags, stickers and packaging for clothing brands across Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
-      images: ["/icon.png"],
+      images: ["/og-banner.jpg"],
     },
     robots: {
       index: true,

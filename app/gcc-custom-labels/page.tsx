@@ -36,7 +36,7 @@ export const metadata: Metadata = {
       "High-end garment labels, hang tags, stickers and packaging accessories for Gulf fashion brands and global apparel businesses.",
     url: `${SITE_URL}/gcc-custom-labels`,
     siteName: BRAND_NAME,
-    images: [{ url: "/photos/brand-logo.jpg", width: 1200, height: 630, alt: BRAND_NAME }],
+    images: [{ url: "/og-banner.jpg", width: 1200, height: 630, alt: BRAND_NAME }],
   },
 };
 

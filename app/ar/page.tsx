@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description: AR_DESC,
     siteName: BRAND_NAME,
     locale: "ar_SA",
-    images: [{ url: "/photos/brand-logo.jpg", width: 1200, height: 630, alt: BRAND_NAME }],
+    images: [{ url: "/og-banner.jpg", width: 1200, height: 630, alt: BRAND_NAME }],
   },
 };
 
