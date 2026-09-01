@@ -173,7 +173,7 @@ export default function ProductPdp({
         <Reveal>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-cream-muted">
             <span className="text-champagne" aria-label="5 star rated">★★★★★</span>
-            <span>500,000+ units produced for GCC &amp; international brands</span>
+            <span>Produced for fashion brands across the GCC, UK, USA &amp; worldwide</span>
           </div>
           <h1 className="display mt-3 text-4xl leading-[1.05] tracking-tight sm:text-5xl">
             {content.h1}

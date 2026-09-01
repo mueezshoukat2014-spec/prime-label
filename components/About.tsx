@@ -4,9 +4,9 @@ import { Reveal, Counter, EASE } from "@/components/anim";
 
 const DEFAULT_STATS = [
   { value: 8, suffix: "", label: "Product lines" },
-  { value: 160, suffix: "+", label: "Designs made" },
-  { value: 30, suffix: "+", label: "Countries shipped" },
-  { value: 99, suffix: "%", label: "Reorder rate" },
+  { value: 24, suffix: "h", label: "Free digital proof" },
+  { value: 100, suffix: "", label: "Units low MOQ" },
+  { value: 50, suffix: "+", label: "Wash durability" },
 ];
 
 /**
