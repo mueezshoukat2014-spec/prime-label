@@ -65,5 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogUrls,
     { url: `${base}/gallery`, lastModified, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/contact`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/privacy-policy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/terms`, lastModified, changeFrequency: "yearly", priority: 0.3 },
   ];
 }

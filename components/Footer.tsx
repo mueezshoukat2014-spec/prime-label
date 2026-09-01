@@ -133,6 +133,14 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
       <div className="border-t border-line">
         <div className="container-lux flex flex-col items-center justify-between gap-3 py-7 text-[12px] text-cream-dim sm:flex-row">
           <span>© {new Date().getFullYear()} Prime Labels International. All rights reserved.</span>
+          <span className="flex items-center gap-4">
+            <Link href="/privacy-policy" className="transition-colors hover:text-champagne">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-champagne">
+              Terms
+            </Link>
+          </span>
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-champagne animate-pulse-soft" />
             Crafted for premium brands worldwide
