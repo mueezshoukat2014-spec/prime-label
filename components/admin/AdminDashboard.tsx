@@ -9,6 +9,8 @@ import GalleryManager from "@/components/admin/GalleryManager";
 import VideoManager from "@/components/admin/VideoManager";
 import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import SiteSettings from "@/components/admin/SiteSettings";
+import OrdersManager from "@/components/admin/OrdersManager";
+import ReferralsManager from "@/components/admin/ReferralsManager";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
 import ReplyModal, { type ReplyTarget } from "@/components/admin/ReplyModal";
 import { useToast } from "@/components/Toast";
@@ -21,6 +23,8 @@ type Tab =
   | "overview"
   | "analytics"
   | "leads"
+  | "orders"
+  | "referrals"
   | "messages"
   | "products"
   | "pdp"
@@ -35,6 +39,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "analytics", label: "Analytics" },
   { id: "leads", label: "Leads" },
+  { id: "orders", label: "Orders" },
+  { id: "referrals", label: "Referrals" },
   { id: "messages", label: "Messages" },
   { id: "products", label: "Products" },
   { id: "pdp", label: "Product Pages" },
@@ -100,6 +106,8 @@ export default function AdminDashboard() {
           {tab === "overview" && <Overview onJump={setTab} />}
           {tab === "analytics" && <AnalyticsPanel />}
           {tab === "leads" && <Leads />}
+          {tab === "orders" && <OrdersManager />}
+          {tab === "referrals" && <ReferralsManager />}
           {tab === "messages" && <Messages />}
           {tab === "products" && <ProductManager />}
           {tab === "pdp" && <PdpManager />}

@@ -130,9 +130,42 @@ export default function LabelDesigner() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [showRecovery, setShowRecovery] = useState(false);
+  const recoveryShown = useRef(false);
   const templates = useRef<Record<string, HTMLImageElement>>({});
 
   const style = useMemo(() => STYLES.find((s) => s.id === styleId)!, [styleId]);
+
+  // ---- abandoned-design recovery ----------------------------------------
+  // If the visitor uploaded a logo but hasn't sent the design, catch the
+  // exit (mouse leaving toward the tab bar on desktop, tab being hidden on
+  // mobile) once per session and offer to continue on WhatsApp.
+  useEffect(() => {
+    if (!logo || sent) return;
+    if (sessionStorage.getItem("pl_designer_recovery")) return;
+
+    const trigger = () => {
+      if (recoveryShown.current || sent) return;
+      recoveryShown.current = true;
+      sessionStorage.setItem("pl_designer_recovery", "1");
+      setShowRecovery(true);
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      if (!e.relatedTarget && e.clientY <= 0) trigger();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        // fires as they switch away — the popup greets them when they return
+        trigger();
+      }
+    };
+    document.addEventListener("mouseout", onMouseOut);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("mouseout", onMouseOut);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [logo, sent]);
   const sizeOption = useMemo(() => SIZES.find((s) => s.id === size)!, [size]);
 
   /** Picking a size switches the preview to a template of the matching shape
@@ -510,6 +543,57 @@ export default function LabelDesigner() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* ---------------- abandoned-design recovery ---------------- */}
+      <AnimatePresence>
+        {showRecovery && !sent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[90] flex items-end justify-center bg-ink/70 p-4 backdrop-blur-sm sm:items-center"
+            onClick={() => setShowRecovery(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.97 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="w-full max-w-md rounded-3xl border border-champagne/30 bg-surface p-6 shadow-soft sm:p-7"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Save your design on WhatsApp"
+            >
+              <p className="display text-2xl text-cream">Don&apos;t lose your design ✦</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-cream-muted">
+                Your {style.name.toLowerCase()} label looks great. Send the selections to our team
+                on WhatsApp — we&apos;ll keep them saved and reply with a free production proof.
+              </p>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowRecovery(false)}
+                className="btn-primary mt-5 flex w-full items-center justify-center gap-2 !py-3.5 text-[13px] shadow-glow-sm"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.607z" />
+                </svg>
+                Save it on WhatsApp
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowRecovery(false)}
+                className="mt-3 w-full rounded-full border border-line px-5 py-3 text-[12.5px] text-cream-muted transition-all hover:border-champagne/40 hover:text-cream"
+              >
+                Keep designing
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

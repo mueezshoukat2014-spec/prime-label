@@ -4,6 +4,7 @@ import { MARKETS } from "@/lib/markets";
 import { getPublishedPosts } from "@/lib/blog";
 import { CASE_STUDIES } from "@/lib/case-studies";
 import { AR_PDP } from "@/lib/pdp-content-ar";
+import { AR_POSTS } from "@/lib/blog-ar";
 
 const base = "https://primelabelsintl.com";
 
@@ -56,6 +57,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
+    { url: `${base}/ar/blog`, lastModified, changeFrequency: "weekly", priority: 0.75 },
+    ...AR_POSTS.map((p) => ({
+      url: `${base}/ar/blog/${p.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
     ...MARKETS.map((m) => ({
       url: `${base}/${m.slug}`,
       lastModified,
@@ -75,6 +83,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/samples`, lastModified, changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/designer`, lastModified, changeFrequency: "monthly", priority: 0.88 },
     { url: `${base}/starter-kit`, lastModified, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${base}/calculator`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/refer`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/track`, lastModified, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/faq`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/shipping`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/gallery`, lastModified, changeFrequency: "weekly", priority: 0.85 },

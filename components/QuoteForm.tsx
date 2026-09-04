@@ -196,12 +196,15 @@ type TouchKey = "name" | "phone" | "product" | "email";
 export default function QuoteForm({
   defaultProduct = "",
   defaultDetails = "",
+  defaultQuantity = "",
   whatsapp,
   productChoices,
 }: {
   defaultProduct?: string;
   /** Pre-filled order details (e.g. configurator selection from a product page). */
   defaultDetails?: string;
+  /** Pre-filled quantity (e.g. "2,500 pcs" from the cost calculator) — mapped to the nearest band. */
+  defaultQuantity?: string;
   whatsapp?: string;
   /** Admin-managed product list; falls back to the built-in categories. */
   productChoices?: string[];
@@ -218,13 +221,28 @@ export default function QuoteForm({
   const exactInList = productList.find((p) => p.toLowerCase() === trimmedDefault.toLowerCase());
   const seededProduct = exactInList || resolveCategory(defaultProduct);
 
+  // Map an incoming ?quantity= (e.g. "2,500 pcs" from the cost calculator)
+  // onto the nearest quantity band offered in the dropdown.
+  const seededQuantity = (() => {
+    const n = parseInt(defaultQuantity.replace(/[^\d]/g, ""), 10);
+    if (!Number.isFinite(n) || n <= 0) return "";
+    if (n < 100) return QUANTITY_OPTIONS[0];
+    if (n <= 250) return QUANTITY_OPTIONS[1];
+    if (n <= 500) return QUANTITY_OPTIONS[2];
+    if (n <= 1000) return QUANTITY_OPTIONS[3];
+    if (n <= 2500) return QUANTITY_OPTIONS[4];
+    if (n <= 5000) return QUANTITY_OPTIONS[5];
+    if (n <= 10000) return QUANTITY_OPTIONS[6];
+    return QUANTITY_OPTIONS[7];
+  })();
+
   const [form, setForm] = useState<FormState>({
     name: "",
     phone: "",
     products: seededProduct ? [seededProduct] : [],
     otherProduct: "",
     email: "",
-    quantity: "",
+    quantity: seededQuantity,
     details: defaultDetails.trim().slice(0, 2000),
     company: "",
     country: "",

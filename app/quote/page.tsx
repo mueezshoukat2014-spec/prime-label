@@ -26,11 +26,12 @@ export const metadata: Metadata = {
 export default async function QuotePage({
   searchParams,
 }: {
-  searchParams: { product?: string; details?: string };
+  searchParams: { product?: string; details?: string; quantity?: string };
 }) {
   const site = await getSiteContent();
   const product = searchParams?.product || "";
   const details = searchParams?.details || "";
+  const quantity = searchParams?.quantity || "";
 
   return (
     <SiteShell
@@ -136,6 +137,7 @@ export default async function QuotePage({
                 <QuoteForm
                   defaultProduct={product}
                   defaultDetails={details}
+                  defaultQuantity={quantity}
                   whatsapp={site.whatsapp}
                   productChoices={parseQuoteProducts((site as Record<string, string>).quoteProducts)}
                 />
