@@ -37,6 +37,24 @@ export function waProductLink(productTitle?: string): string {
 export const WHATSAPP_URL = waLink();
 
 /**
+ * Guided order message: a structured template the customer completes in
+ * WhatsApp. Gives us complete info in the first message instead of "hi".
+ */
+export function waGuidedOrderLink(productTitle?: string): string {
+  const msg = [
+    "Hi Prime Labels! I'd like a quote 👇",
+    "",
+    `▪ Product: ${productTitle || "____"}`,
+    "▪ Quantity: ____",
+    "▪ City / Country: ____",
+    "▪ Logo ready? (yes/no): ____",
+    "",
+    "(I can attach my logo after sending this)",
+  ].join("\n");
+  return waLink(msg);
+}
+
+/**
  * Link used right after a quote form is submitted. Carries the visitor's name,
  * their message and the uploaded artwork URL so the chat opens with full context.
  */

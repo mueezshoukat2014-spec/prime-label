@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal, EASE } from "@/components/anim";
-import { waProductLink } from "@/lib/whatsapp";
+import { waProductLink, waGuidedOrderLink } from "@/lib/whatsapp";
 import { volumeTiersFor, type PdpContent } from "@/lib/pdp-content";
 
 type PdpProduct = {
@@ -99,9 +99,11 @@ export default function ProductPdp({
   const quoteHref = `/quote?product=${encodeURIComponent(product.title)}${
     detailsText ? `&details=${encodeURIComponent(detailsText)}` : ""
   }`;
-  const waHref = waProductLink(
-    detailsText ? `${product.title} (${detailsText})` : product.title
-  );
+  // Guided WhatsApp template: if the visitor configured options we carry
+  // them; otherwise the structured fill-in template guides the conversation.
+  const waHref = detailsText
+    ? waProductLink(`${product.title} (${detailsText})`)
+    : waGuidedOrderLink(product.title);
 
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
