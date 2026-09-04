@@ -1,6 +1,9 @@
 export const SITE_URL = "https://primelabelsintl.com";
 export const BRAND_NAME = "Prime Labels International";
 
+/** Google Business Profile review link — customers land directly on the "write a review" box. */
+export const GOOGLE_REVIEW_URL = "https://g.page/r/CYZM4--mhJyZEBM/review";
+
 export const GCC_COUNTRIES = [
   "Saudi Arabia",
   "United Arab Emirates",
@@ -78,7 +81,10 @@ export const organizationJsonLd = {
   image: `${SITE_URL}/icon.png`,
   description:
     "Premium custom branding studio producing woven labels, satin labels, hang tags, stickers, packaging and garment branding accessories for clothing brands across Saudi Arabia, the GCC and worldwide.",
-  sameAs: ["https://www.instagram.com/primelabels_intl"],
+  sameAs: [
+    "https://www.instagram.com/primelabels_intl",
+    "https://g.page/r/CYZM4--mhJyZEBM",
+  ],
   areaServed: DEMAND_MARKETS.map((name) => ({ "@type": "Country", name })),
   knowsAbout: SEO_PRODUCTS,
   slogan: "Every great brand starts with a label.",

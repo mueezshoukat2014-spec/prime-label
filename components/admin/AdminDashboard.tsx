@@ -312,7 +312,7 @@ function Leads() {
                 {l.phone && (
                   <a
                     href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-                      `Hi ${l.name || ""}! Thank you for ordering with Prime Labels International. We'd love your feedback — it takes 30 seconds and helps small brands find us: https://primelabelsintl.com/#testimonials (tap "Share your experience"). Shukran! ✨`
+                      `Hi ${l.name || ""}! Thank you for ordering with Prime Labels International. We'd love your feedback — it takes 30 seconds and helps small brands find us ⭐\n\nLeave a Google review here:\nhttps://g.page/r/CYZM4--mhJyZEBM/review\n\nShukran! ✨`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"

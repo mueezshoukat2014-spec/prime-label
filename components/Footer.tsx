@@ -54,6 +54,7 @@ const COLS = [
       { label: "Contact", href: "/contact" },
       { label: "WhatsApp", href: WHATSAPP_URL },
       { label: "Instagram", href: "https://www.instagram.com/primelabels_intl" },
+      { label: "Review us on Google ★", href: "https://g.page/r/CYZM4--mhJyZEBM/review" },
     ],
   },
 ];
