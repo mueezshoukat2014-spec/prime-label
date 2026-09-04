@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { waGuidedOrderLink } from "@/lib/whatsapp";
+import { trackAdsLead } from "@/lib/gtag";
 
 const input =
   "w-full rounded-xl border border-line bg-surface/40 px-3.5 py-3 text-[13.5px] text-cream outline-none transition-colors focus:border-champagne/50";
@@ -59,6 +60,7 @@ export default function QuickQuote({
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not send. Please try WhatsApp instead.");
+      trackAdsLead("quick-quote");
       setDone(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Could not send. Please try WhatsApp instead.");

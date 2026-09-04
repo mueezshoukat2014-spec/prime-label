@@ -5,6 +5,7 @@ import { EASE } from "@/components/anim";
 import { normalizeWaLink, waProductLink, waQuoteSubmittedLink } from "@/lib/whatsapp";
 import { celebrate } from "@/lib/confetti";
 import { trackLead } from "@/lib/fbq";
+import { trackAdsLead } from "@/lib/gtag";
 import { trackEvent } from "@/lib/track";
 import { useToast } from "@/components/Toast";
 import {
@@ -440,6 +441,7 @@ export default function QuoteForm({
 
       // Fire Meta Lead only after the API confirms the lead was saved.
       trackLead(productForSubmission);
+      trackAdsLead("quote-form");
       trackEvent("lead_submit", productForSubmission);
 
       const uploaded = (data.artworkUrl as string | null) ?? null;

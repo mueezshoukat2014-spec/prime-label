@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { waLink } from "@/lib/whatsapp";
+import { trackAdsLead } from "@/lib/gtag";
 
 /**
  * Live Label Designer.
@@ -311,6 +312,7 @@ export default function LabelDesigner() {
       const res = await fetch("/api/leads", { method: "POST", body: fd });
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j?.ok) throw new Error(j?.error || "Could not send — try WhatsApp instead.");
+      trackAdsLead("designer");
       setSent(true);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Could not send — try WhatsApp instead.");

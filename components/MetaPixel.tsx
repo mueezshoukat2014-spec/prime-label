@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { trackContact, trackQuoteFormView } from "@/lib/fbq";
+import { trackAdsWhatsApp } from "@/lib/gtag";
 
 declare global {
   interface Window {
@@ -44,6 +45,7 @@ export default function MetaPixelRouteTracker() {
       const href = link.href || "";
       if (/wa\.me|whatsapp/i.test(href)) {
         trackContact("WhatsApp Click");
+        trackAdsWhatsApp();
       } else if (/\/contact(?:$|[?#])/i.test(href)) {
         trackContact("Contact Page Click");
       } else if (/\/quote(?:$|[?#])/i.test(href)) {

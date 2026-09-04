@@ -157,6 +157,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {META_PIXEL_ID && (
           <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
         )}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        {/* Google Ads tag (AW-18430949817) — deferred like the Meta Pixel:
+            events queue immediately, the network script loads on first
+            interaction or ~1.2s after window load, so LCP/TBT are unaffected. */}
+        <script
+          id="google-ads-base"
+          dangerouslySetInnerHTML={{
+            __html: `
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+window.gtag=gtag;
+gtag('js',new Date());
+gtag('config','AW-18430949817',{send_page_view:true});
+(function(){var loaded=0;var go=function(){if(loaded)return;loaded=1;
+var t=document.createElement('script');t.async=true;
+t.src='https://www.googletagmanager.com/gtag/js?id=AW-18430949817';
+var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(t,s)};
+if(document.readyState==='complete'){setTimeout(go,1200)}
+else{window.addEventListener('load',function(){setTimeout(go,1200)},{once:true})}
+['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
+window.addEventListener(ev,go,{once:true,passive:true})});})();`,
+          }}
+        />
         <link rel="preconnect" href="https://pf7ehmyjhm559fb0.public.blob.vercel-storage.com" crossOrigin="anonymous" />
         {META_PIXEL_ID && (
           <script
