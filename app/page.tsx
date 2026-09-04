@@ -10,6 +10,8 @@ import GallerySection from "@/components/GallerySection";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
+import QuickQuote from "@/components/QuickQuote";
+import { parseQuoteProducts } from "@/lib/quote-validation";
 import Footer from "@/components/Footer";
 import SectionDots from "@/components/SectionDots";
 import ScrollToTopOnLoad from "@/components/ScrollToTopOnLoad";
@@ -121,6 +123,18 @@ export default async function Home() {
       <GallerySection items={gallery} limit={8} categoryNames={categoryNames} />
       <Testimonials items={testimonials as any} />
       <FAQ items={faqs} />
+      {/* quick 3-field quote before the big CTA */}
+      <section className="relative border-t border-line py-14 sm:py-24">
+        <div className="container-lux">
+          <div className="mx-auto max-w-xl">
+            <QuickQuote
+              products={parseQuoteProducts((site as Record<string, string>).quoteProducts).filter(
+                (p) => p !== "Other"
+              )}
+            />
+          </div>
+        </div>
+      </section>
       <FinalCTA
         whatsapp={site.whatsapp}
         instagram={site.instagram}
