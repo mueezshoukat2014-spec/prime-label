@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 
@@ -12,11 +13,18 @@ const SEEN_KEY = "pl_leadcap_seen";
  * scroll (60%) or 45s on page — NOT an aggressive instant popup. Routes the
  * visitor to the quote form / WhatsApp instead of collecting emails we'd
  * then have to nurture manually.
+ * Never shown in the admin panel or on the quote pages themselves.
  */
 export default function LeadCapture({ whatsapp }: { whatsapp?: string }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname() || "";
+  const suppressed =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/quote") ||
+    pathname.startsWith("/ar/quote");
 
   useEffect(() => {
+    if (suppressed) return;
     try {
       if (window.sessionStorage.getItem(SEEN_KEY) === "1") return;
     } catch {}
@@ -39,7 +47,9 @@ export default function LeadCapture({ whatsapp }: { whatsapp?: string }) {
       window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [suppressed]);
+
+  if (suppressed) return null;
 
   return (
     <AnimatePresence>
