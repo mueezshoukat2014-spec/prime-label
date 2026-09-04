@@ -17,8 +17,8 @@
 
 export const GOOGLE_ADS_ID = "AW-18430949817";
 
-/** Conversion label for "Submit lead form" — paste from Google Ads when created. */
-const LEAD_CONVERSION_LABEL = "";
+/** Conversion label for "Submit lead form" — from Google Ads conversion action. */
+const LEAD_CONVERSION_LABEL = "k0f6CMul004cELnzx9RE";
 
 /** Conversion label for WhatsApp click (optional secondary action). */
 const WHATSAPP_CONVERSION_LABEL = "";
@@ -40,6 +40,8 @@ export function trackAdsLead(source?: string): void {
   if (LEAD_CONVERSION_LABEL) {
     window.gtag?.("event", "conversion", {
       send_to: `${GOOGLE_ADS_ID}/${LEAD_CONVERSION_LABEL}`,
+      value: 1.0,
+      currency: "PKR",
     });
   }
 }
