@@ -24,6 +24,7 @@ export default function QuickQuote({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [product, setProduct] = useState(defaultProduct);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -116,21 +117,49 @@ export default function QuickQuote({
                 disabled={busy}
                 autoComplete="tel"
               />
-              <select
-                className={`${input} appearance-none`}
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                disabled={busy}
-              >
-                <option value="" className="bg-ink">
-                  Which product? *
-                </option>
-                {products.map((p) => (
-                  <option key={p} value={p} className="bg-ink">
-                    {p}
-                  </option>
-                ))}
-              </select>
+              {/* themed product picker (matches the main quote form listbox) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setPickerOpen((v) => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={pickerOpen}
+                  disabled={busy}
+                  className={`${input} flex items-center justify-between gap-3 text-left`}
+                >
+                  <span className={product ? "text-cream" : "text-cream-dim/60"}>
+                    {product || "Which product? *"}
+                  </span>
+                  <svg
+                    className={`shrink-0 text-cream-dim transition-transform ${pickerOpen ? "rotate-180" : ""}`}
+                    width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden
+                  >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                {pickerOpen && (
+                  <div
+                    className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    role="listbox"
+                  >
+                    {products.map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        role="option"
+                        aria-selected={product === p}
+                        onClick={() => { setProduct(p); setPickerOpen(false); }}
+                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${
+                          product === p ? "bg-champagne/12 text-cream" : "text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                        }`}
+                      >
+                        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${product === p ? "bg-champagne" : "bg-cream/20"}`} />
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             {error && <p className="mt-3 text-[12.5px] text-red-300">{error}</p>}
             <button
