@@ -24,6 +24,8 @@ type Style = {
   /** Whether the label face is dark (invert pale logos hint). */
   dark: boolean;
   productTitle: string;
+  /** Shape family — used to suggest the right template for a chosen size. */
+  shape: "standard" | "slim" | "compact";
 };
 
 const STYLES: Style[] = [
@@ -34,6 +36,7 @@ const STYLES: Style[] = [
     area: { x: 0.115, y: 0.17, w: 0.775, h: 0.62, rotate: -3.4 },
     dark: true,
     productTitle: "Woven Labels",
+    shape: "standard",
   },
   {
     id: "damask-cream",
@@ -42,6 +45,7 @@ const STYLES: Style[] = [
     area: { x: 0.12, y: 0.18, w: 0.76, h: 0.6, rotate: -2.5 },
     dark: false,
     productTitle: "Woven Labels",
+    shape: "standard",
   },
   {
     id: "damask-navy",
@@ -50,6 +54,7 @@ const STYLES: Style[] = [
     area: { x: 0.12, y: 0.18, w: 0.76, h: 0.6, rotate: -2.5 },
     dark: true,
     productTitle: "Woven Labels",
+    shape: "standard",
   },
   {
     id: "satin-white",
@@ -58,11 +63,52 @@ const STYLES: Style[] = [
     area: { x: 0.13, y: 0.2, w: 0.74, h: 0.56, rotate: -1.5 },
     dark: false,
     productTitle: "Satin Labels",
+    shape: "standard",
+  },
+  {
+    id: "slim-black",
+    name: "Slim Tape — Black",
+    src: "/designer/base-black-slim.jpg",
+    area: { x: 0.115, y: 0.345, w: 0.7, h: 0.235, rotate: 2.6 },
+    dark: true,
+    productTitle: "Woven Labels",
+    shape: "slim",
+  },
+  {
+    id: "slim-cream",
+    name: "Slim Tape — Cream",
+    src: "/designer/base-cream-slim.jpg",
+    area: { x: 0.13, y: 0.325, w: 0.66, h: 0.26, rotate: 1.0 },
+    dark: false,
+    productTitle: "Woven Labels",
+    shape: "slim",
+  },
+  {
+    id: "compact-tan",
+    name: "Compact — Tan Cotton",
+    src: "/designer/base-tan-compact.jpg",
+    area: { x: 0.225, y: 0.25, w: 0.51, h: 0.37, rotate: -6.3 },
+    dark: false,
+    productTitle: "Woven Labels",
+    shape: "compact",
   },
 ];
 
 const FOLDS = ["Straight Cut", "Center Fold", "End Fold", "Manhattan Fold"];
-const SIZES = ["40mm", "50mm", "60mm", "70mm"];
+
+type SizeOption = { id: string; label: string; shape: Style["shape"] };
+/** Real production sizes (height × width). Shape drives which template previews best. */
+const SIZES: SizeOption[] = [
+  { id: "1x5", label: "1 × 5 cm", shape: "slim" },
+  { id: "1x6", label: "1 × 6 cm", shape: "slim" },
+  { id: "1.5x4", label: "1.5 × 4 cm", shape: "compact" },
+  { id: "1.5x7", label: "1.5 × 7 cm", shape: "slim" },
+  { id: "2x5", label: "2 × 5 cm", shape: "standard" },
+  { id: "2x6", label: "2 × 6 cm", shape: "standard" },
+  { id: "2.5x6", label: "2.5 × 6 cm", shape: "standard" },
+  { id: "3x7", label: "3 × 7 cm", shape: "standard" },
+  { id: "custom", label: "Custom size", shape: "standard" },
+];
 
 const chip = (active: boolean) =>
   `rounded-full border px-4 py-2 text-[12px] transition-all duration-300 ${
@@ -78,7 +124,7 @@ export default function LabelDesigner() {
   const [logoName, setLogoName] = useState("");
   const [styleId, setStyleId] = useState(STYLES[0].id);
   const [fold, setFold] = useState("End Fold");
-  const [size, setSize] = useState("50mm");
+  const [size, setSize] = useState("2x5");
   const [scale, setScale] = useState(0.62); // logo width as fraction of label face
   const [brandText, setBrandText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -87,6 +133,19 @@ export default function LabelDesigner() {
   const templates = useRef<Record<string, HTMLImageElement>>({});
 
   const style = useMemo(() => STYLES.find((s) => s.id === styleId)!, [styleId]);
+  const sizeOption = useMemo(() => SIZES.find((s) => s.id === size)!, [size]);
+
+  /** Picking a size switches the preview to a template of the matching shape
+   *  (keeps the same colour family where possible). */
+  function pickSize(opt: SizeOption) {
+    setSize(opt.id);
+    if (style.shape === opt.shape) return;
+    const current = STYLES.find((s) => s.id === styleId)!;
+    const candidates = STYLES.filter((s) => s.shape === opt.shape);
+    if (!candidates.length) return;
+    const sameTone = candidates.find((s) => s.dark === current.dark);
+    setStyleId((sameTone || candidates[0]).id);
+  }
 
   // preload template images once
   useEffect(() => {
@@ -194,10 +253,10 @@ export default function LabelDesigner() {
 
   const selections = useMemo(
     () =>
-      `Designer: ${style.name} · Fold: ${fold} · Width: ${size}${
+      `Designer: ${style.name} · Fold: ${fold} · Size: ${sizeOption.label}${
         brandText.trim() ? ` · Text: ${brandText.trim()}` : ""
       }`,
-    [style, fold, size, brandText]
+    [style, fold, sizeOption, brandText]
   );
 
   /** Attach the canvas snapshot + selections to a quote request. */
@@ -305,7 +364,14 @@ export default function LabelDesigner() {
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => setStyleId(s.id)}
+                  onClick={() => {
+                    setStyleId(s.id);
+                    // keep the size chip consistent with the chosen shape
+                    if (sizeOption.shape !== s.shape && sizeOption.id !== "custom") {
+                      const match = SIZES.find((z) => z.shape === s.shape);
+                      if (match) setSize(match.id);
+                    }
+                  }}
                   className={`overflow-hidden rounded-2xl border text-left transition-all duration-300 ${
                     styleId === s.id ? "border-champagne shadow-glow-sm" : "border-line hover:border-champagne/40"
                   }`}
@@ -331,14 +397,19 @@ export default function LabelDesigner() {
           </div>
 
           <div>
-            <p className="mb-2.5 text-[11px] uppercase tracking-wide2 text-cream-dim">Label width</p>
+            <p className="mb-2.5 text-[11px] uppercase tracking-wide2 text-cream-dim">
+              Label size <span className="normal-case tracking-normal">(height × width)</span>
+            </p>
             <div className="flex flex-wrap gap-2">
               {SIZES.map((s) => (
-                <button key={s} type="button" onClick={() => setSize(s)} className={chip(size === s)}>
-                  {s}
+                <button key={s.id} type="button" onClick={() => pickSize(s)} className={chip(size === s.id)}>
+                  {s.label}
                 </button>
               ))}
             </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-cream-dim">
+              Preview switches to the closest label shape — any exact dimension is produced to spec.
+            </p>
           </div>
 
           <div>

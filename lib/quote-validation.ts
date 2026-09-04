@@ -13,6 +13,7 @@ export const PRODUCT_CATEGORIES = [
   "Zipper Bags",
   "Woven Patches",
   "Steel Logo Tags",
+  "Brand Starter Kit",
   "Other",
 ] as const;
 
@@ -57,6 +58,9 @@ const CATEGORY_ALIASES: Record<string, ProductCategory> = {
   "zipper bags": "Zipper Bags",
   "woven labels": "Woven Labels",
   "satin labels": "Satin Labels",
+  "starter kit": "Brand Starter Kit",
+  "brand starter kit": "Brand Starter Kit",
+  "starter box": "Brand Starter Kit",
 };
 
 /**

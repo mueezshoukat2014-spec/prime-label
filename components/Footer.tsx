@@ -45,6 +45,7 @@ const COLS = [
     links: [
       { label: "Customize Your Order", href: "/quote" },
       { label: "Design Your Label", href: "/designer" },
+      { label: "Brand Starter Kit", href: "/starter-kit" },
       { label: "Request a Sample", href: "/samples" },
       { label: "Contact", href: "/contact" },
       { label: "WhatsApp", href: WHATSAPP_URL },

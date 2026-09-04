@@ -17,9 +17,13 @@ const input =
 export default function QuickQuote({
   products,
   defaultProduct = "",
+  heading = "Get your quote in 60 seconds",
+  sub = "3 fields only — we'll handle the details on WhatsApp.",
 }: {
   products: string[];
   defaultProduct?: string;
+  heading?: string;
+  sub?: string;
 }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -95,10 +99,8 @@ export default function QuickQuote({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <p className="display text-xl text-cream">Get your quote in 60 seconds</p>
-            <p className="mt-1 text-[12px] text-cream-dim">
-              3 fields only — we&apos;ll handle the details on WhatsApp.
-            </p>
+            <p className="display text-xl text-cream">{heading}</p>
+            <p className="mt-1 text-[12px] text-cream-dim">{sub}</p>
             <div className="mt-4 space-y-3">
               <input
                 className={input}
