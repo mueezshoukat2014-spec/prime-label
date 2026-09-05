@@ -131,7 +131,7 @@ export default function QuickQuote({
                   disabled={busy}
                   className={`${input} flex items-center justify-between gap-3 text-left`}
                 >
-                  <span className={product ? "text-cream" : "text-cream-dim/60"}>
+                  <span className={product ? "text-cream" : "text-cream-dim"}>
                     {product || "Which product? *"}
                   </span>
                   <svg

@@ -32,7 +32,7 @@ import {
 /* ------------------------------- styling ------------------------------- */
 
 const inputCls =
-  "w-full rounded-xl border bg-surface/40 px-4 py-3.5 text-[14px] text-cream placeholder:text-cream-dim/60 outline-none transition-colors duration-300 focus:bg-surface/70";
+  "w-full rounded-xl border bg-surface/40 px-4 py-3.5 text-[14px] text-cream placeholder:text-cream-dim outline-none transition-colors duration-300 focus:bg-surface/70";
 
 const okBorder = "border-line focus:border-champagne/50";
 const errBorder = "border-red-500/60 focus:border-red-500/80";
@@ -584,7 +584,7 @@ export default function QuoteForm({
                         ✦
                       </span>
                     )}
-                    <span className={selectedCountry ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                    <span className={selectedCountry ? "truncate text-cream" : "truncate text-cream-dim"}>
                       {selectedCountry
                         ? `${selectedCountry.name}${selectedCountry.code ? ` (${selectedCountry.code})` : ""}`
                         : "Select country"}
@@ -719,7 +719,7 @@ export default function QuoteForm({
                   aria-expanded={productOpen}
                   className={`${inputCls} ${liveErrors.product ? errBorder : okBorder} flex items-center justify-between gap-3 text-left backdrop-blur-xl`}
                 >
-                  <span className={form.products.length ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                  <span className={form.products.length ? "truncate text-cream" : "truncate text-cream-dim"}>
                     {form.products.length
                       ? `${form.products.length} product${form.products.length === 1 ? "" : "s"} selected`
                       : "Select products — multiple allowed"}
@@ -800,7 +800,7 @@ export default function QuoteForm({
                   onClick={() => setQuantityOpen((v) => !v)}
                   className={`${inputCls} ${okBorder} flex items-center justify-between gap-3 text-left backdrop-blur-xl`}
                 >
-                  <span className={form.quantity ? "truncate text-cream" : "truncate text-cream-dim/60"}>
+                  <span className={form.quantity ? "truncate text-cream" : "truncate text-cream-dim"}>
                     {form.quantity || "Select a quantity"}
                   </span>
                   <svg className={`shrink-0 text-cream-dim transition-transform ${quantityOpen ? "rotate-180" : ""}`} width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
