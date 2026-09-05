@@ -12,8 +12,17 @@ export default function Loader() {
     // Cinematic preloader for FIRST-EVER visit only. Repeat visitors
     // (localStorage) and same-session navigations (sessionStorage) skip it
     // entirely — best mobile LCP for the traffic that already knows us.
+    //
+    // PAID TRAFFIC also skips it: visitors landing from ads (gclid/gbraid/
+    // wbraid = Google Ads, fbclid = Meta, or any utm_ tagged campaign) are
+    // cold, often on mobile, and bounce fast — they must see content
+    // immediately, not an intro animation. Every second of LCP costs paid
+    // conversions.
     try {
+      const q = window.location.search;
+      const isAdClick = /[?&](gclid|gbraid|wbraid|fbclid|ttclid|msclkid|utm_source)=/i.test(q);
       if (
+        isAdClick ||
         sessionStorage.getItem("pl_loaded") === "1" ||
         localStorage.getItem("pl_visited") === "1"
       ) {
