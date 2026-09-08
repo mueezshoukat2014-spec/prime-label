@@ -5,14 +5,9 @@ import { useCallback, useEffect, useState } from "react";
 const input =
   "w-full rounded-lg border border-line bg-ink/40 px-3 py-2.5 text-[13px] text-cream outline-none transition-colors focus:border-champagne/50";
 
-const STATUSES = [
-  "Proof approved",
-  "In production",
-  "Quality check",
-  "Packed",
-  "Shipped",
-  "Delivered",
-];
+import { ORDER_STATUSES, DEFAULT_ORDER_STATUS } from "@/lib/order-statuses";
+
+const STATUSES: string[] = [...ORDER_STATUSES];
 
 type Order = {
   id: number;
@@ -30,7 +25,7 @@ type Order = {
 };
 
 function waShareLink(o: { code: string; phone?: string | null; status?: string }) {
-  const msg = `Hi! Your Prime Labels order ${o.code} is confirmed ✅\n\nTrack it live anytime here:\nhttps://primelabelsintl.com/track?code=${o.code}\n\nCurrent status: ${o.status || "Proof approved"}`;
+  const msg = `Hi! Your Prime Labels order ${o.code} is confirmed ✅\n\nTrack it live anytime here:\nhttps://primelabelsintl.com/track?code=${o.code}\n\nCurrent status: ${o.status || DEFAULT_ORDER_STATUS}`;
   const digits = String(o.phone || "").replace(/\D/g, "");
   return digits
     ? `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`

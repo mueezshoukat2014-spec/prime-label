@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
+import { ORDER_STATUSES, DEFAULT_ORDER_STATUS } from "@/lib/order-statuses";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const ORDER_STATUSES = [
-  "Proof approved",
-  "In production",
-  "Quality check",
-  "Packed",
-  "Shipped",
-  "Delivered",
-] as const;
 
 function s(v: unknown, max: number): string {
   return String(v ?? "").trim().slice(0, max);
@@ -46,7 +38,7 @@ export async function POST(req: Request) {
     const rows = await sql`
       INSERT INTO orders (code, customer_name, phone, product, status, tracking_number, tracking_url, eta, notes)
       VALUES (${code}, ${customerName}, ${s(b.phone, 40)}, ${s(b.product, 200)},
-              ${s(b.status, 60) || "Proof approved"}, ${s(b.tracking_number, 120)},
+              ${s(b.status, 60) || DEFAULT_ORDER_STATUS}, ${s(b.tracking_number, 120)},
               ${s(b.tracking_url, 500)}, ${s(b.eta, 120)}, ${s(b.notes, 2000)})
       ON CONFLICT (code) DO NOTHING
       RETURNING id, code
@@ -69,7 +61,7 @@ export async function PUT(req: Request) {
       customer_name = ${s(b.customer_name, 120)},
       phone = ${s(b.phone, 40)},
       product = ${s(b.product, 200)},
-      status = ${s(b.status, 60) || "Proof approved"},
+      status = ${s(b.status, 60) || DEFAULT_ORDER_STATUS},
       tracking_number = ${s(b.tracking_number, 120)},
       tracking_url = ${s(b.tracking_url, 500)},
       eta = ${s(b.eta, 120)},

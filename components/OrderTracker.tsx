@@ -5,14 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/components/anim";
 import { waLink } from "@/lib/whatsapp";
 
-const STATUS_FLOW = [
-  "Proof approved",
-  "In production",
-  "Quality check",
-  "Packed",
-  "Shipped",
-  "Delivered",
-];
+import { ORDER_STATUSES } from "@/lib/order-statuses";
+
+const STATUS_FLOW: string[] = [...ORDER_STATUSES];
 
 type Order = {
   code: string;
