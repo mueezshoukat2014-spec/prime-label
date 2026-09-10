@@ -4,6 +4,14 @@ export const BRAND_NAME = "Prime Labels International";
 /** Google Business Profile review link — customers land directly on the "write a review" box. */
 export const GOOGLE_REVIEW_URL = "https://g.page/r/CYZM4--mhJyZEBM/review";
 
+/**
+ * Public contact phone. Matches the number registered on the Google Business
+ * Profile (+92 324 4999224) so that Name-Address-Phone data is consistent
+ * between the website and the listing — a weighted signal for local ranking.
+ */
+export const PHONE_DISPLAY = "+92 324 4999224";
+export const PHONE_E164 = "+923244999224";
+
 export const GCC_COUNTRIES = [
   "Saudi Arabia",
   "United Arab Emirates",
@@ -105,6 +113,72 @@ export const websiteJsonLd = {
   url: SITE_URL,
   publisher: { "@id": `${SITE_URL}/#organization` },
   inLanguage: ["en", "ar"],
+};
+
+/**
+ * LocalBusiness entity.
+ *
+ * Deliberately carries NO `aggregateRating` and NO `review` property.
+ *
+ * Google's "self-serving reviews" rule (Search Central, 18 Sept 2019, restated
+ * Dec 2025) makes pages that use LocalBusiness or Organization structured data
+ * INELIGIBLE for review rich results whenever the entity being reviewed controls
+ * the reviews — whether they sit directly in the markup or arrive via an embedded
+ * third-party widget. Google names Google Business review widgets explicitly.
+ * The review-snippet guidelines separately state: "don't aggregate reviews or
+ * ratings from other websites."
+ *
+ * So copying the Google Business Profile score into `aggregateRating` would earn
+ * no stars in search. It is not a penalty — the markup is simply ignored — but it
+ * is wasted effort and a guideline violation. The genuine star rating surfaces in
+ * Maps, the local pack and the Knowledge Panel straight from the Business Profile.
+ *
+ * Note also that no `address` is set: this is a service-area business with no
+ * public premises, so `areaServed` is used instead. Add `address` here (and in the
+ * footer + GBP, so all three match) if a physical location is ever published.
+ */
+export const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${SITE_URL}/#local-business`,
+  name: BRAND_NAME,
+  alternateName: "Prime Labels",
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.png`,
+  image: `${SITE_URL}/icon.png`,
+  telephone: PHONE_E164,
+  priceRange: "$$",
+  currenciesAccepted: "USD, SAR, AED, GBP, EUR, PKR",
+  paymentAccepted: "Bank transfer, Credit card, PayPal",
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "00:00",
+      closes: "23:59",
+    },
+  ],
+  areaServed: DEMAND_MARKETS.map((name) => ({ "@type": "Country", name })),
+  sameAs: [
+    "https://www.instagram.com/primelabels_intl",
+    "https://g.page/r/CYZM4--mhJyZEBM",
+  ],
+  parentOrganization: { "@id": `${SITE_URL}/#organization` },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "sales",
+    telephone: PHONE_E164,
+    availableLanguage: ["English", "Arabic"],
+    areaServed: "Worldwide",
+  },
 };
 
 export const offerCatalogJsonLd = {

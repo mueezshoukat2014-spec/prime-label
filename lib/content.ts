@@ -140,40 +140,64 @@ export const faqs = [
 ];
 
 export const testimonials = [
+  /*
+   * Real Google Business Profile reviews, published on the Prime Labels
+   * International listing (https://g.page/r/CYZM4--mhJyZEBM). Text is reproduced
+   * verbatim — typos included — because altering a customer's words turns a
+   * genuine review into a fabricated one.
+   *
+   * These are DISPLAYED ONLY. They are deliberately not marked up with Review or
+   * aggregateRating: Google's self-serving review rule makes LocalBusiness /
+   * Organization markup ineligible for review rich results, and the review-snippet
+   * guidelines forbid aggregating ratings from other websites. See lib/seo.ts.
+   *
+   * The admin Testimonials panel writes to the `testimonials` table, which takes
+   * priority over this list (see getTestimonials in lib/data.ts). This array is
+   * only the fallback when the database is unreachable.
+   */
   {
-    name: "Aisha R.",
-    role: "Founder",
-    company: "Indie Clothing Label",
+    name: "Mueez Shoukat",
+    role: "Verified Google review",
+    company: "",
+    country: "",
     content:
-      "The woven labels transformed our garments. The quality feels expensive and our customers notice the difference immediately.",
+      "Outstanding experience! Got custom packaging and labels printed from them, and the quality is top-notch. The print sharpness, material, and finishing completely exceeded my expectations. Highly professional service and super fast delivery. 10/10 recommended!",
     rating: 5,
-    country: "United Kingdom",
   },
   {
-    name: "Marcus T.",
-    role: "Creative Director",
-    company: "Streetwear Brand",
+    name: "Muhammad Abdullah",
+    role: "Verified Google review",
+    company: "",
+    country: "",
     content:
-      "Hang tags and packaging that genuinely look like a luxury house produced them. Consistent quality across every reorder.",
+      "Outstanding quality and superb craftsmanship from Prime Labels! The labels turned out perfect with exact sizing and vibrant details. Extremely satisfied and highly recommended!",
     rating: 5,
-    country: "United States",
   },
   {
-    name: "Lena K.",
-    role: "Owner",
-    company: "Boutique Studio",
+    name: "Lala Rukh",
+    role: "Verified Google review",
+    company: "Cross&Crafts.pk",
+    country: "",
     content:
-      "Detail is everything to us and Prime Labels delivers. Soft, durable labels and crisp print every single time.",
+      "They did very amazing. I was just curious about the labels, design and the perfect color that matches the vibe of Cross&Crafts.pk and they bring it very magically. Very nicely spoken and supportive. Will recommend 100000% to get your anything customized by them \u2764\ufe0f",
     rating: 5,
-    country: "Germany",
   },
   {
-    name: "Daniyal A.",
-    role: "Brand Manager",
-    company: "Apparel Company",
+    name: "Muzamil Zafar",
+    role: "Verified Google review",
+    company: "",
+    country: "",
     content:
-      "Fast turnaround on international shipping and the stickers and thank you cards finished our packaging perfectly.",
+      "I recently ordered labels from Prime Labels, and the quality is outstanding! The finishing and printing are top-notch. Fast delivery and excellent service\u2014highly recommended!",
     rating: 5,
-    country: "United Arab Emirates",
+  },
+  {
+    name: "malaika amjad",
+    role: "Verified Google review",
+    company: "",
+    country: "",
+    content:
+      "I got my order exactly how i want it and tge quality was perfect 10/10, highly recommend",
+    rating: 5,
   },
 ];

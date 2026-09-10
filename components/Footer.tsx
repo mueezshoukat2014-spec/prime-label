@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Marquee } from "@/components/anim";
 import Logo from "@/components/Logo";
 import { normalizeWaLink, WHATSAPP_URL } from "@/lib/whatsapp";
+import { PHONE_DISPLAY, PHONE_E164 } from "@/lib/seo";
 
 const COLS = [
   {
@@ -83,6 +84,24 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
           <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-cream-muted">
             Premium custom labels, hang tags and packaging for clothing brands in
             Saudi Arabia, the GCC and worldwide.
+          </p>
+          {/*
+            Visible NAP data. Google weighs name/address/phone consistency between
+            the website and the Business Profile when ranking in the local pack.
+            The number here must match the GBP listing exactly (+92 324 4999224).
+            A real tel: link, not only the existing WhatsApp deep link, so crawlers
+            and screen readers both pick the number up.
+          */}
+          <p className="mt-5 text-[14px] text-cream-muted">
+            <span className="block text-[11px] uppercase tracking-widest2 text-cream-dim">
+              Call or WhatsApp
+            </span>
+            <a
+              href={`tel:${PHONE_E164}`}
+              className="mt-1 inline-block transition-colors hover:text-champagne"
+            >
+              {PHONE_DISPLAY}
+            </a>
           </p>
           <div className="mt-6 flex gap-3">
             <a

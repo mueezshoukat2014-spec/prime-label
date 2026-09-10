@@ -11,7 +11,7 @@ import MetaPixelRouteTracker from "@/components/MetaPixel";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { cookies, headers } from "next/headers";
 import { getSiteContent } from "@/lib/data";
-import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd } from "@/lib/seo";
+import { BRAND_NAME, PRIMARY_KEYWORDS, SITE_URL, organizationJsonLd, websiteJsonLd, offerCatalogJsonLd, localBusinessJsonLd } from "@/lib/seo";
 
 // The layout reads live Site Settings (announcement bar), so it must not be
 // frozen at build time — otherwise those toggles only take effect on the next deploy.
@@ -121,7 +121,27 @@ const ARABIC_COUNTRIES = new Set([
   "MR", "OM", "PS", "QA", "SA", "SD", "SO", "SY", "TN", "YE", "KM",
 ]);
 
-const globalJsonLd = [organizationJsonLd, websiteJsonLd, offerCatalogJsonLd];
+/**
+ * Builds the site-wide JSON-LD graph.
+ *
+ * This used to be a module-level constant, with a SECOND Organization node
+ * emitted in <body> carrying the admin overrides. Both nodes shared the same
+ * @id (`/#organization`) but could disagree on `name` and `slogan`, so every page
+ * shipped two conflicting definitions of the same entity and Google had to guess
+ * which was authoritative. One node now, built after site content is loaded.
+ */
+function buildGlobalJsonLd(site: { businessName?: string | null; heroHeadline?: string | null }) {
+  return [
+    {
+      ...organizationJsonLd,
+      name: site.businessName || BRAND_NAME,
+      slogan: site.heroHeadline,
+    },
+    websiteJsonLd,
+    offerCatalogJsonLd,
+    localBusinessJsonLd,
+  ];
+}
 const META_PIXEL_ID = "1554256332856113";
 
 
@@ -152,7 +172,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         <meta name="google-site-verification" content="ZSEoUgZtRotzOKKlF9dBnpJBwRd2bFtDAfKHA3tPrJc" />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildGlobalJsonLd(s)) }} />
 
         {META_PIXEL_ID && (
           <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
@@ -234,12 +254,6 @@ window.addEventListener(ev,go,{once:true,passive:true})});})();`,
           <FloatingWhatsApp href={s.whatsapp} />
           <LeadCapture whatsapp={s.whatsapp} />
         </ToastProvider>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({ ...organizationJsonLd, name: s.businessName || BRAND_NAME, slogan: s.heroHeadline }),
-          }}
-        />
       </body>
     </html>
   );
