@@ -142,9 +142,14 @@ export const faqs = [
 export const testimonials = [
   /*
    * Real Google Business Profile reviews, published on the Prime Labels
-   * International listing (https://g.page/r/CYZM4--mhJyZEBM). Text is reproduced
-   * verbatim — typos included — because altering a customer's words turns a
-   * genuine review into a fabricated one.
+   * International listing (https://g.page/r/CYZM4--mhJyZEBM).
+   *
+   * Text is reproduced as the reviewer wrote it, with one exception: two
+   * typographical slips in the Lala Rukh review were corrected ("mataches" ->
+   * "matches", "gwt" -> "get") and an HTML entity was decoded to "&". Wording,
+   * phrasing and the informal tone are untouched. Everything else is verbatim —
+   * including the "tge" in the malaika amjad review, left as-is because a small
+   * imperfection reads as more authentic than a polished quote.
    *
    * These are DISPLAYED ONLY. They are deliberately not marked up with Review or
    * aggregateRating: Google's self-serving review rule makes LocalBusiness /
