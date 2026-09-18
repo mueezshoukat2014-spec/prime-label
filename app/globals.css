@@ -473,3 +473,11 @@ html[data-lang="ar"] .tabular-nums.notranslate {
   font-family: var(--font-body), system-ui, sans-serif !important;
   letter-spacing: 0 !important;
 }
+
+/* Defer layout + lazy-image fetches for below-the-fold sections so the LCP
+   window's bandwidth/CPU goes to the hero. contain-intrinsic-size prevents
+   scrollbar jump; "auto" remembers real heights to avoid CLS. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

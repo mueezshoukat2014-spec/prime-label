@@ -119,14 +119,14 @@ export default async function Home() {
         statsRaw={(site as Record<string, string>).aboutStats}
         aboutText={(site as Record<string, string>).aboutText}
       />
-      <ProductsShowcase products={products} />
-      <SeoMarketSection />
-      <GsapFeature />
-      <Reels reels={reels} />
-      <Process stepsRaw={(site as Record<string, string>).processSteps} />
-      <GallerySection items={gallery} limit={8} categoryNames={categoryNames} />
-      <Testimonials items={testimonials as any} />
-      <FAQ items={faqs} />
+      <div className="cv-auto"><ProductsShowcase products={products} /></div>
+      <div className="cv-auto"><SeoMarketSection /></div>
+      <div className="cv-auto"><GsapFeature /></div>
+      <div className="cv-auto"><Reels reels={reels} /></div>
+      <div className="cv-auto">      <Process stepsRaw={(site as Record<string, string>).processSteps} /></div>
+      <div className="cv-auto">      <GallerySection items={gallery} limit={8} categoryNames={categoryNames} /></div>
+      <div className="cv-auto">      <Testimonials items={testimonials as any} /></div>
+      <div className="cv-auto">      <FAQ items={faqs} /></div>
       {/* quick 3-field quote before the big CTA */}
       <section className="relative border-t border-line py-14 sm:py-24">
         <div className="container-lux">
@@ -139,12 +139,12 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <FinalCTA
+      <div className="cv-auto">      <FinalCTA
         whatsapp={site.whatsapp}
         instagram={site.instagram}
         heading={(site as Record<string, string>).ctaHeading}
         sub={(site as Record<string, string>).ctaSub}
-      />
+      /></div>
       <SectionDots />
     </SiteShell>
     </>
