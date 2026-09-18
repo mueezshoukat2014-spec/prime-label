@@ -1,57 +1,88 @@
 "use client";
-import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export default function GsapFeature() {
   const root = useRef<HTMLDivElement>(null);
   const bg = useRef<HTMLDivElement>(null);
   const words = useRef<HTMLHeadingElement>(null);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      // parallax + ken-burns on the background image
-      gsap.fromTo(
-        bg.current,
-        { yPercent: -12, scale: 1.18 },
-        {
-          yPercent: 12,
-          scale: 1.05,
-          ease: "none",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        }
-      );
-      // highlight sweep across the statement words
-      if (words.current) {
-        const spans = words.current.querySelectorAll("span[data-w]");
+  // gsap + ScrollTrigger (~90KB) is only needed for this section's scroll
+  // choreography. Importing it statically put the whole library on the
+  // critical path of every page that renders this component; the dynamic
+  // import() below moves it into an async chunk fetched after hydration,
+  // keeping the LCP/TBT budget for real content. Markup stays server-rendered
+  // so there is no layout shift when the animation attaches.
+  useEffect(() => {
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
+    // The ~90KB gsap chunk is only fetched when the section approaches the
+    // viewport (or the browser goes idle), keeping it out of the critical
+    // load path that Lighthouse/PSI measures.
+    let started = false;
+    const start = () => {
+      if (started || cancelled) return;
+      started = true;
+      init();
+    };
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && start()),
+      { rootMargin: "300px" }
+    );
+    if (root.current) io.observe(root.current);
+    const idle = window.setTimeout(start, 4000);
+    const init = async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      if (cancelled || !root.current) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const ctx = gsap.context(() => {
+        // parallax + ken-burns on the background image
         gsap.fromTo(
-          spans,
-          { color: "rgba(165,157,142,0.35)" },
+          bg.current,
+          { yPercent: -12, scale: 1.18 },
           {
-            color: "rgba(244,240,232,1)",
-            stagger: 0.4,
+            yPercent: 12,
+            scale: 1.05,
             ease: "none",
             scrollTrigger: {
-              trigger: words.current,
-              start: "top 80%",
-              end: "bottom 40%",
+              trigger: root.current,
+              start: "top bottom",
+              end: "bottom top",
               scrub: true,
             },
           }
         );
-      }
-    }, root);
-    return () => ctx.revert();
+        // highlight sweep across the statement words
+        if (words.current) {
+          const spans = words.current.querySelectorAll("span[data-w]");
+          gsap.fromTo(
+            spans,
+            { color: "rgba(165,157,142,0.35)" },
+            {
+              color: "rgba(244,240,232,1)",
+              stagger: 0.4,
+              ease: "none",
+              scrollTrigger: {
+                trigger: words.current,
+                start: "top 80%",
+                end: "bottom 40%",
+                scrub: true,
+              },
+            }
+          );
+        }
+      }, root);
+      cleanup = () => ctx.revert();
+    };
+    return () => {
+      cancelled = true;
+      io.disconnect();
+      clearTimeout(idle);
+      cleanup?.();
+    };
   }, []);
 
   const phrase = "Detail is the difference between a good brand and a great one.".split(" ");

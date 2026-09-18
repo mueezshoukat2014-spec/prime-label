@@ -1,5 +1,5 @@
 "use client";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "@/lib/motion-lite";
 import { useEffect, useState } from "react";
 
 export default function Cursor() {

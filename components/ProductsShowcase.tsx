@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { useRef, useState } from "react";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";

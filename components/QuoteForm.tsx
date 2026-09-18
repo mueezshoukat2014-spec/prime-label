@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
 import { normalizeWaLink, waProductLink, waQuoteSubmittedLink } from "@/lib/whatsapp";
 import { celebrate } from "@/lib/confetti";

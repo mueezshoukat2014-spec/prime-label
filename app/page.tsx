@@ -69,7 +69,9 @@ export default async function Home() {
         item: {
           "@type": "Service",
           name: product.title,
-          description: product.description,
+          // Keep structured data lean: full descriptions inline bloat the HTML
+          // document (LCP/transfer budget). Rich results only need a summary.
+          description: product.tagline || (product.description || "").split(". ")[0],
           image: product.image?.startsWith("http") ? product.image : `${SITE_URL}${product.image}`,
           provider: { "@id": `${SITE_URL}/#organization`, name: BRAND_NAME },
           serviceType: "Garment branding accessories",

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
 import { waProductLink, waGuidedOrderLink } from "@/lib/whatsapp";
 import { volumeTiersFor, type PdpContent } from "@/lib/pdp-content";

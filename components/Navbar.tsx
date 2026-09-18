@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "@/lib/motion-lite";
 import { useState } from "react";
 import { Magnetic } from "@/components/anim";
 import Link from "next/link";

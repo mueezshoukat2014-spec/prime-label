@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import Link from "next/link";
 import { Reveal, EASE } from "@/components/anim";
 import SwipeHint from "@/components/SwipeHint";

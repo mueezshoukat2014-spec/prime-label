@@ -1,5 +1,4 @@
 "use client";
-import Loader from "@/components/Loader";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -12,7 +11,9 @@ export default function SiteShell({
 }) {
   return (
     <>
-      <Loader />
+      {/* The cinematic preloader was removed: it kept the entire page hidden
+          behind an opaque overlay until window "load" (up to 3s), which
+          delayed LCP for every first-time and crawler visit. */}
       <Navbar />
       <main>{children}</main>
       {footer}

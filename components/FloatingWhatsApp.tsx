@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-lite";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { normalizeWaLink } from "@/lib/whatsapp";

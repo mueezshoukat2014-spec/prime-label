@@ -184,13 +184,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="google-site-verification" content="ZSEoUgZtRotzOKKlF9dBnpJBwRd2bFtDAfKHA3tPrJc" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildGlobalJsonLd(s)) }} />
 
-        {META_PIXEL_ID && (
-          <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
-        )}
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        {/* Pixel preconnects removed: the analytics scripts now load ~5s after
+            window load (or on first interaction), so warming those sockets
+            during the critical path only wasted early-connection budget. */}
         {/* Google Ads tag (AW-18430949817) — deferred like the Meta Pixel:
             events queue immediately, the network script loads on first
-            interaction or ~1.2s after window load, so LCP/TBT are unaffected. */}
+            interaction or ~5s after window load, so LCP/TBT are unaffected. */}
         <script
           id="google-ads-base"
           dangerouslySetInnerHTML={{
@@ -204,8 +203,8 @@ gtag('config','AW-18430949817',{send_page_view:true});
 var t=document.createElement('script');t.async=true;
 t.src='https://www.googletagmanager.com/gtag/js?id=AW-18430949817';
 var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(t,s)};
-if(document.readyState==='complete'){setTimeout(go,1200)}
-else{window.addEventListener('load',function(){setTimeout(go,1200)},{once:true})}
+if(document.readyState==='complete'){setTimeout(go,5000)}
+else{window.addEventListener('load',function(){setTimeout(go,5000)},{once:true})}
 ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
 window.addEventListener(ev,go,{once:true,passive:true})});})();`,
           }}
@@ -227,8 +226,8 @@ fbq('set', 'autoConfig', false, '${META_PIXEL_ID}');
 fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');
 (function(){var go=function(){window.__plLoadPixel&&window.__plLoadPixel()};
-if(document.readyState==='complete'){setTimeout(go,1200)}
-else{window.addEventListener('load',function(){setTimeout(go,1200)},{once:true})}
+if(document.readyState==='complete'){setTimeout(go,5000)}
+else{window.addEventListener('load',function(){setTimeout(go,5000)},{once:true})}
 ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
 window.addEventListener(ev,go,{once:true,passive:true})});})();`,
             }}

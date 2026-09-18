@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
 import { waLink } from "@/lib/whatsapp";
 import { trackAdsLead } from "@/lib/gtag";

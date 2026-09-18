@@ -1,5 +1,5 @@
 "use client";
-import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "@/lib/motion-lite";
 import { useEffect, useState } from "react";
 import { TextReveal, Magnetic, Marquee, EASE } from "@/components/anim";
 import Link from "next/link";
@@ -19,7 +19,7 @@ const FLOATERS: FloaterItem[] = [
   { src: "/photos/DYQ2pCbjHoE_0.jpg", alt: "Custom stickers", cls: "bottom-[12%] right-[12%] w-[170px] h-[170px]", depth: 1.1, rot: -3, delay: 0.05 },
 ];
 
-function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: MotionValue<number> }) {
+function Floater({ f, sx, sy, eager = false }: { f: FloaterItem; sx: MotionValue<number>; sy: MotionValue<number>; eager?: boolean }) {
   const tx = useTransform(sx, (v) => v * 60 * f.depth);
   const ty = useTransform(sy, (v) => v * 60 * f.depth);
   return (
@@ -39,7 +39,8 @@ function Floater({ f, sx, sy }: { f: FloaterItem; sx: MotionValue<number>; sy: M
         <img
   src={typeof f.src === "string" ? (f.src) : ""}
   alt={f.alt}
-  loading="lazy"
+  loading={eager ? "eager" : "lazy"}
+  fetchPriority={eager ? "high" : "auto"}
   decoding="async"
   className="absolute inset-0 h-full w-full object-cover"
 />
@@ -172,7 +173,7 @@ export default function Hero({
       {/* floating product cluster (desktop only — not mounted on mobile) */}
       <div className="hero-floaters pointer-events-none absolute inset-0 hidden lg:block">
         {showFloaters && FLOATERS.map((f, i) => (
-          <Floater key={i} f={f} sx={sx} sy={sy} />
+          <Floater key={i} f={f} sx={sx} sy={sy} eager={i === 0} />
         ))}
       </div>
 

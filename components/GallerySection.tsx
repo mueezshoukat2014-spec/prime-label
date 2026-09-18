@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
 import type { GalleryItem } from "@/lib/content";

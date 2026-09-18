@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-lite";
 import { Reveal } from "@/components/anim";
 import ReviewForm from "@/components/ReviewForm";
 

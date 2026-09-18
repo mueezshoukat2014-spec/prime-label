@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
 import { waGuidedOrderLink } from "@/lib/whatsapp";
 import { trackAdsLead } from "@/lib/gtag";

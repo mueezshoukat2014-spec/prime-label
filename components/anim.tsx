@@ -9,7 +9,7 @@ import {
   useReducedMotion,
   animate,
   type Variants,
-} from "framer-motion";
+} from "@/lib/motion-lite";
 import {
   useEffect,
   useRef,

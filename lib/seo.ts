@@ -236,7 +236,7 @@ export function productsJsonLd(
         "@type": "Product",
         "@id": `${SITE_URL}/#product-${p.slug}`,
         name: p.title,
-        description: p.description || p.tagline || `${p.title} by ${BRAND_NAME}`,
+        description: p.tagline || (p.description || "").split(". ")[0] || `${p.title} by ${BRAND_NAME}`,
         image: p.image?.startsWith("http") ? p.image : `${SITE_URL}${p.image || "/icon.png"}`,
         brand: { "@id": `${SITE_URL}/#organization` },
         material: PRODUCT_MATERIALS[p.slug],

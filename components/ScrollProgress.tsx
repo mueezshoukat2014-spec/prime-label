@@ -1,5 +1,5 @@
 "use client";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "@/lib/motion-lite";
 
 export default function ScrollProgress() {
   const { scrollYProgress } = useScroll();

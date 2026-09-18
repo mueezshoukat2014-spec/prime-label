@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "@/lib/motion-lite";
 
 /**
  * Celebratory "changes are live" confirmation shown after a successful save.
