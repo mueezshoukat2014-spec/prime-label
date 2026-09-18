@@ -3,7 +3,23 @@ import { sql } from "@/lib/db";
 import { products as staticProducts, gallery, reels as staticReels, STATIC_CONTENT, normalizeMediaUrl, type Reel } from "@/lib/content";
 import { normaliseManagedVideos } from "@/lib/video";
 
-export async function getProducts() {
+/* Short TTL memo: serverless instances stay warm between requests, so caching
+   catalogue reads for 60s removes the Neon round-trips from almost every page
+   render (TTFB is on the LCP critical path). Admin edits appear within a
+   minute — an acceptable delay for this catalogue. */
+const TTL = 60_000;
+const memoCache = new Map<string, { t: number; v: unknown }>();
+function memo<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const hit = memoCache.get(key);
+  if (hit && now - hit.t < TTL) return Promise.resolve(hit.v as T);
+  return fn().then((v) => {
+    memoCache.set(key, { t: now, v });
+    return v;
+  });
+}
+
+async function _getProducts() {
   try {
     const rows = await sql`SELECT slug, title, tagline, description, image, gallery, price_from, moq, turnaround, category FROM products WHERE active = TRUE ORDER BY sort`;
     if (rows.length) {
@@ -30,7 +46,7 @@ export async function getProducts() {
   return staticProducts;
 }
 
-export async function getSiteContent() {
+async function _getSiteContent() {
   try {
     const rows = await sql`SELECT key, value FROM site_content`;
     const map: Record<string, string> = {};
@@ -40,7 +56,7 @@ export async function getSiteContent() {
   return STATIC_CONTENT;
 }
 
-export async function getFaqs() {
+async function _getFaqs() {
   try {
     const rows = await sql`SELECT question, answer FROM faqs ORDER BY sort`;
     if (rows.length) return rows.map((r: any) => ({ q: r.question, a: r.answer }));
@@ -49,7 +65,7 @@ export async function getFaqs() {
   return faqs;
 }
 
-export async function getTestimonials() {
+async function _getTestimonials() {
   try {
     const rows = await sql`SELECT name, role, company, country, content, rating FROM testimonials WHERE approved = TRUE ORDER BY sort`;
     if (rows.length) return rows as any[];
@@ -65,7 +81,7 @@ export async function getTestimonials() {
  * Gallery Manager is prepended so new work leads. If the DB is unreachable the
  * static set alone is returned, so the page can never come back empty.
  */
-export async function getGallery() {
+async function _getGallery() {
   // Admin edits to the original static photos (caption/category/hidden) are
   // stored as overrides keyed by the photo's shortcode.
   let staticSet = gallery;
@@ -116,7 +132,7 @@ export async function getGallery() {
 
 
 /** Admin PDP override for one product (null when not customised). */
-export async function getPdpOverride(slug: string) {
+async function _getPdpOverride(slug: string) {
   try {
     const rows = await sql`SELECT slug, h1, intro, folds, finishes, specs, faqs FROM pdp_content WHERE slug = ${slug} LIMIT 1`;
     return rows[0] ?? null;
@@ -126,7 +142,7 @@ export async function getPdpOverride(slug: string) {
 }
 
 /** slug -> display name map for gallery category chips. */
-export async function getCategoryNames(): Promise<Record<string, string>> {
+async function _getCategoryNames(): Promise<Record<string, string>> {
   try {
     const rows = await sql`SELECT slug, name FROM categories ORDER BY id`;
     const map: Record<string, string> = {};
@@ -137,7 +153,7 @@ export async function getCategoryNames(): Promise<Record<string, string>> {
   }
 }
 
-export async function getReels(): Promise<Reel[]> {
+async function _getReels(): Promise<Reel[]> {
   try {
     const rows = await sql`SELECT value FROM site_content WHERE key = 'managedVideos' LIMIT 1`;
     if (rows.length) {
@@ -164,3 +180,12 @@ export async function getReels(): Promise<Reel[]> {
 }
 
 export { gallery, staticReels as reels };
+
+export const getProducts = () => memo("products", _getProducts);
+export const getSiteContent = () => memo("site", _getSiteContent);
+export const getFaqs = () => memo("faqs", _getFaqs);
+export const getTestimonials = () => memo("testimonials", _getTestimonials);
+export const getGallery = () => memo("gallery", _getGallery);
+export const getCategoryNames = () => memo("cats", _getCategoryNames);
+export const getReels = () => memo("reels", _getReels);
+export const getPdpOverride = (slug: string) => memo(`pdp:${slug}`, () => _getPdpOverride(slug));
