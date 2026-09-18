@@ -182,6 +182,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         <meta name="google-site-verification" content="ZSEoUgZtRotzOKKlF9dBnpJBwRd2bFtDAfKHA3tPrJc" />
+        {/* Self-hosted font preloads: next/font does not emit preload links on
+            these force-dynamic pages, so the hero text painted with fallback
+            metrics until the woff2 arrived (a late font swap re-recorded LCP).
+            Hashes below are the latin (and arabic, for /ar) subsets emitted by
+            next/font for the current build; if the fonts or Next version
+            change, refresh them from .next/static/css. */}
+        {initialLang === "ar" ? (
+          <>
+            <link rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href="/_next/static/media/01f0c602c274ea55-s.p.woff2" />
+            <link rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href="/_next/static/media/350b852752f8489d-s.p.woff2" />
+          </>
+        ) : (
+          <>
+            <link rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href="/_next/static/media/4c9affa5bc8f420e-s.p.woff2" />
+            <link rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href="/_next/static/media/af4bf8399d1aacdf-s.p.woff2" />
+          </>
+        )}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildGlobalJsonLd(s)) }} />
 
         {/* Pixel preconnects removed: the analytics scripts now load ~5s after
@@ -236,17 +253,10 @@ window.addEventListener(ev,go,{once:true,passive:true})});})();`,
 
       </head>
       <body>
-        {META_PIXEL_ID && (
-          <noscript id="meta-pixel-noscript">
-            <img
-              height="1"
-              width="1"
-              style={{ display: "none" }}
-              alt=""
-              src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-            />
-          </noscript>
-        )}
+        {/* The legacy <noscript> 1x1 Meta pixel image was removed: Next was
+            hoisting it into a <link rel="preload" as="image">, forcing every
+            visitor to open a request to facebook.com inside the critical
+            path. JS-disabled visitors are an edge case not worth that cost. */}
         <ToastProvider>
           <MetaPixelRouteTracker />
           <AnalyticsTracker />
