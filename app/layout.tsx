@@ -152,11 +152,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cookieStore = cookies();
   const currentPath = headerStore.get("x-pathname") ?? "";
   const isAdmin = currentPath.startsWith("/admin");
+  // /ar URLs are natively written Arabic pages. They must always declare
+  // lang="ar" dir="rtl" regardless of cookies or geo, because Googlebot (and
+  // any visitor without the Arabic cookies) previously received these pages as
+  // lang="en" dir="ltr". That contradicted the hreflang="ar" annotations and
+  // let search engines cluster the Arabic pages as duplicates of their English
+  // counterparts ("Duplicate without user-selected canonical" in Search
+  // Console). The path is the authoritative signal here; cookies only drive
+  // auto-detection on the English pages.
+  const isArabicPath = currentPath === "/ar" || currentPath.startsWith("/ar/");
   const country = (headerStore.get("x-country") || "").toUpperCase();
   const langPreference = cookieStore.get("pl_lang_pref")?.value;
   const storedLang = cookieStore.get("pl_lang")?.value;
   const autoArabic = headerStore.get("x-auto-arabic") === "1" || ARABIC_COUNTRIES.has(country);
   const isInitialArabic =
+    isArabicPath ||
     langPreference === "ar" ||
     (!langPreference && (storedLang === "ar" || autoArabic));
   const initialLang = isAdmin ? "en" : isInitialArabic ? "ar" : "en";

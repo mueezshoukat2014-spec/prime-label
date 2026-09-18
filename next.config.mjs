@@ -45,6 +45,21 @@ const nextConfig = {
       { source: '/doha', destination: '/custom-labels-qatar', permanent: true },
       { source: '/kuwait', destination: '/custom-labels-kuwait', permanent: true },
       { source: '/arabic', destination: '/ar', permanent: true },
+
+      /*
+       * Indexing cleanup (Search Console "Not found (404)" + duplicate rows).
+       * These paths never existed as routes but are cheaply guessable or were
+       * probed by crawlers; each now resolves to its real home with a 301 so
+       * link equity consolidates instead of 404ing. Exact-match only — the
+       * /products/:slug and /ar/products/:slug pages are unaffected.
+       */
+      { source: '/products', destination: '/', permanent: true },
+      { source: '/ar/products', destination: '/ar', permanent: true },
+      { source: '/custom-labels-uk', destination: '/custom-clothing-labels-uk', permanent: true },
+      { source: '/custom-labels-usa', destination: '/custom-clothing-labels-usa', permanent: true },
+      { source: '/home', destination: '/', permanent: true },
+      { source: '/index', destination: '/', permanent: true },
+      { source: '/index.html', destination: '/', permanent: true },
     ];
   },
 };

@@ -240,10 +240,14 @@ export function productsJsonLd(
         image: p.image?.startsWith("http") ? p.image : `${SITE_URL}${p.image || "/icon.png"}`,
         brand: { "@id": `${SITE_URL}/#organization` },
         material: PRODUCT_MATERIALS[p.slug],
-        url: `${SITE_URL}/quote?product=${encodeURIComponent(p.title)}`,
+        // Structured data must advertise only indexable URLs. The
+        // parameterized /quote?product= CTA is a user-facing convenience link
+        // (it canonicalizes to /quote); pointing schema at it made search
+        // engines crawl dozens of duplicate query-string variants.
+        url: `${SITE_URL}/products/${p.slug}`,
         offers: {
           "@type": "Offer",
-          url: `${SITE_URL}/quote?product=${encodeURIComponent(p.title)}`,
+          url: `${SITE_URL}/products/${p.slug}`,
           priceCurrency: "USD",
           price: "0",
           priceSpecification: {

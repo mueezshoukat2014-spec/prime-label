@@ -85,7 +85,9 @@ export default async function ArProductPage({ params }: { params: { slug: string
       url,
       offers: {
         "@type": "Offer",
-        url: `${SITE_URL}/ar/quote?product=${encodeURIComponent(product.title)}`,
+        // The offer lives on this product page; advertise the indexable URL
+        // rather than the parameterized /ar/quote?product= CTA.
+        url,
         priceCurrency: "USD",
         price: "0",
         priceSpecification: {

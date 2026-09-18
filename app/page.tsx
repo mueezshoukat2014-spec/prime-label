@@ -74,7 +74,9 @@ export default async function Home() {
           provider: { "@id": `${SITE_URL}/#organization`, name: BRAND_NAME },
           serviceType: "Garment branding accessories",
           areaServed: GCC_COUNTRIES.map((name) => ({ "@type": "Country", name })),
-          url: `${SITE_URL}/quote?product=${encodeURIComponent(product.title)}`,
+          // Canonical product page, not the parameterized /quote?product= CTA:
+          // structured data should advertise indexable URLs only.
+          url: `${SITE_URL}/products/${product.slug}`,
         },
       })),
     },

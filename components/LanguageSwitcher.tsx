@@ -168,6 +168,17 @@ function clearArabicCookies(preference?: "manual") {
   clearCookieEverywhere(TRANS_COOKIE);
 }
 
+/** True for the natively written Arabic pages (/ar, /ar/…). */
+function isArabicUrl(pathname: string) {
+  return pathname === "/ar" || pathname.startsWith("/ar/");
+}
+
+/** /ar -> / ; /ar/products/x -> /products/x (the English counterpart). */
+function englishCounterpart(pathname: string) {
+  if (pathname === "/ar") return "/";
+  return pathname.replace(/^\/ar\//, "/");
+}
+
 function shouldAutoArabic() {
   const country = readCookie(COUNTRY_COOKIE).toUpperCase();
   if (country && ARABIC_COUNTRIES.has(country)) return true;
@@ -249,18 +260,23 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
   const targetLabel = isArabic ? "English" : "العربية";
 
   useEffect(() => {
+    // /ar URLs are natively Arabic pages (server-rendered lang="ar" dir="rtl").
+    // On them we must keep the document Arabic and must NOT run the Google
+    // Translate overlay, which would machine-translate already-Arabic copy.
+    const onArabicPath = isArabicUrl(window.location.pathname);
     const preference = readCookie(LANG_PREF_COOKIE);
     const storedArabic =
       readCookie(LANG_COOKIE) === TARGET_LANG || readCookie(TRANS_COOKIE).includes(`/${TARGET_LANG}`);
 
-    const initial =
-      preference === SOURCE_LANG
+    const initial = onArabicPath
+      ? "ar"
+      : preference === SOURCE_LANG
         ? "en"
         : preference === TARGET_LANG || storedArabic || shouldAutoArabic()
           ? "ar"
           : "en";
 
-    if (initial === "ar") {
+    if (initial === "ar" && !onArabicPath) {
       setArabicCookies(preference === TARGET_LANG ? "manual" : undefined);
       requestTranslation("ar");
     }
@@ -274,6 +290,12 @@ export default function LanguageSwitcher({ compact = false }: { compact?: boolea
   function toggle() {
     if (isArabic) {
       clearArabicCookies("manual");
+      if (isArabicUrl(window.location.pathname)) {
+        // On a native Arabic page the English version is a different URL, not an
+        // overlay state — navigate to the counterpart instead of reloading here.
+        window.location.href = englishCounterpart(window.location.pathname) + window.location.search;
+        return;
+      }
       applyDocumentLanguage("en");
       setLang("en");
       triggerGoogleSelect("en");

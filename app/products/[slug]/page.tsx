@@ -89,7 +89,9 @@ export default async function ProductPage({ params }: { params: { slug: string }
       url,
       offers: {
         "@type": "Offer",
-        url: `${SITE_URL}/quote?product=${encodeURIComponent(product.title)}`,
+        // The offer lives on this product page; advertise the indexable URL
+        // rather than the parameterized /quote?product= CTA.
+        url,
         priceCurrency: "USD",
         price: "0",
         priceSpecification: {
