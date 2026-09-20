@@ -8,6 +8,11 @@ import { AR_POSTS } from "@/lib/blog-ar";
 
 const base = "https://primelabelsintl.com";
 
+/** hreflang alternates for pages that exist in both English and Arabic. */
+const langs = (en: string, ar: string) => ({
+  languages: { en, ar, "x-default": en },
+});
+
 /**
  * Core + products sitemap. lastModified reflects the current deployment so
  * Google re-crawls after every release. Product URLs come from the live
@@ -24,6 +29,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency: "weekly" as const,
       priority: 0.9,
+      // Only slugs that have an Arabic twin get hreflang alternates.
+      ...(p.slug in AR_PDP
+        ? { alternates: langs(`${base}/products/${p.slug}`, `${base}/ar/products/${p.slug}`) }
+        : {}),
     }));
   } catch {
     /* DB unreachable — core pages alone still ship */
@@ -46,16 +55,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [
-    { url: base, lastModified, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/quote`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+    {
+      url: base,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 1,
+      alternates: langs(base, `${base}/ar`),
+    },
+    {
+      url: `${base}/quote`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      alternates: langs(`${base}/quote`, `${base}/ar/quote`),
+    },
     { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
-    { url: `${base}/ar`, lastModified, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/ar/quote`, lastModified, changeFrequency: "weekly", priority: 0.85 },
+    {
+      url: `${base}/ar`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: langs(base, `${base}/ar`),
+    },
+    {
+      url: `${base}/ar/quote`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.85,
+      alternates: langs(`${base}/quote`, `${base}/ar/quote`),
+    },
     ...Object.keys(AR_PDP).map((slug) => ({
       url: `${base}/ar/products/${slug}`,
       lastModified,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+      alternates: langs(`${base}/products/${slug}`, `${base}/ar/products/${slug}`),
     })),
     { url: `${base}/ar/blog`, lastModified, changeFrequency: "weekly", priority: 0.75 },
     ...AR_POSTS.map((p) => ({

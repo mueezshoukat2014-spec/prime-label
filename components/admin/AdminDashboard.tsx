@@ -11,6 +11,7 @@ import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import SiteSettings from "@/components/admin/SiteSettings";
 import OrdersManager from "@/components/admin/OrdersManager";
 import ReferralsManager from "@/components/admin/ReferralsManager";
+import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
 import ReplyModal, { type ReplyTarget } from "@/components/admin/ReplyModal";
 import { useToast } from "@/components/Toast";
@@ -26,6 +27,7 @@ type Tab =
   | "orders"
   | "referrals"
   | "messages"
+  | "suggestions"
   | "products"
   | "pdp"
   | "blog"
@@ -42,6 +44,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "orders", label: "Orders" },
   { id: "referrals", label: "Referrals" },
   { id: "messages", label: "Messages" },
+  { id: "suggestions", label: "Suggestions" },
   { id: "products", label: "Products" },
   { id: "pdp", label: "Product Pages" },
   { id: "blog", label: "Blog" },
@@ -109,6 +112,7 @@ export default function AdminDashboard() {
           {tab === "orders" && <OrdersManager />}
           {tab === "referrals" && <ReferralsManager />}
           {tab === "messages" && <Messages />}
+          {tab === "suggestions" && <SuggestionsManager />}
           {tab === "products" && <ProductManager />}
           {tab === "pdp" && <PdpManager />}
           {tab === "blog" && <BlogManager />}
@@ -165,10 +169,11 @@ function Overview({ onJump }: { onJump: (t: Tab) => void }) {
   return (
     <div className="space-y-6">
       <h1 className="display text-3xl">Overview</h1>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[
           { k: "leads", label: "Quote leads", v: s?.leads ?? "—", to: "leads" as Tab },
           { k: "messages", label: "Messages", v: s?.messages ?? "—", to: "messages" as Tab },
+          { k: "suggestions", label: "Suggestions", v: s?.suggestions ?? "—", to: "suggestions" as Tab },
           { k: "orders", label: "Orders", v: s?.orders ?? "—", to: null },
         ].map((x) => {
           const card = (

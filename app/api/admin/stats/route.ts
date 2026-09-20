@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
+import { countSuggestions } from "@/lib/suggestions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ export async function GET() {
         leads: leads[0].c,
         messages: msgs[0].c,
         orders: orders[0].c,
+        suggestions: await countSuggestions(),
       },
       recent,
     });

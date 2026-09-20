@@ -5,6 +5,7 @@ import TabAttention from "@/components/TabAttention";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import LeadCapture from "@/components/LeadCapture";
 import FloatingLanguage from "@/components/FloatingLanguage";
+import SuggestionBox from "@/components/SuggestionBox";
 import { ToastProvider } from "@/components/Toast";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MetaPixelRouteTracker from "@/components/MetaPixel";
@@ -270,6 +271,7 @@ window.addEventListener(ev,go,{once:true,passive:true})});})();`,
           <TabAttention />
           {children}
           <FloatingLanguage />
+          <SuggestionBox />
           <FloatingWhatsApp href={s.whatsapp} />
           <LeadCapture whatsapp={s.whatsapp} />
         </ToastProvider>
