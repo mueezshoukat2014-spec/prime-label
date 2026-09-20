@@ -330,7 +330,7 @@ function easeCss(ease: unknown) {
 }
 
 /* --------------------------- variant propagation -------------------------- */
-const VariantCtx = createContext<{ name: string | null }>({ name: null });
+const VariantCtx = createContext<{ i: string | null; a: string | null }>({ i: null, a: null });
 
 function resolveTarget(
   value: unknown,
@@ -397,7 +397,11 @@ function makeMotion(tag: string) {
     const el = useRef<HTMLElement | null>(null);
     const parentVariant = useContext(VariantCtx);
 
-    const initialName = typeof initial === "string" ? initial : parentVariant.name;
+    const initialName = typeof initial === "string" ? initial : parentVariant.i;
+    // framer propagates variant *labels* to descendants: a parent with
+    // animate="show" makes children that define `variants` resolve their own
+    // "show" target. Without this, masked reveals (TextReveal) never un-hide.
+    const animateName = typeof animate === "string" ? animate : parentVariant.a;
 
     const initialTarget = useMemo(
       () =>
@@ -426,6 +430,55 @@ function makeMotion(tag: string) {
       return out;
     }, []);
 
+    const animsRef = useRef<any[]>([]);
+    const baseRef = useRef<Record<string, unknown> | null>(null);
+
+    const applyTarget = (node: HTMLElement, target: Record<string, unknown> | undefined, tr: any) => {
+      if (!target) return;
+      const hasKeyframes = Object.values(target).some((v) => Array.isArray(v));
+      if (hasKeyframes) {
+        const kf: Record<string, unknown[]> = {};
+        for (const [k, v] of Object.entries(target)) {
+          if (!Array.isArray(v)) continue;
+          if (k === "y" || k === "x") kf.transform = (v as any[]).map((vv) => transformFrom({ [k]: vv }));
+          else if (k === "opacity") kf.opacity = v as any[];
+          else if (k === "scale") kf.transform = (v as any[]).map((vv) => transformFrom({ scale: vv }));
+          else if (k === "color") kf.color = v as any[];
+        }
+        try {
+          const a = (node as any).animate(kf, {
+            duration: ((tr?.duration ?? 0.6) as number) * 1000,
+            delay: ((tr?.delay ?? 0) as number) * 1000,
+            iterations: tr?.repeat && tr.repeat !== 0 ? Infinity : 1,
+            direction: tr?.repeatType === "mirror" ? "alternate" : "normal",
+            easing: easeCss(tr?.ease),
+            fill: "both",
+          });
+          animsRef.current.push(a);
+        } catch {}
+        return;
+      }
+      const css = cssFromTarget(target);
+      const keys = Object.keys(css);
+      if (!keys.length) return;
+      const per = (k: string) => (tr && typeof tr === "object" && tr[k] && typeof tr[k] === "object" ? tr[k] : tr) || {};
+      node.style.transition = keys
+        .map((k) => {
+          const t2 = per(k);
+          const prop = k === "transform" ? "transform" : k;
+          if (t2.type === "spring") return `${prop} 0.6s ${easeCss("easeOut")} ${(t2.delay ?? 0)}s`;
+          return `${prop} ${(t2.duration ?? 0.6)}s ${easeCss(t2.ease)} ${(t2.delay ?? 0)}s`;
+        })
+        .join(", ");
+      requestAnimationFrame(() => {
+        for (const [k, v] of Object.entries(css)) (node.style as any)[k] = v;
+      });
+    };
+
+    /* Effect A — observers/subscriptions that MUST survive re-renders.
+       (The previous single no-deps effect re-ran every render; each re-render
+       destroyed the IntersectionObservers, so below-fold whileInView reveals
+       never fired and their text stayed at opacity 0.) */
     useEffect(() => {
       const node = el.current;
       if (!node) return;
@@ -457,62 +510,12 @@ function makeMotion(tag: string) {
         applyMv();
       }
 
-      const applyTarget = (target: Record<string, unknown> | undefined, tr: any) => {
-        if (!target) return;
-        const hasKeyframes = Object.values(target).some((v) => Array.isArray(v));
-        if (hasKeyframes) {
-          const kf: Record<string, unknown[]> = {};
-          for (const [k, v] of Object.entries(target)) {
-            if (!Array.isArray(v)) continue;
-            if (k === "y" || k === "x") kf.transform = (v as any[]).map((vv) => transformFrom({ [k]: vv }));
-            else if (k === "opacity") kf.opacity = v as any[];
-            else if (k === "scale") kf.transform = (v as any[]).map((vv) => transformFrom({ scale: vv }));
-            else if (k === "color") kf.color = v as any[];
-          }
-          try {
-            const a = (node as any).animate(kf, {
-              duration: ((tr?.duration ?? 0.6) as number) * 1000,
-              delay: ((tr?.delay ?? 0) as number) * 1000,
-              iterations: tr?.repeat && tr.repeat !== 0 ? Infinity : 1,
-              direction: tr?.repeatType === "mirror" ? "alternate" : "normal",
-              easing: easeCss(tr?.ease),
-              fill: "both",
-            });
-            cleanups.push(() => a.cancel());
-          } catch {}
-          return;
-        }
-        const css = cssFromTarget(target);
-        const keys = Object.keys(css);
-        if (!keys.length) return;
-        const per = (k: string) => (tr && typeof tr === "object" && tr[k] && typeof tr[k] === "object" ? tr[k] : tr) || {};
-        node.style.transition = keys
-          .map((k) => {
-            const t2 = per(k);
-            const prop = k === "transform" ? "transform" : k;
-            if (t2.type === "spring") return `${prop} 0.6s ${easeCss("easeOut")} ${(t2.delay ?? 0)}s`;
-            return `${prop} ${(t2.duration ?? 0.6)}s ${easeCss(t2.ease)} ${(t2.delay ?? 0)}s`;
-          })
-          .join(", ");
-        requestAnimationFrame(() => {
-          for (const [k, v] of Object.entries(css)) (node.style as any)[k] = v;
-        });
-      };
-
-      const enterTarget =
-        (typeof animate === "object" ? animate : undefined) ??
-        (typeof animate === "string" ? variants?.[animate] : undefined);
-      if (enterTarget) {
-        const id = requestAnimationFrame(() => applyTarget(enterTarget, transition));
-        cleanups.push(() => cancelAnimationFrame(id));
-      }
-
       if (whileInView) {
         const io = new IntersectionObserver(
           (ents) => {
             for (const e of ents) {
               if (e.isIntersecting) {
-                applyTarget(resolveTarget(whileInView, variants), transition);
+                applyTarget(node, resolveTarget(whileInView, variants), transition);
                 if (viewport?.once !== false) io.disconnect();
               }
             }
@@ -526,7 +529,7 @@ function makeMotion(tag: string) {
       const hoverT = resolveTarget(whileHover, variants);
       if (hoverT) {
         const cssH = cssFromTarget(hoverT);
-        const base = () => cssFromTarget(enterTarget ?? initialTarget ?? {});
+        const base = () => cssFromTarget(baseRef.current ?? initialTarget ?? {});
         const onIn = () => {
           node.style.transition = "transform .35s cubic-bezier(0.16,1,0.3,1)";
           for (const [k, v] of Object.entries(cssH)) (node.style as any)[k] = v;
@@ -545,7 +548,7 @@ function makeMotion(tag: string) {
       if (tapT) {
         const cssT = cssFromTarget(tapT);
         const down = () => { for (const [k, v] of Object.entries(cssT)) (node.style as any)[k] = v; };
-        const up = () => { for (const [k, v] of Object.entries(cssFromTarget(hoverT ?? enterTarget ?? {}))) (node.style as any)[k] = v; };
+        const up = () => { for (const [k, v] of Object.entries(cssFromTarget(hoverT ?? baseRef.current ?? {}))) (node.style as any)[k] = v; };
         node.addEventListener("pointerdown", down);
         node.addEventListener("pointerup", up);
         cleanups.push(() => {
@@ -553,7 +556,6 @@ function makeMotion(tag: string) {
           node.removeEventListener("pointerup", up);
         });
       }
-
       if (drag) {
         let startX = 0, startY = 0, baseX = 0, baseY = 0, dragging = false;
         const axis = drag === true ? "both" : drag;
@@ -609,7 +611,33 @@ function makeMotion(tag: string) {
       }
 
       return () => cleanups.forEach((f) => f());
-    });
+    }, []);
+
+    /* Effect B — entrance animation target; reactive to animate / inherited
+       variant label changes (TextReveal parent "hidden" -> "show"). */
+    const animateKey = typeof animate === "object" && animate !== null ? JSON.stringify(animate) : String(animate ?? "");
+    useEffect(() => {
+      const node = el.current;
+      if (!node) return;
+      const enterTarget =
+        (typeof animate === "object" && animate !== null ? animate : undefined) ??
+        (typeof animate === "string" ? variants?.[animate] : undefined) ??
+        (animate == null && animateName && variants ? variants[animateName] : undefined);
+      baseRef.current = enterTarget ?? null;
+      if (enterTarget) {
+        const id = requestAnimationFrame(() => applyTarget(node, enterTarget, transition));
+        return () => cancelAnimationFrame(id);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [animateKey, animateName]);
+
+    useEffect(
+      () => () => {
+        animsRef.current.forEach((a) => { try { a.cancel(); } catch {} });
+      },
+      []
+    );
+
 
     const setRefs = (node: HTMLElement | null) => {
       el.current = node;
@@ -622,7 +650,7 @@ function makeMotion(tag: string) {
 
     return createElement(
       VariantCtx.Provider,
-      { value: { name: initialName } },
+      { value: { i: initialName, a: animateName } },
       createElement(tag, elemProps)
     );
   });
