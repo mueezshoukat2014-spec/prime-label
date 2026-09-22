@@ -106,7 +106,9 @@ function actionLabel(detail: string) {
   return detail || "Action";
 }
 
-const POLL_MS = 15_000;
+// 60s (was 15s) and skipped while the tab is hidden — the old fast poll ran
+// 8 aggregate queries every 15s and kept the database awake for no audience.
+const POLL_MS = 60_000;
 
 export default function AnalyticsPanel() {
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -135,7 +137,9 @@ export default function AnalyticsPanel() {
 
   useEffect(() => {
     load();
-    const t = window.setInterval(() => load(true), POLL_MS);
+    const t = window.setInterval(() => {
+      if (document.visibilityState === "visible") load(true);
+    }, POLL_MS);
     return () => window.clearInterval(t);
   }, [load]);
 

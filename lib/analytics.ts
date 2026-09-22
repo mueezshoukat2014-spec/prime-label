@@ -43,6 +43,7 @@ const ALLOWED_ACTIONS = new Set([
   "contact_submit",
   "whatsapp_click",
   "quote_started",
+  "engagement",
 ]);
 
 export function normaliseAction(action: unknown): string | null {
@@ -104,16 +105,17 @@ export async function recordEvent(opts: {
   const detail = (opts.detail || "").slice(0, 200);
   const referrer = (opts.referrer || "").slice(0, 300);
 
+  // One round-trip: session upsert + event insert in a single statement
+  // (data-modifying CTE). Halves the HTTP calls to Neon per ping.
   await sql`
-    INSERT INTO analytics_sessions (id, country, device, referrer, landing_page, current_page)
-    VALUES (${opts.sid}, ${opts.country}, ${opts.device}, ${referrer}, ${opts.path}, ${opts.path})
-    ON CONFLICT (id) DO UPDATE SET
-      last_seen = now(),
-      country = CASE WHEN analytics_sessions.country = '' THEN EXCLUDED.country ELSE analytics_sessions.country END,
-      current_page = ${opts.path}
-  `;
-
-  await sql`
+    WITH up AS (
+      INSERT INTO analytics_sessions (id, country, device, referrer, landing_page, current_page)
+      VALUES (${opts.sid}, ${opts.country}, ${opts.device}, ${referrer}, ${opts.path}, ${opts.path})
+      ON CONFLICT (id) DO UPDATE SET
+        last_seen = now(),
+        country = CASE WHEN analytics_sessions.country = '' THEN EXCLUDED.country ELSE analytics_sessions.country END,
+        current_page = ${opts.path}
+    )
     INSERT INTO analytics_events (session_id, type, path, detail)
     VALUES (${opts.sid}, ${opts.type}, ${opts.path}, ${detail})
   `;

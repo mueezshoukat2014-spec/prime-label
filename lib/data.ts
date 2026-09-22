@@ -7,7 +7,10 @@ import { normaliseManagedVideos } from "@/lib/video";
    catalogue reads for 60s removes the Neon round-trips from almost every page
    render (TTFB is on the LCP critical path). Admin edits appear within a
    minute — an acceptable delay for this catalogue. */
-const TTL = 60_000;
+// 5 minutes (was 60s): content rarely changes, and every warm serverless
+// instance re-queried Neon every minute per key. Admin edits go live within
+// this window; a deploy always shows fresh data.
+const TTL = 300_000;
 const memoCache = new Map<string, { t: number; v: unknown }>();
 function memo<T>(key: string, fn: () => Promise<T>): Promise<T> {
   const now = Date.now();
