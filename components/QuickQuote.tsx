@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
-import { waGuidedOrderLink } from "@/lib/whatsapp";
+import { waGuidedOrderLink, waQuoteSubmittedLink } from "@/lib/whatsapp";
 import { trackAdsLead } from "@/lib/gtag";
 
 const input =
@@ -33,6 +33,7 @@ export default function QuickQuote({
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [waFail, setWaFail] = useState("");
 
   const ready = useMemo(() => {
     const digits = phone.replace(/\D/g, "");
@@ -64,6 +65,21 @@ export default function QuickQuote({
       setDone(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Could not send. Please try WhatsApp instead.");
+      // Server could not save the lead (e.g. DB outage) — never lose the
+      // enquiry: hand it over via WhatsApp with every field pre-filled.
+      setWaFail(
+        waQuoteSubmittedLink({
+          name: name.trim(),
+          phone: phone.trim(),
+          email: "",
+          company: "",
+          country: "",
+          product,
+          quantity: "",
+          details: "Quick quote request — follow up on WhatsApp",
+          artworkUrl: null,
+        })
+      );
     } finally {
       setBusy(false);
     }
@@ -165,7 +181,21 @@ export default function QuickQuote({
                 )}
               </div>
             </div>
-            {error && <p className="mt-3 text-[12.5px] text-red-300">{error}</p>}
+            {error && (
+              <p className="mt-3 text-[12.5px] text-red-300">
+                {error}
+                {waFail && (
+                  <a
+                    href={waFail}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 flex w-fit items-center gap-2 rounded-full border border-champagne/40 bg-champagne/10 px-4 py-2 text-[12px] font-medium text-champagne transition-colors hover:bg-champagne/20"
+                  >
+                    Send via WhatsApp instead →
+                  </a>
+                )}
+              </p>
+            )}
             <button
               type="submit"
               disabled={!ready || busy}

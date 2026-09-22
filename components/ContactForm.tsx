@@ -12,10 +12,14 @@ const inputCls =
 export default function ContactForm({ whatsapp }: { whatsapp?: string }) {
   const waHref = normalizeWaLink(whatsapp);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  // If the server cannot save the message (e.g. DB quota outage), the
+  // "WhatsApp instead" button carries the full message so it is never lost.
+  const [waFail, setWaFail] = useState("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
+    setWaFail("");
     const fd = new FormData(e.currentTarget);
     try {
       const res = await fetch("/api/contact", {
@@ -29,6 +33,18 @@ export default function ContactForm({ whatsapp }: { whatsapp?: string }) {
       setStatus("success");
       (e.target as HTMLFormElement).reset();
     } catch {
+      const name = String(fd.get("name") || "").trim();
+      const email = String(fd.get("email") || "").trim();
+      const subject = String(fd.get("subject") || "").trim();
+      const message = String(fd.get("message") || "").trim();
+      const base = waHref.split("?")[0];
+      setWaFail(
+        `${base}?text=${encodeURIComponent(
+          `Contact message from ${name}${email ? ` (${email})` : ""}` +
+            (subject ? `\nSubject: ${subject}` : "") +
+            `\n\n${message}`
+        )}`
+      );
       setStatus("error");
     }
   }
@@ -70,12 +86,15 @@ export default function ContactForm({ whatsapp }: { whatsapp?: string }) {
           <button type="submit" disabled={status === "loading"} className="btn-primary disabled:opacity-60">
             {status === "loading" ? "Sending..." : "Send message"}
           </button>
-          <a href={waHref} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+          <a href={waFail || waHref} target="_blank" rel="noopener noreferrer" className="btn-ghost">
             WhatsApp instead
           </a>
         </div>
         {status === "error" && (
-          <p className="text-[13px] text-red-300">Something went wrong. Please try again.</p>
+          <p className="text-[13px] text-red-300">
+            Something went wrong. Please try again — or tap “WhatsApp instead”
+            and your full message will be pre-filled there.
+          </p>
         )}
       </form>
     </div>

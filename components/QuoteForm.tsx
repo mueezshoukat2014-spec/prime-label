@@ -262,6 +262,9 @@ export default function QuoteForm({
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [waHref, setWaHref] = useState(fallbackWa);
+  // When the server cannot save the lead (e.g. database quota outage), offer
+  // the exact same pre-filled WhatsApp summary so the enquiry is never lost.
+  const [waFailHref, setWaFailHref] = useState("");
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
   const [countryOpen, setCountryOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
@@ -393,6 +396,7 @@ export default function QuoteForm({
 
     setStatus("loading");
     setErr("");
+    setWaFailHref("");
 
     try {
       const fd = new FormData();
@@ -432,6 +436,19 @@ export default function QuoteForm({
       const data = await res.json().catch(() => ({}) as Record<string, unknown>);
 
       if (!res.ok || !data?.ok) {
+        setWaFailHref(
+          waQuoteSubmittedLink({
+            name: form.name.trim(),
+            phone: form.phone.trim(),
+            email: form.email.trim(),
+            company: form.company.trim(),
+            country: countryForSubmission,
+            product: productForSubmission,
+            quantity: form.quantity,
+            details: form.details.trim(),
+            artworkUrl: null,
+          })
+        );
         throw new Error(
           typeof data?.error === "string"
             ? data.error
@@ -955,9 +972,19 @@ export default function QuoteForm({
             </div>
 
             {err && (
-              <p className="sm:col-span-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-[13px] text-red-300">
+              <div className="sm:col-span-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-[13px] text-red-300">
                 {err}
-              </p>
+                {waFailHref && (
+                  <a
+                    href={waFailHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 flex w-fit items-center gap-2 rounded-full border border-champagne/40 bg-champagne/10 px-4 py-2 text-[12.5px] font-medium text-champagne transition-colors hover:bg-champagne/20"
+                  >
+                    Send via WhatsApp instead →
+                  </a>
+                )}
+              </div>
             )}
 
             <div className="sm:col-span-2 mt-2 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
