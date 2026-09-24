@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
 import { ensureBizSchema } from "@/lib/biz/schema";
+import { num } from "@/lib/biz/money";
+import { computeOrderTotals } from "@/lib/biz/calc";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +16,44 @@ const FIELDS = [
 export async function GET(req: Request) {
   if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
   await ensureBizSchema();
-  const q = new URL(req.url).searchParams.get("q")?.trim() || "";
+  const url = new URL(req.url);
+
+  // ---- customer ledger (Phase 2): full history + lifetime totals ----------
+  const id = url.searchParams.get("id");
+  if (id) {
+    const [customer] = await sql`SELECT * FROM biz_customers WHERE id = ${Number(id)}`;
+    if (!customer) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    const [orders, payments, quotations] = await Promise.all([
+      sql`SELECT * FROM orders WHERE customer_id = ${customer.id} AND COALESCE(archived, FALSE) = FALSE ORDER BY id DESC`,
+      sql`SELECT * FROM biz_payments WHERE customer_id = ${customer.id} ORDER BY date DESC, id DESC LIMIT 200`,
+      sql`SELECT * FROM biz_quotations WHERE customer_id = ${customer.id} ORDER BY id DESC LIMIT 100`,
+    ]);
+    let billedPkr = 0, receivedPkr = 0, grossPkr = 0, outstandingPkr = 0;
+    const orderList = [];
+    for (const o of orders) {
+      const [costs, pays] = await Promise.all([
+        sql`SELECT * FROM biz_order_costs WHERE order_id = ${o.id}`,
+        sql`SELECT * FROM biz_payments WHERE order_id = ${o.id} AND void = FALSE`,
+      ]);
+      const t = computeOrderTotals(o, costs, pays);
+      billedPkr += t.billedPkr; receivedPkr += t.receivedPkr; grossPkr += t.grossPkr;
+      const rate = num(o.rate) > 0 ? num(o.rate) : 1;
+      outstandingPkr += t.outstandingCcy * rate;
+      orderList.push({ ...o, totals: t });
+    }
+    return NextResponse.json({
+      ok: true, customer, orders: orderList, payments, quotations,
+      summary: {
+        orderCount: orderList.length,
+        lifetimeBilledPkr: +billedPkr.toFixed(2),
+        lifetimeReceivedPkr: +receivedPkr.toFixed(2),
+        lifetimeGrossPkr: +grossPkr.toFixed(2),
+        outstandingPkr: +outstandingPkr.toFixed(2),
+      },
+    });
+  }
+
+  const q = url.searchParams.get("q")?.trim() || "";
   const rows = q
     ? await sql`SELECT * FROM biz_customers
         WHERE archived = FALSE

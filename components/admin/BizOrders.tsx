@@ -37,6 +37,23 @@ export default function BizOrders() {
   }, []);
   useEffect(() => { load(); fetch("/api/admin/biz/customers").then(r => r.json()).then(j => j?.ok && setCustomers(j.customers)); }, [load]);
 
+  // "Reorder" from the Customers ledger pre-fills the new-order form.
+  useEffect(() => {
+    const onNewOrder = (e: Event) => {
+      const d = (e as CustomEvent).detail || {};
+      setForm({
+        name: d.name || "", customer_id: d.customer_id || "", country: d.country || "",
+        currency: d.currency || "PKR", rate: d.rate ?? "", product: d.product || "",
+        quantity: d.quantity || "", sale_amount: "", discount: 0, customer_delivery_charge: 0,
+        delivery_mode: "CUSTOM", actual_delivery_cost: 0, delivery_currency: "PKR",
+        status: "NEW", pay_amount: 0, method: "Cash", received_currency: "PKR", received_amount: 0,
+      });
+      setShowNew(true);
+    };
+    window.addEventListener("biz:new-order", onNewOrder);
+    return () => window.removeEventListener("biz:new-order", onNewOrder);
+  }, []);
+
   async function openOrder(id: number) {
     setOpen(open === id ? null : id);
     if (open !== id) {

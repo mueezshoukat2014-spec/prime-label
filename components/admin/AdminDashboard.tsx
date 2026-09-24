@@ -14,6 +14,10 @@ import BizOrders from "@/components/admin/BizOrders";
 import PaymentsManager from "@/components/admin/PaymentsManager";
 import CustomersManager from "@/components/admin/CustomersManager";
 import ProductCostsManager from "@/components/admin/ProductCostsManager";
+import ExpensesManager from "@/components/admin/ExpensesManager";
+import CashManager from "@/components/admin/CashManager";
+import DocumentsManager from "@/components/admin/DocumentsManager";
+import ReportsManager from "@/components/admin/ReportsManager";
 import ReferralsManager from "@/components/admin/ReferralsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
@@ -31,6 +35,10 @@ type Tab =
   | "customers"
   | "orders"
   | "payments"
+  | "expenses"
+  | "cash"
+  | "docs"
+  | "reports"
   | "pcosts"
   | "tracking"
   | "referrals"
@@ -47,11 +55,15 @@ type Tab =
   | "settings";
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "reports", label: "Business Reports" },
   { id: "analytics", label: "Analytics" },
   { id: "leads", label: "Leads" },
   { id: "customers", label: "Customers" },
   { id: "orders", label: "Orders" },
   { id: "payments", label: "Payments" },
+  { id: "expenses", label: "Expenses" },
+  { id: "cash", label: "Business Cash" },
+  { id: "docs", label: "Quotes & Invoices" },
   { id: "pcosts", label: "Products & Costs" },
   { id: "tracking", label: "Tracking / Shipments" },
   { id: "referrals", label: "Referrals" },
@@ -70,6 +82,16 @@ const TABS: { id: Tab; label: string }[] = [
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
+
+  // Cross-tab navigation (e.g. "Reorder" from a customer ledger).
+  useEffect(() => {
+    const onNav = (e: Event) => {
+      const t = (e as CustomEvent).detail?.tab;
+      if (t) setTab(t as Tab);
+    };
+    window.addEventListener("biz:navigate", onNav);
+    return () => window.removeEventListener("biz:navigate", onNav);
+  }, []);
 
   async function logout() {
     await fetch("/api/admin/login", {
@@ -119,11 +141,15 @@ export default function AdminDashboard() {
 
         <div className="min-w-0 flex-1">
           {tab === "overview" && <Overview onJump={setTab} />}
+          {tab === "reports" && <ReportsManager />}
           {tab === "analytics" && <AnalyticsPanel />}
           {tab === "leads" && <Leads />}
           {tab === "customers" && <CustomersManager />}
           {tab === "orders" && <BizOrders />}
           {tab === "payments" && <PaymentsManager />}
+          {tab === "expenses" && <ExpensesManager />}
+          {tab === "cash" && <CashManager />}
+          {tab === "docs" && <DocumentsManager />}
           {tab === "pcosts" && <ProductCostsManager />}
           {tab === "tracking" && <OrdersManager />}
           {tab === "referrals" && <ReferralsManager />}
@@ -259,6 +285,20 @@ function Leads() {
     setToast("Lead deleted");
     reload();
   }
+  async function patchCrm(id: number, p: Record<string, unknown>) {
+    await fetch("/api/admin/biz/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...p }) });
+    reload();
+  }
+  async function convertLead(l: any) {
+    const withQuote = confirm("Also create a draft quotation for this customer?\n\nOK = customer + draft quote · Cancel = customer only");
+    const j = await fetch("/api/admin/biz/leads", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lead_id: l.id, create_quote: withQuote }),
+    }).then((r) => r.json()).catch(() => ({}));
+    if (j?.ok) setToast(withQuote && j.quote ? `Customer + quote ${j.quote.q_number} created` : "Customer created");
+    else setToast(j?.error || "Conversion failed");
+    reload();
+  }
 
   return (
     <div className="space-y-5">
@@ -296,6 +336,36 @@ function Leads() {
                 {l.quantity && <span className="rounded bg-cream/5 px-2 py-1">Qty: {l.quantity}</span>}
               </div>
               {l.details && <p className="mt-3 rounded-lg bg-cream/[0.03] p-3 text-[13px] text-cream">{l.details}</p>}
+              <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-cream/10 bg-cream/[0.02] px-3 py-2">
+                <span className="text-[10px] uppercase tracking-wide2 text-cream-dim">CRM</span>
+                <select
+                  className="rounded-md border border-line bg-surface/40 px-2 py-1 text-[11.5px] text-cream outline-none"
+                  value={l.crm_status || "NEW"}
+                  onChange={(e) => patchCrm(l.id, { crm_status: e.target.value })}
+                >
+                  {["NEW", "CONTACTED", "QUOTE SENT", "FOLLOW-UP", "NEGOTIATING", "WON", "LOST"].map((s) => <option key={s}>{s}</option>)}
+                </select>
+                <input
+                  type="date"
+                  className="rounded-md border border-line bg-surface/40 px-2 py-1 text-[11.5px] text-cream outline-none"
+                  title="Next follow-up"
+                  value={l.next_follow_up ? String(l.next_follow_up).slice(0, 10) : ""}
+                  onChange={(e) => patchCrm(l.id, { next_follow_up: e.target.value || null })}
+                />
+                <input
+                  className="w-32 rounded-md border border-line bg-surface/40 px-2 py-1 text-[11.5px] text-cream outline-none"
+                  placeholder="Est. value PKR"
+                  type="number"
+                  defaultValue={l.est_value ? String(l.est_value) : ""}
+                  onBlur={(e) => { const v = parseFloat(e.target.value); if (!isNaN(v) && v !== parseFloat(l.est_value || "0")) patchCrm(l.id, { est_value: v }); }}
+                />
+                <button
+                  onClick={() => convertLead(l)}
+                  className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-2.5 py-1 text-[11.5px] text-champagne transition-colors hover:bg-champagne/[0.16]"
+                >
+                  Convert → Customer
+                </button>
+              </div>
               {l.artwork_url && (
                 <a
                   href={l.artwork_url}

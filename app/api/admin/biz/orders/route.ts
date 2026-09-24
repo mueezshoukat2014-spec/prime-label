@@ -65,8 +65,10 @@ export async function POST(req: Request) {
   const rate = num(b.rate) > 0 ? num(b.rate) : currency === "PKR" ? 1 : 0;
   const deliveryCurrency = String(b.delivery_currency || currency);
   const actualDelivery = num(b.actual_delivery_cost);
+  // Delivery snapshot: explicit rate > order rate (same currency) > indicative.
+  const deliveryFallbackRate = deliveryCurrency === currency ? rate : toPkr(1, deliveryCurrency);
   const actualDeliveryPkr =
-    deliveryCurrency === "PKR" ? actualDelivery : actualDelivery * (num(b.delivery_rate) > 0 ? num(b.delivery_rate) : toPkr(1, deliveryCurrency));
+    deliveryCurrency === "PKR" ? actualDelivery : actualDelivery * (num(b.delivery_rate) > 0 ? num(b.delivery_rate) : deliveryFallbackRate);
 
   const orderRef = String(b.order_ref || "").trim() || (await nextNumber("order"));
 
@@ -120,10 +122,11 @@ export async function PATCH(req: Request) {
   const rate = b.rate !== undefined ? num(b.rate) : num(cur.rate) > 0 ? num(cur.rate) : currency === "PKR" ? 1 : 0;
   const deliveryCurrency = String(b.delivery_currency ?? cur.delivery_currency ?? currency);
   const actualDelivery = b.actual_delivery_cost !== undefined ? num(b.actual_delivery_cost) : num(cur.actual_delivery_cost);
+  const deliveryFallbackRate = deliveryCurrency === currency ? rate : toPkr(1, deliveryCurrency);
   const actualDeliveryPkr =
     deliveryCurrency === "PKR"
       ? actualDelivery
-      : actualDelivery * (num(b.delivery_rate) > 0 ? num(b.delivery_rate) : toPkr(1, deliveryCurrency));
+      : actualDelivery * (num(b.delivery_rate) > 0 ? num(b.delivery_rate) : deliveryFallbackRate);
 
   await sql`
     UPDATE orders SET

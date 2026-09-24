@@ -172,6 +172,14 @@ async function run(): Promise<void> {
   )`;
 
   // ---- invoices ------------------------------------------------------------
+  await sql`CREATE TABLE IF NOT EXISTS biz_invoice_items (
+    id SERIAL PRIMARY KEY,
+    invoice_id INTEGER NOT NULL,
+    product TEXT NOT NULL,
+    quantity NUMERIC DEFAULT 0,
+    unit_price NUMERIC DEFAULT 0,
+    subtotal NUMERIC DEFAULT 0
+  )`;
   await sql`CREATE TABLE IF NOT EXISTS biz_invoices (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ DEFAULT now(),
