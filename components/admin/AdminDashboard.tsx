@@ -10,6 +10,10 @@ import VideoManager from "@/components/admin/VideoManager";
 import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import SiteSettings from "@/components/admin/SiteSettings";
 import OrdersManager from "@/components/admin/OrdersManager";
+import BizOrders from "@/components/admin/BizOrders";
+import PaymentsManager from "@/components/admin/PaymentsManager";
+import CustomersManager from "@/components/admin/CustomersManager";
+import ProductCostsManager from "@/components/admin/ProductCostsManager";
 import ReferralsManager from "@/components/admin/ReferralsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
@@ -24,7 +28,11 @@ type Tab =
   | "overview"
   | "analytics"
   | "leads"
+  | "customers"
   | "orders"
+  | "payments"
+  | "pcosts"
+  | "tracking"
   | "referrals"
   | "messages"
   | "suggestions"
@@ -41,7 +49,11 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "analytics", label: "Analytics" },
   { id: "leads", label: "Leads" },
+  { id: "customers", label: "Customers" },
   { id: "orders", label: "Orders" },
+  { id: "payments", label: "Payments" },
+  { id: "pcosts", label: "Products & Costs" },
+  { id: "tracking", label: "Tracking / Shipments" },
   { id: "referrals", label: "Referrals" },
   { id: "messages", label: "Messages" },
   { id: "suggestions", label: "Suggestions" },
@@ -109,7 +121,11 @@ export default function AdminDashboard() {
           {tab === "overview" && <Overview onJump={setTab} />}
           {tab === "analytics" && <AnalyticsPanel />}
           {tab === "leads" && <Leads />}
-          {tab === "orders" && <OrdersManager />}
+          {tab === "customers" && <CustomersManager />}
+          {tab === "orders" && <BizOrders />}
+          {tab === "payments" && <PaymentsManager />}
+          {tab === "pcosts" && <ProductCostsManager />}
+          {tab === "tracking" && <OrdersManager />}
           {tab === "referrals" && <ReferralsManager />}
           {tab === "messages" && <Messages />}
           {tab === "suggestions" && <SuggestionsManager />}
