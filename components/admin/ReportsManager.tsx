@@ -101,7 +101,7 @@ export default function ReportsManager() {
         {/* By country */}
         <section>
           <h2 className="mb-2 text-[12px] uppercase tracking-wide2 text-champagne">Sales by country</h2>
-          <div className="overflow-hidden rounded-2xl border border-cream/10">
+          <div className="overflow-x-auto rounded-2xl border border-cream/10">
             <table className="w-full text-left text-[12.5px]">
               <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
                 <tr><th className={th}>Country</th><th className={th + " text-right"}>Orders</th><th className={th + " text-right"}>Billed</th><th className={th + " text-right"}>Gross</th></tr>
@@ -122,7 +122,7 @@ export default function ReportsManager() {
         {/* By product */}
         <section>
           <h2 className="mb-2 text-[12px] uppercase tracking-wide2 text-champagne">Sales by product</h2>
-          <div className="overflow-hidden rounded-2xl border border-cream/10">
+          <div className="overflow-x-auto rounded-2xl border border-cream/10">
             <table className="w-full text-left text-[12.5px]">
               <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
                 <tr><th className={th}>Product</th><th className={th + " text-right"}>Orders</th><th className={th + " text-right"}>Billed</th><th className={th + " text-right"}>Gross</th></tr>
@@ -143,7 +143,7 @@ export default function ReportsManager() {
         {/* Advertising */}
         <section>
           <h2 className="mb-2 text-[12px] uppercase tracking-wide2 text-champagne">Advertising spend (PKR)</h2>
-          <div className="overflow-hidden rounded-2xl border border-cream/10">
+          <div className="overflow-x-auto rounded-2xl border border-cream/10">
             <table className="w-full text-left text-[12.5px]">
               <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
                 <tr><th className={th}>Platform</th><th className={th + " text-right"}>Total spend</th></tr>
@@ -163,7 +163,7 @@ export default function ReportsManager() {
         {/* Top customers */}
         <section>
           <h2 className="mb-2 text-[12px] uppercase tracking-wide2 text-champagne">Top customers (lifetime gross)</h2>
-          <div className="overflow-hidden rounded-2xl border border-cream/10">
+          <div className="overflow-x-auto rounded-2xl border border-cream/10">
             <table className="w-full text-left text-[12.5px]">
               <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
                 <tr><th className={th}>Customer</th><th className={th + " text-right"}>Orders</th><th className={th + " text-right"}>Gross</th><th className={th + " text-right"}>Due</th></tr>
@@ -212,7 +212,7 @@ export default function ReportsManager() {
       {data.followUps.length > 0 && (
         <section>
           <h2 className="mb-2 text-[12px] uppercase tracking-wide2 text-champagne">Open quotations &amp; follow-ups</h2>
-          <div className="overflow-hidden rounded-2xl border border-cream/10">
+          <div className="overflow-x-auto rounded-2xl border border-cream/10">
             <table className="w-full text-left text-[12.5px]">
               <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
                 <tr><th className={th}>Quote</th><th className={th}>Status</th><th className={th}>Follow-up</th><th className={th + " text-right"}>Value</th></tr>

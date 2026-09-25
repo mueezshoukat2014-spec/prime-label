@@ -29,7 +29,7 @@ export async function generateMetadata({
     (await getPdpOverride(product.slug)) as PdpOverrideRow | null
   );
   const url = `${SITE_URL}/products/${product.slug}`;
-  const title = `${content.h1} | Low MOQ ${product.moq ?? 100} — ${BRAND_NAME}`;
+  const title = `${content.h1} | Low MOQ ${product.moq ?? 100}`;
   const description = `${content.intro.slice(0, 140)} Free 24h digital proof, DDP express delivery to KSA, UAE, GCC, UK & USA.`;
   return {
     title,
@@ -118,7 +118,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
       })),
     },
     breadcrumbJsonLd([
-      { name: "Products", path: "/#products" },
+      { name: "Products", path: "/products" },
       { name: product.title, path: `/products/${product.slug}` },
     ]),
   ];
@@ -137,7 +137,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 text-[12px] text-cream-dim">
               <Link href="/" className="transition-colors hover:text-champagne">Home</Link>
               <span aria-hidden>/</span>
-              <Link href="/#products" className="transition-colors hover:text-champagne">Products</Link>
+              <Link href="/products" className="transition-colors hover:text-champagne">Products</Link>
               <span aria-hidden>/</span>
               <span className="text-cream-muted">{product.title}</span>
             </nav>

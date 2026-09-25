@@ -75,6 +75,25 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true, quote, q_number: qNumber });
 }
 
+export async function DELETE(req: Request) {
+  if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
+  await ensureBizSchema();
+  const id = Number(new URL(req.url).searchParams.get("id"));
+  if (!Number.isInteger(id) || id <= 0) return NextResponse.json({ ok: false, error: "Bad id" }, { status: 400 });
+  const [quote] = await sql`SELECT * FROM biz_quotations WHERE id = ${id}`;
+  if (!quote) return NextResponse.json({ ok: false, error: "Quotation not found" }, { status: 404 });
+  // A converted quotation is part of an order's history — never deletable.
+  if (quote.converted_order_id) {
+    return NextResponse.json(
+      { ok: false, error: "This quotation was converted to an order and can no longer be deleted." },
+      { status: 409 }
+    );
+  }
+  await sql`DELETE FROM biz_quotation_items WHERE quotation_id = ${id}`;
+  await sql`DELETE FROM biz_quotations WHERE id = ${id}`;
+  return NextResponse.json({ ok: true });
+}
+
 export async function PATCH(req: Request) {
   if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
   await ensureBizSchema();

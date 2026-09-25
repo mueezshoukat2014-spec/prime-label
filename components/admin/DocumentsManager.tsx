@@ -206,6 +206,20 @@ function Quotes() {
                             {detail.quote.converted_order_id ? "Converted ✓" : "Convert to order →"}
                           </button>
                           <button className="btn-ghost" onClick={() => printQuote(detail)}>🖨 Print / PDF</button>
+                          <button
+                            className="rounded-full border border-red-500/30 px-4 py-2 text-[12px] text-red-300 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40"
+                            disabled={!!detail.quote.converted_order_id}
+                            title={detail.quote.converted_order_id ? "Converted quotations are part of order history and cannot be deleted" : "Delete this quotation"}
+                            onClick={async () => {
+                              if (!confirm(`Delete ${detail.quote.q_number} permanently?\n\nThis removes the quotation and its items. This cannot be undone.`)) return;
+                              const j = await fetch(`/api/admin/biz/quotations?id=${detail.quote.id}`, { method: "DELETE" })
+                                .then((r) => r.json()).catch(() => ({}));
+                              if (j?.ok) { flash("Quotation deleted"); setOpen(null); setDetail(null); load(); }
+                              else flash(j?.error || "Delete failed");
+                            }}
+                          >
+                            🗑 Delete quotation
+                          </button>
                         </div>
                       </div>
                     </td>

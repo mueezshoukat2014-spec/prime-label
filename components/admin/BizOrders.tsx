@@ -217,6 +217,30 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, flash }: any)
                   <span>Costs: <b className="text-red-300">{fmt(t.costsPkr ?? 0)}</b></span>
                   <span>Received: <b className="text-emerald-400">{fmt(t.receivedPkr ?? 0)}</b></span>
                 </div>
+                {/* stable, backend-generated invoice numbers for this order */}
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {(detail.invoices || []).length > 0 ? (
+                    (detail.invoices as any[]).map((inv) => (
+                      <span key={inv.id} className="rounded-full border border-champagne/30 bg-champagne/10 px-2.5 py-1 text-[10.5px] font-semibold text-champagne">
+                        {inv.inv_number} · {inv.status}
+                      </span>
+                    ))
+                  ) : (
+                    <button
+                      className="rounded-full border border-line px-3 py-1 text-[10.5px] text-cream-muted transition-colors hover:border-champagne/40 hover:text-champagne"
+                      onClick={async () => {
+                        const j = await fetch("/api/admin/biz/invoices", {
+                          method: "POST", headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ order_id: detail.order.id }),
+                        }).then((r) => r.json()).catch(() => ({}));
+                        if (j?.ok) { flash(`Invoice ${j.inv_number} created`); onPatch(detail.order.id, {}); }
+                        else flash(j?.error || "Invoice creation failed");
+                      }}
+                    >
+                      + Create invoice (auto number)
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Direct costs</p>

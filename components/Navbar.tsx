@@ -7,7 +7,7 @@ import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const LINKS = [
-  { label: "Products", href: "/#products" },
+  { label: "Products", href: "/products" },
   { label: "Designer", href: "/designer" },
   { label: "Work", href: "/#gallery" },
   { label: "Process", href: "/#process" },

@@ -19,6 +19,9 @@ const FLOATERS: FloaterItem[] = [
   { src: "/photos/DYQ2pCbjHoE_0.jpg", alt: "Custom stickers", cls: "bottom-[12%] right-[12%] w-[170px] h-[170px]", depth: 1.1, rot: -3, delay: 0.05 },
 ];
 
+/** Hero polaroids ship responsive twins (scripts/compress-photos.mjs). */
+const SRCSET_SRC = new Set(FLOATERS.map((f) => f.src));
+
 function Floater({ f, sx, sy, eager = false }: { f: FloaterItem; sx: MotionValue<number>; sy: MotionValue<number>; eager?: boolean }) {
   const tx = useTransform(sx, (v) => v * 60 * f.depth);
   const ty = useTransform(sy, (v) => v * 60 * f.depth);
@@ -42,6 +45,8 @@ function Floater({ f, sx, sy, eager = false }: { f: FloaterItem; sx: MotionValue
   loading={eager ? "eager" : "lazy"}
   fetchPriority={eager ? "high" : "auto"}
   decoding="async"
+  srcSet={SRCSET_SRC.has(f.src) ? `${f.src.replace(/\.jpg$/, "")}-w480.jpg 480w, ${f.src.replace(/\.jpg$/, "")}-w960.jpg 960w, ${f.src} 1400w` : undefined}
+  sizes="(max-width: 640px) 45vw, 240px"
   className="absolute inset-0 h-full w-full object-cover"
 />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />

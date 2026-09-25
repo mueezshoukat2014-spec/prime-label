@@ -69,6 +69,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.95,
       alternates: langs(`${base}/quote`, `${base}/ar/quote`),
     },
+    {
+      url: `${base}/products`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.93,
+    },
     { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
     {
       url: `${base}/ar`,

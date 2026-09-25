@@ -51,10 +51,8 @@ const nextConfig = {
        * These paths never existed as routes but are cheaply guessable or were
        * probed by crawlers; each now resolves to its real home with a 301 so
        * link equity consolidates instead of 404ing. Exact-match only — the
-       * /products/:slug and /ar/products/:slug pages are unaffected.
+       * /products, /products/:slug and /ar/products/:slug pages are real routes.
        */
-      { source: '/products', destination: '/', permanent: true },
-      { source: '/ar/products', destination: '/ar', permanent: true },
       { source: '/custom-labels-uk', destination: '/custom-clothing-labels-uk', permanent: true },
       { source: '/custom-labels-usa', destination: '/custom-clothing-labels-usa', permanent: true },
       { source: '/home', destination: '/', permanent: true },

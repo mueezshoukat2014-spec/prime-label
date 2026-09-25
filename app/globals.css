@@ -235,14 +235,6 @@ body {
   }
 }
 
-/* Hide default cursor on capable pointers for custom cursor */
-@media (hover: hover) and (pointer: fine) {
-  .cursor-none-lux,
-  .cursor-none-lux * {
-    cursor: none;
-  }
-}
-
 /* ---------- iOS / mobile performance ---------- */
 /* WebKit (iOS Safari) is extremely slow with backdrop-filter, especially on
    sticky/fixed elements like the navbar. Use solid backgrounds on small screens. */

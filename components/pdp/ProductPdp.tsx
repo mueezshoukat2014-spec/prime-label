@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
 import { waProductLink, waGuidedOrderLink } from "@/lib/whatsapp";
+import { GOOGLE_REVIEW_URL } from "@/lib/seo";
 import { volumeTiersFor, type PdpContent } from "@/lib/pdp-content";
 
 type PdpProduct = {
@@ -14,6 +15,7 @@ type PdpProduct = {
   description: string;
   image: string;
   gallery: string[];
+  priceFrom?: string | null;
   moq?: number | null;
   turnaround?: number | null;
 };
@@ -185,9 +187,11 @@ export default function ProductPdp({
           <div className="mt-5 flex flex-wrap gap-2">
             {[
               product.moq ? `Low MOQ ${product.moq} pcs` : "Low MOQ",
+              product.turnaround != null ? `${product.turnaround}-day production` : "",
+              product.priceFrom ? `Pricing: ${product.priceFrom}` : "",
               "Free 24h digital proof",
               "DDP express delivery",
-            ].map((t) => (
+            ].filter(Boolean).map((t) => (
               <span key={t} className="rounded-full border border-champagne/30 bg-champagne/[0.07] px-3.5 py-1.5 text-[11.5px] uppercase tracking-wide2 text-champagne">
                 {t}
               </span>
@@ -321,6 +325,15 @@ export default function ProductPdp({
                   Your selection — <span className="text-cream-muted">{detailsText}</span> — will be attached to your quote.
                 </p>
               )}
+              {/* proof links — real, existing signals only */}
+              <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-cream-dim">
+                <a href={GOOGLE_REVIEW_URL} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-champagne">
+                  ★ Rated on Google — read reviews
+                </a>
+                <Link href="/work" className="transition-colors hover:text-champagne">
+                  See recent brand work →
+                </Link>
+              </p>
             </div>
 
             {/* pre-order + proof guarantee */}

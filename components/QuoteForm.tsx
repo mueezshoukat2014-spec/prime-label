@@ -267,6 +267,7 @@ export default function QuoteForm({
   const [waFailHref, setWaFailHref] = useState("");
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
   const [countryOpen, setCountryOpen] = useState(false);
+  const [countryQuery, setCountryQuery] = useState("");
   const [productOpen, setProductOpen] = useState(false);
   const [quantityOpen, setQuantityOpen] = useState(false);
 
@@ -588,7 +589,7 @@ export default function QuoteForm({
                 <button
                   id="q-country"
                   type="button"
-                  onClick={() => setCountryOpen((v) => !v)}
+                  onClick={() => { setCountryQuery(""); setCountryOpen((v) => !v); }}
                   className={`${inputCls} ${okBorder} flex items-center justify-between gap-3 text-left`}
                   aria-haspopup="listbox"
                   aria-expanded={countryOpen}
@@ -621,10 +622,27 @@ export default function QuoteForm({
 
                 {countryOpen && (
                   <div
-                    className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-72 overflow-y-auto rounded-2xl border border-champagne/25 bg-ink/95 p-2 shadow-soft backdrop-blur-xl"
                     role="listbox"
                   >
-                    {COUNTRY_OPTIONS.map((c) => (
+                    {/* searchable on mobile: type to filter instead of scrolling 200 rows */}
+                    <div className="sticky top-0 z-10 bg-ink/95 p-1 pb-2 backdrop-blur-xl">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={countryQuery}
+                        onChange={(e) => setCountryQuery(e.target.value)}
+                        placeholder="Search country…"
+                        aria-label="Search country"
+                        className="w-full rounded-xl border border-line bg-surface/40 px-3 py-2 text-[13px] text-cream outline-none placeholder:text-cream-dim focus:border-champagne/50"
+                      />
+                    </div>
+                    {COUNTRY_OPTIONS.filter(
+                      (c) =>
+                        !countryQuery.trim() ||
+                        c.name.toLowerCase().includes(countryQuery.trim().toLowerCase()) ||
+                        (c.code || "").includes(countryQuery.trim())
+                    ).map((c) => (
                       <button
                         key={c.name}
                         type="button"
@@ -647,6 +665,22 @@ export default function QuoteForm({
                         {c.code && <span className="shrink-0 text-[12px] text-champagne">{c.code}</span>}
                       </button>
                     ))}
+                    {COUNTRY_OPTIONS.filter(
+                      (c) =>
+                        !countryQuery.trim() ||
+                        c.name.toLowerCase().includes(countryQuery.trim().toLowerCase()) ||
+                        (c.code || "").includes(countryQuery.trim())
+                    ).length === 0 && (
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={false}
+                        onClick={() => { handleCountryChange("Other"); setCountryOpen(false); }}
+                        className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] text-cream-muted hover:bg-cream/[0.04] hover:text-cream"
+                      >
+                        No match found — continue with “Other”
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

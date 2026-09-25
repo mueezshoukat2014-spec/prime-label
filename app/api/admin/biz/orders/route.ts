@@ -19,12 +19,13 @@ export async function GET(req: Request) {
   if (id) {
     const [o] = await sql`SELECT * FROM orders WHERE id = ${Number(id)}`;
     if (!o) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-    const [costs, payments, items] = await Promise.all([
+    const [costs, payments, items, invoices] = await Promise.all([
       sql`SELECT * FROM biz_order_costs WHERE order_id = ${o.id} ORDER BY date, id`,
       sql`SELECT * FROM biz_payments WHERE order_id = ${o.id} ORDER BY date, id`,
       sql`SELECT * FROM biz_order_items WHERE order_id = ${o.id} ORDER BY id`,
+      sql`SELECT id, inv_number, status, date, grand_total, currency FROM biz_invoices WHERE order_id = ${o.id} ORDER BY id`,
     ]);
-    return NextResponse.json({ ok: true, order: o, costs, payments, items, totals: computeOrderTotals(o, costs, payments) });
+    return NextResponse.json({ ok: true, order: o, costs, payments, items, invoices, totals: computeOrderTotals(o, costs, payments) });
   }
 
   const rows = q

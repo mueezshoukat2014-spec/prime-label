@@ -71,7 +71,12 @@ export default async function MarketPage({ params }: { params: { market: string 
     breadcrumbJsonLd([{ name: market.country, path: `/${market.slug}` }]),
   ];
 
-  const wa = normalizeWaLink(site.whatsapp);
+  // Contextual pre-filled message: the chat opens already describing the
+  // visitor's market, so the first message is useful instead of a bare "hi".
+  const wa = normalizeWaLink(
+    site.whatsapp,
+    `Hi Prime Labels! I need custom clothing labels & brand packaging for my brand in ${market.country}. Please share pricing and DDP delivery details.`
+  );
 
   return (
     <SiteShell footer={<Footer whatsapp={site.whatsapp} instagram={site.instagram} email={site.email} />}>
