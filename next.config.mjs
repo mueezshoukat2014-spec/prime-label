@@ -4,14 +4,14 @@ const nextConfig = {
   poweredByHeader: false,
   images: {
     /**
-     * Vercel Image Optimization is intentionally unused now: every image on
-     * the site is either (a) an admin upload that was already resized and
-     * re-encoded to WebP by sharp at upload time, or (b) a repo photo that was
-     * batch-compressed before commit. Both are served with plain <img> tags,
-     * so no billable /_next/image transformations are ever generated.
-     * Keeping unoptimized: true makes that guarantee hard to undo by accident.
+     * Image pipeline policy: repo photos and sharp-processed uploads are served
+     * with plain <img> tags (already compressed in-repo / at upload time), so
+     * they never generate billable /_next/image transformations. Only remote
+     * Vercel Blob URLs (legacy uploads that pre-date the sharp pipeline, some
+     * >300 KB) are rendered through next/image, where they are resized and
+     * re-encoded to AVIF/WebP on the fly. remotePatterns below is locked to the
+     * Blob host so nothing else can ever reach the optimizer.
      */
-    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [360, 414, 640, 750, 828, 1080, 1200, 1600],
     imageSizes: [32, 64, 96, 128, 256, 384],

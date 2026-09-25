@@ -3,8 +3,50 @@ import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { useRef, useState } from "react";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "next/link";
+import Image from "next/image";
 import type { Product } from "@/lib/content";
 import { waProductLink } from "@/lib/whatsapp";
+
+/**
+ * Remote Vercel-Blob uploads (legacy, sometimes >300 KB) go through next/image
+ * so they are resized + re-encoded to AVIF/WebP on the fly; repo photos stay
+ * plain <img> (already compressed in-repo, no billable transformations).
+ */
+function PImg({
+  src,
+  alt,
+  className,
+  sizes,
+}: {
+  src: unknown;
+  alt: string;
+  className: string;
+  sizes?: string;
+}) {
+  if (typeof src === "string" && src.startsWith("https://")) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        quality={85}
+        loading="lazy"
+        decoding="async"
+        className={className}
+      />
+    );
+  }
+  return (
+    <img
+      src={typeof src === "string" ? src : ""}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      className={className}
+    />
+  );
+}
 
 export default function ProductsShowcase({ products }: { products: Product[] }) {
   const [active, setActive] = useState(0);
@@ -203,13 +245,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                     transition={{ duration: 1.1, ease: EASE }}
                     className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
                   >
-                    <img
-  src={typeof p.image === "string" ? (p.image) : ""}
-  alt={p.title}
-  loading="lazy"
-  decoding="async"
-  className="absolute inset-0 h-full w-full object-cover"
-/>
+                    <PImg
+                      src={p.image}
+                      alt={p.title}
+                      sizes="(max-width: 640px) 92vw, 44vw"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
                   </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 hidden w-full items-end justify-between p-7 sm:flex">
@@ -311,13 +352,12 @@ export default function ProductsShowcase({ products }: { products: Product[] }) 
                         transition={{ duration: 0.6, ease: EASE, delay: 0.2 + gi * 0.08 }}
                         className="group relative aspect-square overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25 max-sm:w-[62%] max-sm:shrink-0 max-sm:snap-center"
                       >
-                        <img
-  src={typeof g === "string" ? (g) : ""}
-  alt={`${p.title} ${gi + 1}`}
-  loading="lazy"
-  decoding="async"
-  className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
-/>
+                        <PImg
+                          src={g}
+                          alt={`${p.title} ${gi + 1}`}
+                          sizes="(max-width: 640px) 62vw, 20vw"
+                          className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
+                        />
                       </motion.div>
                     )
                   )}
