@@ -10,7 +10,7 @@ import { SITE_URL, BRAND_NAME } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "مدونة برايم ليبلز — دليل البراندات للّيبل والتغليف",
+  title: "مدونة الليبل والتغليف — دليل عملي للبراندات",
   description:
     "مقالات عملية بالعربي لأصحاب البراندات: اختيار الليبل، الكميات الذكية، الخامات، الشحن للخليج، وأسرار التغليف الفاخر.",
   alternates: {

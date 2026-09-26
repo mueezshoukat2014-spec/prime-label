@@ -11,7 +11,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Brand Starter Kit — Everything a New Fashion Brand Needs | ${BRAND_NAME}`,
+  title: `Brand Starter Kit — Everything a New Fashion Brand Needs`,
   description:
     "Launch your clothing brand with one order: woven labels, hang tags, care labels and brand packaging — matched design, one supplier, one shipment. From MOQ 100.",
   alternates: {

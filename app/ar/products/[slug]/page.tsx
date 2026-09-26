@@ -26,7 +26,7 @@ export async function generateMetadata({
   if (!product || !ar) return { title: "الصفحة غير موجودة" };
   const url = `${SITE_URL}/ar/products/${product.slug}`;
   const enUrl = `${SITE_URL}/products/${product.slug}`;
-  const title = `${ar.h1} | أقل كمية ${product.moq ?? 100} قطعة — برايم ليبلز`;
+  const title = `${ar.h1} | أقل كمية ${product.moq ?? 100} قطعة`;
   const description = `${ar.intro.slice(0, 120)} بروفة مجانية خلال 24 ساعة وشحن سريع DDP للسعودية والخليج.`;
   return {
     title,

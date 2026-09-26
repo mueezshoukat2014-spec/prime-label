@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Design Your Label Live — See Your Logo Woven | ${BRAND_NAME}`,
+  title: `Design Your Label Live — See Your Logo Woven`,
   description:
     "Upload your logo and see it on a woven or satin label instantly. Choose style, fold and size — then get a tailored quote with a free digital proof in 24 hours.",
   alternates: {

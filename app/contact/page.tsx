@@ -7,7 +7,7 @@ import { getSiteContent } from "@/lib/data";
 import { normalizeWaLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "Contact Prime Labels International",
+  title: "Contact Us — Custom Labels, Hang Tags & Packaging",
   description:
     "Contact Prime Labels International for custom woven labels, hang tags, stickers and packaging for clothing brands in Saudi Arabia, UAE, GCC countries and worldwide.",
   keywords: ["contact woven label supplier", "custom labels Saudi Arabia", "packaging supplier GCC", "clothing label manufacturer"],

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!cs) return { title: "Case study not found" };
   const url = `${SITE_URL}/work/${cs.slug}`;
   return {
-    title: `${cs.title} — ${BRAND_NAME}`,
+    title: `${cs.title}`,
     description: cs.summary,
     alternates: { canonical: url, languages: { en: url, "x-default": url } },
     openGraph: {

@@ -10,7 +10,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `FAQs — Custom Labels, MOQs, Proofs & Delivery | ${BRAND_NAME}`,
+  title: `FAQs — Custom Labels, MOQs, Proofs & Delivery`,
   description:
     "Answers to the most common questions about custom woven labels, satin labels, hang tags and packaging — minimum orders, digital proofs, Pantone matching, production times and DDP delivery.",
   alternates: {

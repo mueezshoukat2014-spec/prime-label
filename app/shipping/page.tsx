@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Shipping & Delivery — DDP Worldwide | ${BRAND_NAME}`,
+  title: `Shipping & Delivery — DDP Worldwide`,
   description:
     "Express DDP delivery for custom labels and packaging: 3–5 days to Saudi Arabia & UAE, 3–6 days across the GCC, 5–8 days to UK & USA. Duties prepaid — nothing to pay at your door.",
   alternates: {

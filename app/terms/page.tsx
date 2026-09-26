@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Terms of Service — ${BRAND_NAME}`,
+  title: `Terms of Service`,
   description:
     "The terms that govern quotes, digital proofs, production, shipping and payments for orders with Prime Labels International.",
   alternates: {

@@ -10,7 +10,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Refer a Brand — You Both Get 10% Off | ${BRAND_NAME}`,
+  title: `Refer a Brand — You Both Get 10% Off`,
   description:
     "Know a designer or brand owner who needs labels, hang tags or packaging? Refer them to Prime Labels — they get 10% off their first order, you get 10% off your next one.",
   alternates: {

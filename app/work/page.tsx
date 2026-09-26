@@ -5,12 +5,12 @@ import Footer from "@/components/Footer";
 import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { CASE_STUDIES } from "@/lib/case-studies";
-import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Case Studies — How Brands Launch with ${BRAND_NAME}`,
+  title: `Case Studies — How Brands Launch With Us`,
   description:
     "Real production stories: how streetwear brands and abaya houses use our woven labels, satin labels, hang tags and packaging to launch and scale.",
   alternates: {

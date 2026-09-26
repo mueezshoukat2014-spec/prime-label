@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Track Your Order | ${BRAND_NAME}`,
+  title: `Track Your Order`,
   description:
     "Enter your Prime Labels order code to see live production status — proof, weaving, quality check, packing and shipping with courier tracking.",
   alternates: {

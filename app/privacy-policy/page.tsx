@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Privacy Policy — ${BRAND_NAME}`,
+  title: `Privacy Policy`,
   description:
     "How Prime Labels International collects, uses and protects your information when you request quotes, upload artwork or contact us.",
   alternates: {

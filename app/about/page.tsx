@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `About Us — ${BRAND_NAME} | Custom Label & Branding Studio`,
+  title: `About Us — Custom Label & Branding Studio`,
   description:
     "Prime Labels International is a custom garment branding studio producing woven labels, satin labels, hang tags and packaging for fashion brands across the GCC, UK, USA and worldwide.",
   alternates: {

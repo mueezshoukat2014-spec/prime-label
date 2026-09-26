@@ -12,7 +12,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "اطلب تسعيرة — ليبل ملابس وبطاقات وتغليف | برايم ليبلز",
+  title: "اطلب تسعيرة — ليبل ملابس وبطاقات وتغليف",
   description:
     "أرسل تصميمك والكمية المطلوبة واحصل على تسعيرة مفصلة خلال 12–24 ساعة مع بروفة رقمية مجانية. شحن DDP سريع للسعودية والخليج والعالم.",
   alternates: {

@@ -9,7 +9,7 @@ import { SITE_URL, BRAND_NAME, GCC_COUNTRIES, ARABIC_KEYWORDS } from "@/lib/seo"
 
 export const dynamic = "force-dynamic";
 
-const AR_TITLE = "ليبل ملابس مخصص وبطاقات تعليق وتغليف للبراندات | برايم ليبلز";
+const AR_TITLE = "ليبل ملابس مخصص وبطاقات تعليق وتغليف للبراندات";
 const AR_DESC =
   "ليبل منسوج وساتان وبطاقات تعليق وتغليف لبراندات الملابس في السعودية والخليج. أقل كمية 100 قطعة، بروفة مجانية خلال 24 ساعة، شحن سريع.";
 

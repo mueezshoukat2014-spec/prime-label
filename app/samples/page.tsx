@@ -12,7 +12,7 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Request a Sample Kit — Feel the Quality First | ${BRAND_NAME}`,
+  title: `Request a Sample Kit — Feel the Quality First`,
   description:
     "See and feel our label quality before you order: photo samples of your design within 24 hours, physical swatch options for woven labels, satin labels, hang tags and packaging.",
   alternates: {

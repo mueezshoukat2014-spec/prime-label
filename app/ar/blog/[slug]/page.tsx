@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const post = getArPost(params.slug);
   if (!post) return {};
   return {
-    title: `${post.title} | برايم ليبلز`,
+    title: `${post.title}`,
     description: post.excerpt,
     alternates: {
       canonical: `${SITE_URL}/ar/blog/${post.slug}`,

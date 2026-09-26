@@ -48,6 +48,18 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
+  // Admin must never inherit the public homepage metadata (title, canonical,
+  // hreflang, OG) — it previously shipped "index, follow" with a canonical
+  // pointing at the homepage. Keep it minimal and hard-noindex instead.
+  const path = headers().get("x-pathname") ?? "";
+  if (path.startsWith("/admin")) {
+    return {
+      title: "Admin",
+      description: "Admin area.",
+      robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+      alternates: { canonical: `${SITE_URL}/admin` },
+    };
+  }
   const s = await getSiteContent();
   const name = s.businessName;
   const url = SITE_URL;
