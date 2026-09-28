@@ -85,6 +85,13 @@ export default function BizOrders() {
     load(q);
   }
 
+  async function deleteOrder(id: number) {
+    const res = await fetch(`/api/admin/biz/orders?id=${id}`, { method: "DELETE" });
+    const j = await res.json().catch(() => ({}));
+    if (j?.ok) { flash("Order deleted"); setOpen(null); setDetail(null); load(q); }
+    else flash(j?.error || "Could not delete order");
+  }
+
   async function addPayment(orderId: number, p: any) {
     const res = await fetch("/api/admin/biz/payments", {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: orderId, ...p }),
@@ -168,15 +175,16 @@ export default function BizOrders() {
               <th className="px-3 py-2.5">Status</th><th className="px-3 py-2.5">Payment</th>
               <th className="px-3 py-2.5 text-right">Billed</th><th className="px-3 py-2.5 text-right">Outstanding</th>
               <th className="px-3 py-2.5 text-right">Gross (PKR)</th>
+              <th className="px-3 py-2.5 text-right">Action</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((o) => (
               <OrderRow key={o.id} o={o} open={open === o.id} onToggle={() => openOrder(o.id)}
                 detail={open === o.id ? detail : null}
-                onPatch={patchOrder} onPayment={addPayment} flash={flash} />
+                onPatch={patchOrder} onPayment={addPayment} onDelete={deleteOrder} flash={flash} />
             ))}
-            {rows.length === 0 && <tr><td colSpan={7} className="px-3 py-8 text-center text-cream-dim">No orders yet.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={8} className="px-3 py-8 text-center text-cream-dim">No orders yet.</td></tr>}
           </tbody>
         </table>
       </div>
@@ -184,7 +192,7 @@ export default function BizOrders() {
   );
 }
 
-function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, flash }: any) {
+function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, flash }: any) {
   const [pay, setPay] = useState<any>({ order_amount: "", method: "Cash", received_currency: "PKR", received_amount: "", fee: 0, fee_paid_by: "customer", wu_ref: "" });
   const [cost, setCost] = useState<any>({ description: "", category: "Production", amount: "", currency: "PKR", rate: 1 });
   const t = o.totals || {};
@@ -198,10 +206,20 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, flash }: any)
         <td className="px-3 py-2.5 text-right text-cream">{fmt(t.billedCcy ?? 0, o.currency)}</td>
         <td className="px-3 py-2.5 text-right text-cream-muted">{fmt(t.outstandingCcy ?? 0, o.currency)}</td>
         <td className="px-3 py-2.5 text-right text-emerald-400">{fmt(t.grossPkr ?? 0)}</td>
+        <td className="px-3 py-2.5 text-right">
+          <button
+            className="rounded-lg border border-red-400/40 px-2.5 py-1.5 text-[11px] text-red-300 transition-colors hover:bg-red-500/10"
+            title="Delete order (blocked when payments/costs/invoices exist)"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!confirm(`Delete order ${o.order_ref || `#${o.id}`}? This cannot be undone.`)) return;
+              onDelete(o.id);
+            }}>🗑</button>
+        </td>
       </tr>
       {open && detail && (
         <tr className="border-t border-cream/5 bg-cream/[0.02]">
-          <td colSpan={7} className="px-4 py-4">
+          <td colSpan={8} className="px-4 py-4">
             <div className="grid gap-5 lg:grid-cols-3">
               <div>
                 <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Status & workflow</p>
@@ -228,19 +246,39 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, flash }: any)
                   ) : (
                     <button
                       className="rounded-full border border-line px-3 py-1 text-[10.5px] text-cream-muted transition-colors hover:border-champagne/40 hover:text-champagne"
-                      onClick={async () => {
-                        const j = await fetch("/api/admin/biz/invoices", {
-                          method: "POST", headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ order_id: detail.order.id }),
-                        }).then((r) => r.json()).catch(() => ({}));
-                        if (j?.ok) { flash(`Invoice ${j.inv_number} created`); onPatch(detail.order.id, {}); }
-                        else flash(j?.error || "Invoice creation failed");
-                      }}
+                      title="Open the Invoices editor pre-filled with this order"
+                      onClick={() => window.dispatchEvent(new CustomEvent("biz:navigate", { detail: { tab: "invoices", order_id: detail.order.id } }))}
                     >
-                      + Create invoice (auto number)
+                      + Invoice →
                     </button>
                   )}
                 </div>
+                {/* Delete order — blocked while any financial record exists. */}
+                {(() => {
+                  const hasFinance =
+                    (detail.payments?.length || 0) + (detail.costs?.length || 0) + (detail.invoices?.length || 0) > 0;
+                  return (
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        disabled={hasFinance}
+                        title={hasFinance
+                          ? "Payments, costs or invoices on record — financial history cannot be deleted"
+                          : "Permanently delete this order"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (hasFinance) return;
+                          if (window.confirm(`Delete order ${detail.order.order_ref || `#${detail.order.id}`}? This cannot be undone.`)) {
+                            onDelete(detail.order.id);
+                          }
+                        }}
+                        className="rounded-full border border-red-400/40 px-3 py-1.5 text-[11px] text-red-300 transition-colors hover:border-red-400/70 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        🗑 Delete order
+                      </button>
+                    </div>
+                  );
+                })()}
               </div>
               <div>
                 <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Direct costs</p>

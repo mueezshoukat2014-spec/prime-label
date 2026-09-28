@@ -190,3 +190,30 @@ async function writeCosts(orderId: number, costs: unknown) {
                       ${amount}, ${ccy}, ${rate}, ${pkr}, ${String(c?.date || new Date().toISOString().slice(0, 10))}, ${String(c?.notes || "")})`;
   }
 }
+
+export async function DELETE(req: Request) {
+  if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
+  await ensureBizSchema();
+  const id = Number(new URL(req.url).searchParams.get("id"));
+  if (!Number.isInteger(id) || id <= 0) return NextResponse.json({ ok: false, error: "Bad id" }, { status: 400 });
+  const [cur] = await sql`SELECT id FROM orders WHERE id = ${id}`;
+  if (!cur) return NextResponse.json({ ok: false, error: "Order not found" }, { status: 404 });
+
+  // Financial history is protected: an order with recorded payments, costs or
+  // invoices cannot be deleted (ledgers/reports must stay immutable).
+  const [p] = await sql`SELECT count(*)::int AS n FROM biz_payments WHERE order_id = ${id}`;
+  const [c] = await sql`SELECT count(*)::int AS n FROM biz_order_costs WHERE order_id = ${id}`;
+  const [i] = await sql`SELECT count(*)::int AS n FROM biz_invoices WHERE order_id = ${id}`;
+  if (p.n || c.n || i.n) {
+    return NextResponse.json(
+      { ok: false, error: "This order has payments, costs or invoices on record. Financial history cannot be deleted." },
+      { status: 409 }
+    );
+  }
+
+  // Unlink any quotation that was converted into this order, then remove it.
+  await sql`UPDATE biz_quotations SET converted_order_id = NULL WHERE converted_order_id = ${id}`;
+  await sql`DELETE FROM biz_order_items WHERE order_id = ${id}`;
+  await sql`DELETE FROM orders WHERE id = ${id}`;
+  return NextResponse.json({ ok: true });
+}

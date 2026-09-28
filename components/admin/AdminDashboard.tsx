@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Logo from "@/components/Logo";
 import ProductManager from "@/components/admin/ProductManager";
+import InvoicesManager from "@/components/admin/invoices/InvoicesManager";
 import PdpManager from "@/components/admin/PdpManager";
 import BlogManager from "@/components/admin/BlogManager";
 import AppliedBadge from "@/components/admin/AppliedBadge";
@@ -13,7 +14,6 @@ import OrdersManager from "@/components/admin/OrdersManager";
 import BizOrders from "@/components/admin/BizOrders";
 import PaymentsManager from "@/components/admin/PaymentsManager";
 import CustomersManager from "@/components/admin/CustomersManager";
-import ProductCostsManager from "@/components/admin/ProductCostsManager";
 import ExpensesManager from "@/components/admin/ExpensesManager";
 import CashManager from "@/components/admin/CashManager";
 import DocumentsManager from "@/components/admin/DocumentsManager";
@@ -38,8 +38,8 @@ type Tab =
   | "expenses"
   | "cash"
   | "docs"
+  | "invoices"
   | "reports"
-  | "pcosts"
   | "tracking"
   | "referrals"
   | "messages"
@@ -63,8 +63,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "payments", label: "Payments" },
   { id: "expenses", label: "Expenses" },
   { id: "cash", label: "Business Cash" },
-  { id: "docs", label: "Quotes & Invoices" },
-  { id: "pcosts", label: "Products & Costs" },
+  { id: "docs", label: "Quotes" },
+  { id: "invoices", label: "Invoices" },
   { id: "tracking", label: "Tracking / Shipments" },
   { id: "referrals", label: "Referrals" },
   { id: "messages", label: "Messages" },
@@ -82,12 +82,15 @@ const TABS: { id: Tab; label: string }[] = [
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
+  const [pendingInvoiceOrder, setPendingInvoiceOrder] = useState<number | null>(null);
 
-  // Cross-tab navigation (e.g. "Reorder" from a customer ledger).
+  // Cross-tab navigation (e.g. "Reorder" from a customer ledger,
+  // "Invoice →" from an order detail).
   useEffect(() => {
     const onNav = (e: Event) => {
-      const t = (e as CustomEvent).detail?.tab;
-      if (t) setTab(t as Tab);
+      const d = (e as CustomEvent).detail || {};
+      if (d.tab) setTab(d.tab as Tab);
+      if (d.tab === "invoices" && d.order_id) setPendingInvoiceOrder(Number(d.order_id));
     };
     window.addEventListener("biz:navigate", onNav);
     return () => window.removeEventListener("biz:navigate", onNav);
@@ -150,7 +153,7 @@ export default function AdminDashboard() {
           {tab === "expenses" && <ExpensesManager />}
           {tab === "cash" && <CashManager />}
           {tab === "docs" && <DocumentsManager />}
-          {tab === "pcosts" && <ProductCostsManager />}
+          {tab === "invoices" && <InvoicesManager initialOrderId={pendingInvoiceOrder} onOrderConsumed={() => setPendingInvoiceOrder(null)} />}
           {tab === "tracking" && <OrdersManager />}
           {tab === "referrals" && <ReferralsManager />}
           {tab === "messages" && <Messages />}

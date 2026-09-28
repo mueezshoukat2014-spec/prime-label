@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
-import { ensureBizSchema, nextNumber } from "@/lib/biz/schema";
-import { num, toPkr } from "@/lib/biz/money";
-import { orderTotals } from "@/lib/biz/calc";
+import { ensureBizSchema } from "@/lib/biz/schema";
+import { num } from "@/lib/biz/money";
+import {
+  getInvoiceSettings, nextInvoiceNumber, validateInvoiceBody,
+} from "@/lib/biz/invoice";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const ADMIN = () => process.env.ADMIN_USERNAME || "admin";
+
+/** postgres shim returns JSONB as string — normalise for clients. */
+const parseJson = (v: any) => {
+  if (v == null) return v;
+  if (typeof v === "string") { try { return JSON.parse(v); } catch { return {}; } }
+  return v;
+};
+const norm = (r: any) => ({ ...r, customer_snapshot: parseJson(r.customer_snapshot), design_attachment: parseJson(r.design_attachment) });
 
 export async function GET(req: Request) {
   if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
@@ -17,21 +29,55 @@ export async function GET(req: Request) {
   if (id) {
     const [inv] = await sql`SELECT * FROM biz_invoices WHERE id = ${Number(id)}`;
     if (!inv) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-    const [items, customer, order] = await Promise.all([
+    const [items, customer, order, settings] = await Promise.all([
       sql`SELECT * FROM biz_invoice_items WHERE invoice_id = ${inv.id} ORDER BY id`,
       inv.customer_id ? sql`SELECT * FROM biz_customers WHERE id = ${inv.customer_id}` : Promise.resolve([]),
-      inv.order_id ? sql`SELECT * FROM orders WHERE id = ${inv.order_id}` : Promise.resolve([]),
+      inv.order_id ? sql`SELECT id, order_ref, status FROM orders WHERE id = ${inv.order_id}` : Promise.resolve([]),
+      getInvoiceSettings(),
     ]);
-    return NextResponse.json({ ok: true, invoice: inv, items, customer: customer[0] ?? null, order: order[0] ?? null });
+    return NextResponse.json({
+      ok: true, invoice: norm(inv), items,
+      customer: customer[0] || null,
+      order: order[0] || null,
+      settings,
+    });
   }
 
-  const rows = await sql`
-    SELECT i.*, c.full_name AS cust_name, c.brand_name, o.order_ref
+  const q = (url.searchParams.get("q") || "").trim().toLowerCase();
+  const pay = url.searchParams.get("payment_status") || "";
+  const del = url.searchParams.get("delivery_status") || "";
+  const ccy = url.searchParams.get("currency") || "";
+  const from = url.searchParams.get("from") || "";
+  const to = url.searchParams.get("to") || "";
+  const sort = url.searchParams.get("sort") || "newest";
+
+  let rows = await sql`
+    SELECT i.*, c.full_name AS cust_name, c.brand_name, c.whatsapp AS cust_phone, c.email AS cust_email, o.order_ref
     FROM biz_invoices i
     LEFT JOIN biz_customers c ON c.id = i.customer_id
     LEFT JOIN orders o ON o.id = i.order_id
-    ORDER BY i.id DESC LIMIT 300`;
-  return NextResponse.json({ ok: true, invoices: rows });
+    WHERE COALESCE(i.archived, FALSE) = FALSE
+    ORDER BY i.id DESC LIMIT 500`;
+
+  const hay = (r: any) =>
+    [r.inv_number, r.cust_name, r.brand_name, r.cust_phone, r.cust_email, r.order_ref,
+     (r.customer_snapshot || {})?.name, (r.customer_snapshot || {})?.phone, (r.customer_snapshot || {})?.email, (r.customer_snapshot || {})?.company]
+      .join(" ").toLowerCase();
+
+  let out = rows.map(norm).filter((r: any) => {
+    if (q && !hay(r).includes(q)) return false;
+    if (pay && r.payment_status !== pay) return false;
+    if (del && r.delivery_status !== del) return false;
+    if (ccy && r.currency !== ccy) return false;
+    if (from && String(r.date || "") < from) return false;
+    if (to && String(r.date || "") > to) return false;
+    return true;
+  });
+  if (sort === "oldest") out = out.reverse();
+  if (sort === "highest") out = [...out].sort((a: any, b: any) => Number(b.grand_total) - Number(a.grand_total));
+  if (sort === "lowest") out = [...out].sort((a: any, b: any) => Number(a.grand_total) - Number(b.grand_total));
+
+  return NextResponse.json({ ok: true, invoices: out });
 }
 
 export async function POST(req: Request) {
@@ -39,51 +85,68 @@ export async function POST(req: Request) {
   await ensureBizSchema();
   const b = await req.json().catch(() => ({}));
 
-  let subtotal = num(b.subtotal);
-  let discount = num(b.discount);
-  let delivery = num(b.delivery);
-  let currency = String(b.currency || "PKR");
-  let customerId = b.customer_id ? Number(b.customer_id) : null;
-  let orderId = b.order_id ? Number(b.order_id) : null;
-  let items: any[] = Array.isArray(b.items) ? b.items : [];
-
-  // Creating from an existing order: mirror its financial snapshot exactly.
+  // Optional: link / mirror an existing order (integration with Orders tab).
+  let orderId: number | null = b.order_id ? Number(b.order_id) : null;
+  let orderRef = "";
   if (orderId) {
     const [o] = await sql`SELECT * FROM orders WHERE id = ${orderId}`;
     if (!o) return NextResponse.json({ ok: false, error: "Order not found" }, { status: 404 });
-    currency = String(o.currency || "PKR");
-    customerId = o.customer_id ?? customerId;
-    const t = await orderTotals(o);
-    // billedCcy = sale − discount + delivery, so recover the raw subtotal.
-    subtotal = t.billedCcy + num(o.discount) - num(o.customer_delivery_charge);
-    discount = num(o.discount);
-    delivery = num(o.customer_delivery_charge);
-    if (!items.length) {
+    orderRef = String(o.order_ref || "");
+    if (!Array.isArray(b.items) || !b.items.length) {
       const oi = await sql`SELECT * FROM biz_order_items WHERE order_id = ${orderId} ORDER BY id`;
-      items = oi.length
-        ? oi
-        : [{ product: o.product || "Order " + o.order_ref, quantity: num(o.quantity), unit_price: subtotal, subtotal }];
+      const t = num(o.sale_amount);
+      b.items = oi.length
+        ? oi.map((x: any) => ({ product: x.product, quantity: x.quantity, unit_price: x.unit_price }))
+        : [{ product: o.product || `Order ${orderRef}`, quantity: num(o.quantity) || 1, unit_price: t }];
+      if (b.currency == null) b.currency = o.currency;
+      if (b.delivery == null) b.delivery = num(o.customer_delivery_charge);
+      if (b.discount == null) b.discount = num(o.discount);
+      if (!b.customer?.name) b.customer = { ...(b.customer || {}), name: o.name };
     }
   }
 
-  const grand = subtotal - discount + delivery;
-  const invNumber = await nextNumber("invoice");
+  const v = validateInvoiceBody(b);
+  if ("error" in v) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });
+
+  // Resolve customer: existing id or create new.
+  let customerId: number | null = b.customer_id ? Number(b.customer_id) : null;
+  if (!customerId && b.customer?.new && b.customer?.name) {
+    const [c] = await sql`
+      INSERT INTO biz_customers (full_name, brand_name, country, city, whatsapp, email, address, notes)
+      VALUES (${b.customer.name}, ${b.customer.company || ""}, ${b.customer.country || ""}, ${b.customer.city || ""},
+              ${b.customer.whatsapp || b.customer.phone || ""}, ${b.customer.email || ""}, ${b.customer.address || ""},
+              ${"Created from invoice " + new Date().toISOString().slice(0, 10)})
+      RETURNING id`;
+    customerId = c.id;
+  }
+
+  const invNumber = await nextInvoiceNumber();
   const [inv] = await sql`
     INSERT INTO biz_invoices
-      (inv_number, order_id, customer_id, date, currency, subtotal, discount, delivery, grand_total, terms, notes, status)
+      (inv_number, order_id, customer_id, date, due_date, currency, subtotal, discount, delivery, tax, grand_total,
+       amount_paid, payment_status, payment_method, payment_date, payment_reference, payment_notes,
+       payment_terms_type, payment_terms_custom, terms, notes,
+       delivery_status, delivery_method, courier, tracking_number, estimated_delivery, delivery_notes,
+       customer_snapshot, design_attachment, status, created_by)
     VALUES
-      (${invNumber}, ${orderId}, ${customerId}, ${String(b.date || new Date().toISOString().slice(0, 10))},
-       ${currency}, ${subtotal}, ${discount}, ${delivery}, ${+grand.toFixed(2)},
-       ${String(b.terms || "50% Advance / 50% Before Delivery")}, ${String(b.notes || "")},
-       ${String(b.status || "DRAFT")})
+      (${invNumber}, ${orderId}, ${customerId}, ${v.fields.date}, ${v.fields.dueDate}, ${v.fields.currency},
+       ${v.subtotal}, ${v.discount}, ${v.delivery}, ${v.tax}, ${v.grandTotal},
+       ${v.amountPaid}, ${v.fields.paymentStatus}, ${v.fields.paymentMethod}, ${v.fields.paymentDate},
+       ${v.fields.paymentReference}, ${v.fields.paymentNotes},
+       ${v.fields.termsType}, ${v.fields.paymentTermsCustom}, ${v.fields.terms}, ${v.fields.notes},
+       ${v.fields.deliveryStatus}, ${v.fields.deliveryMethod}, ${v.fields.courier}, ${v.fields.trackingNumber},
+       ${v.fields.estimatedDelivery}, ${v.fields.deliveryNotes},
+       ${JSON.stringify(v.fields.customerSnapshot)}, ${b.design_attachment ? JSON.stringify(b.design_attachment) : null},
+       ${v.fields.paymentStatus === "PAID" ? "PAID" : "ISSUED"}, ${ADMIN()})
     RETURNING *`;
-  for (const i of items) {
-    if (!String(i?.product || "").trim()) continue;
-    const qty = num(i.quantity); const price = num(i.unit_price);
-    await sql`INSERT INTO biz_invoice_items (invoice_id, product, quantity, unit_price, subtotal)
-              VALUES (${inv.id}, ${String(i.product)}, ${qty}, ${price}, ${num(i.subtotal) || qty * price})`;
+
+  for (const i of v.items) {
+    await sql`INSERT INTO biz_invoice_items
+      (invoice_id, product, description, size, shape, color, quantity, unit, unit_price, discount, subtotal)
+      VALUES (${inv.id}, ${i.product}, ${i.description}, ${i.size}, ${i.shape}, ${i.color},
+              ${i.quantity}, ${i.unit}, ${i.unitPrice}, ${i.discount}, ${i.lineTotal})`;
   }
-  return NextResponse.json({ ok: true, invoice: inv, inv_number: invNumber });
+  return NextResponse.json({ ok: true, invoice: inv, inv_number: invNumber, order_ref: orderRef });
 }
 
 export async function PATCH(req: Request) {
@@ -95,29 +158,62 @@ export async function PATCH(req: Request) {
   const [cur] = await sql`SELECT * FROM biz_invoices WHERE id = ${id}`;
   if (!cur) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
-  let subtotal = num(cur.subtotal), discount = num(cur.discount), delivery = num(cur.delivery);
+  // Void / archive are status-only transitions (never edit history silently).
+  if (b.voided === true && !cur.voided) {
+    await sql`UPDATE biz_invoices SET voided = TRUE, voided_at = now(), voided_by = ${ADMIN()},
+              void_reason = ${String(b.void_reason || "").slice(0, 500)}, updated_by = ${ADMIN()}, updated_at = now()
+              WHERE id = ${id}`;
+    return NextResponse.json({ ok: true });
+  }
+  if (typeof b.archived === "boolean") {
+    await sql`UPDATE biz_invoices SET archived = ${b.archived}, updated_by = ${ADMIN()}, updated_at = now() WHERE id = ${id}`;
+    return NextResponse.json({ ok: true });
+  }
+  if (cur.voided) return NextResponse.json({ ok: false, error: "Voided invoices cannot be edited." }, { status: 409 });
+
+  const v = validateInvoiceBody({ ...curToBody(cur), ...b });
+  if ("error" in v) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });
+
+  await sql`UPDATE biz_invoices SET
+    date = ${v.fields.date}, due_date = ${v.fields.dueDate}, currency = ${v.fields.currency},
+    subtotal = ${v.subtotal}, discount = ${v.discount}, delivery = ${v.delivery}, tax = ${v.tax}, grand_total = ${v.grandTotal},
+    amount_paid = ${v.amountPaid}, payment_status = ${v.fields.paymentStatus}, payment_method = ${v.fields.paymentMethod},
+    payment_date = ${v.fields.paymentDate}, payment_reference = ${v.fields.paymentReference}, payment_notes = ${v.fields.paymentNotes},
+    payment_terms_type = ${v.fields.termsType}, payment_terms_custom = ${v.fields.paymentTermsCustom},
+    terms = ${v.fields.terms}, notes = ${v.fields.notes},
+    delivery_status = ${v.fields.deliveryStatus}, delivery_method = ${v.fields.deliveryMethod}, courier = ${v.fields.courier},
+    tracking_number = ${v.fields.trackingNumber}, estimated_delivery = ${v.fields.estimatedDelivery}, delivery_notes = ${v.fields.deliveryNotes},
+    customer_snapshot = ${JSON.stringify(v.fields.customerSnapshot)},
+    customer_id = ${b.customer_id ? Number(b.customer_id) : cur.customer_id},
+    status = ${v.fields.paymentStatus === "PAID" ? "PAID" : "ISSUED"},
+    updated_by = ${ADMIN()}, updated_at = now()
+    WHERE id = ${id}`;
+
   if (Array.isArray(b.items)) {
     await sql`DELETE FROM biz_invoice_items WHERE invoice_id = ${id}`;
-    subtotal = 0;
-    for (const i of b.items) {
-      if (!String(i?.product || "").trim()) continue;
-      const qty = num(i.quantity); const price = num(i.unit_price);
-      const sub = num(i.subtotal) || qty * price;
-      subtotal += sub;
-      await sql`INSERT INTO biz_invoice_items (invoice_id, product, quantity, unit_price, subtotal)
-                VALUES (${id}, ${String(i.product)}, ${qty}, ${price}, ${sub})`;
+    for (const i of v.items) {
+      await sql`INSERT INTO biz_invoice_items
+        (invoice_id, product, description, size, shape, color, quantity, unit, unit_price, discount, subtotal)
+        VALUES (${id}, ${i.product}, ${i.description}, ${i.size}, ${i.shape}, ${i.color},
+                ${i.quantity}, ${i.unit}, ${i.unitPrice}, ${i.discount}, ${i.lineTotal})`;
     }
   }
-  if (b.discount !== undefined) discount = num(b.discount);
-  if (b.delivery !== undefined) delivery = num(b.delivery);
-  const grand = subtotal - discount + delivery;
+  const [inv] = await sql`SELECT * FROM biz_invoices WHERE id = ${id}`;
+  return NextResponse.json({ ok: true, invoice: inv });
+}
 
-  const [row] = await sql`
-    UPDATE biz_invoices SET
-      date = ${b.date ? String(b.date).slice(0, 10) : cur.date},
-      subtotal = ${subtotal}, discount = ${discount}, delivery = ${delivery}, grand_total = ${+grand.toFixed(2)},
-      terms = ${String(b.terms ?? cur.terms ?? "")}, notes = ${String(b.notes ?? cur.notes ?? "")},
-      status = ${String(b.status ?? cur.status ?? "DRAFT")}
-    WHERE id = ${id} RETURNING *`;
-  return NextResponse.json({ ok: true, invoice: row });
+/** Re-shape a stored invoice into the validation body so PATCH re-validates everything. */
+function curToBody(cur: any) {
+  const snap = cur.customer_snapshot || {};
+  return {
+    date: cur.date, due_date: cur.due_date, currency: cur.currency, discount: cur.discount,
+    delivery: cur.delivery, tax: cur.tax, amount_paid: cur.amount_paid,
+    payment_status: cur.payment_status, payment_method: cur.payment_method, payment_date: cur.payment_date,
+    payment_reference: cur.payment_reference, payment_notes: cur.payment_notes,
+    payment_terms_type: cur.payment_terms_type, payment_terms_custom: cur.payment_terms_custom,
+    terms: cur.terms, notes: cur.notes,
+    delivery_status: cur.delivery_status, delivery_method: cur.delivery_method, courier: cur.courier,
+    tracking_number: cur.tracking_number, estimated_delivery: cur.estimated_delivery, delivery_notes: cur.delivery_notes,
+    customer: { ...snap },
+  };
 }

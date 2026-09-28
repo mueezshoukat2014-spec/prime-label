@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  CURRENCIES, INVOICE_STATUSES, QUOTE_STATUSES, fmt, num,
+  CURRENCIES, QUOTE_STATUSES, fmt, num,
 } from "@/lib/biz/money";
 
 const input =
@@ -17,19 +17,12 @@ const badge = (s: string) =>
       : "bg-champagne/15 text-champagne";
 
 export default function DocumentsManager() {
-  const [sub, setSub] = useState<"quotes" | "invoices">("quotes");
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="display mr-4 text-3xl">Quotes & Invoices</h1>
-        {(["quotes", "invoices"] as const).map((s) => (
-          <button key={s} onClick={() => setSub(s)}
-            className={`rounded-full px-4 py-1.5 text-[12px] ${sub === s ? "bg-champagne text-ink" : "border border-cream/15 text-cream-muted"}`}>
-            {s === "quotes" ? "Quotations" : "Invoices"}
-          </button>
-        ))}
+        <h1 className="display mr-4 text-3xl">Quotations</h1>
       </div>
-      {sub === "quotes" ? <Quotes /> : <Invoices />}
+      <Quotes />
     </div>
   );
 }
@@ -62,6 +55,13 @@ function Quotes() {
     if (c?.ok) setCustomers(c.customers);
   }, []);
   useEffect(() => { load(); }, [load]);
+
+  async function deleteQuote(id: number, qnum: string) {
+    if (!confirm(`Delete ${qnum}? This cannot be undone.`)) return;
+    const j = await fetch(`/api/admin/biz/quotations?id=${id}`, { method: "DELETE" }).then((r) => r.json()).catch(() => ({}));
+    if (j?.ok) { flash("Quotation deleted"); if (open === id) { setOpen(null); setDetail(null); } load(); }
+    else flash(j?.error || "Could not delete quotation");
+  }
 
   async function openQuote(id: number) {
     setOpen(open === id ? null : id);
@@ -153,7 +153,7 @@ function Quotes() {
       <div className="overflow-x-auto rounded-2xl border border-cream/10">
         <table className="w-full min-w-[780px] text-left text-[12.5px]">
           <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
-            <tr><th className="px-3 py-2.5">Quote #</th><th className="px-3 py-2.5">Customer</th><th className="px-3 py-2.5">Status</th><th className="px-3 py-2.5">Follow-up</th><th className="px-3 py-2.5 text-right">Total</th></tr>
+            <tr><th className="px-3 py-2.5">Quote #</th><th className="px-3 py-2.5">Customer</th><th className="px-3 py-2.5">Status</th><th className="px-3 py-2.5">Follow-up</th><th className="px-3 py-2.5 text-right">Total</th><th className="px-3 py-2.5 text-right">Action</th></tr>
           </thead>
           <tbody>
             {rows.map((r) => (
@@ -164,10 +164,17 @@ function Quotes() {
                   <td className="px-3 py-2.5"><span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${badge(r.status)}`}>{r.status}</span></td>
                   <td className="px-3 py-2.5 text-cream-muted">{r.follow_up_at ? String(r.follow_up_at).slice(0, 10) : "—"}</td>
                   <td className="px-3 py-2.5 text-right text-cream">{fmt(num(r.grand_total), r.currency)}</td>
+                  <td className="px-3 py-2.5 text-right">
+                    <button
+                      className="rounded-lg border border-red-400/40 px-2.5 py-1.5 text-[11px] text-red-300 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40"
+                      disabled={!!r.converted_order_id}
+                      title={r.converted_order_id ? "Converted to order — part of history" : "Delete quotation"}
+                      onClick={(e) => { e.stopPropagation(); deleteQuote(r.id, r.q_number); }}>🗑</button>
+                  </td>
                 </tr>
                 {open === r.id && detail && (
                   <tr className="border-t border-cream/5 bg-cream/[0.02]">
-                    <td colSpan={5} className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                    <td colSpan={6} className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                       <div className="grid gap-5 lg:grid-cols-3">
                         <div>
                           <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Items</p>
@@ -227,7 +234,7 @@ function Quotes() {
                 )}
               </React.Fragment>
             ))}
-            {rows.length === 0 && <tr><td colSpan={5} className="px-3 py-8 text-center text-cream-dim">No quotations yet.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-cream-dim">No quotations yet.</td></tr>}
           </tbody>
         </table>
       </div>
@@ -235,203 +242,61 @@ function Quotes() {
   );
 }
 
-/* ------------------------------- invoices -------------------------------- */
 
-function Invoices() {
-  const [rows, setRows] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [showNew, setShowNew] = useState(false);
-  const [pickOrder, setPickOrder] = useState("");
-  const [open, setOpen] = useState<number | null>(null);
-  const [detail, setDetail] = useState<any>(null);
-  const [toast, setToast] = useState("");
-  const flash = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2000); };
 
-  const load = useCallback(async () => {
-    const [i, o] = await Promise.all([
-      fetch("/api/admin/biz/invoices").then((r) => r.json()).catch(() => ({})),
-      fetch("/api/admin/biz/orders").then((r) => r.json()).catch(() => ({})),
-    ]);
-    if (i?.ok) setRows(i.invoices);
-    if (o?.ok) setOrders(o.orders);
-  }, []);
-  useEffect(() => { load(); }, [load]);
-
-  async function createFromOrder() {
-    if (!pickOrder) return flash("Choose an order");
-    const j = await fetch("/api/admin/biz/invoices", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: Number(pickOrder), status: "SENT" }),
-    }).then((r) => r.json()).catch(() => ({}));
-    if (j?.ok) { flash(`Invoice ${j.inv_number} created`); setShowNew(false); setPickOrder(""); load(); }
-    else flash(j?.error || "Failed");
-  }
-
-  async function openInv(id: number) {
-    setOpen(open === id ? null : id);
-    if (open !== id) {
-      const j = await fetch(`/api/admin/biz/invoices?id=${id}`).then((r) => r.json()).catch(() => ({}));
-      if (j?.ok) setDetail(j);
-    }
-  }
-
-  async function patch(id: number, p: any) {
-    await fetch("/api/admin/biz/invoices", {
-      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...p }),
-    });
-    const d = await fetch(`/api/admin/biz/invoices?id=${id}`).then((r) => r.json()).catch(() => ({}));
-    if (d?.ok) setDetail(d);
-    flash("Updated"); load();
-  }
-
-  return (
-    <div className="space-y-4">
-      {toast && <div className="rounded-xl border border-champagne/30 bg-champagne/10 px-4 py-2 text-[12px] text-champagne">{toast}</div>}
-      <div className="flex flex-wrap justify-end gap-2">
-        {showNew && (
-          <>
-            <select className={input + " w-72"} value={pickOrder} onChange={(e) => setPickOrder(e.target.value)}>
-              <option value="">Select order…</option>
-              {orders.map((o) => (
-                <option key={o.id} value={o.id}>{o.order_ref} — {o.cust_name || o.name} ({fmt(num(o.totals?.billedCcy ?? 0), o.currency)})</option>
-              ))}
-            </select>
-            <button className="btn-primary" onClick={createFromOrder}>Create invoice</button>
-          </>
-        )}
-        <button className="btn-primary" onClick={() => setShowNew(!showNew)}>+ Invoice from order</button>
-      </div>
-
-      <div className="overflow-x-auto rounded-2xl border border-cream/10">
-        <table className="w-full min-w-[720px] text-left text-[12.5px]">
-          <thead className="bg-cream/[0.04] text-[10px] uppercase tracking-wide2 text-cream-dim">
-            <tr><th className="px-3 py-2.5">Invoice #</th><th className="px-3 py-2.5">Order</th><th className="px-3 py-2.5">Customer</th><th className="px-3 py-2.5">Date</th><th className="px-3 py-2.5">Status</th><th className="px-3 py-2.5 text-right">Total</th></tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <React.Fragment key={r.id}>
-                <tr className="cursor-pointer border-t border-cream/5 hover:bg-cream/[0.03]" onClick={() => openInv(r.id)}>
-                  <td className="px-3 py-2.5 text-champagne">{r.inv_number}</td>
-                  <td className="px-3 py-2.5 text-cream-muted">{r.order_ref || "—"}</td>
-                  <td className="px-3 py-2.5 text-cream">{r.cust_name || "—"}</td>
-                  <td className="px-3 py-2.5 text-cream-muted">{String(r.date).slice(0, 10)}</td>
-                  <td className="px-3 py-2.5"><span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${badge(r.status)}`}>{r.status}</span></td>
-                  <td className="px-3 py-2.5 text-right text-cream">{fmt(num(r.grand_total), r.currency)}</td>
-                </tr>
-                {open === r.id && detail && (
-                  <tr className="border-t border-cream/5 bg-cream/[0.02]">
-                    <td colSpan={6} className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-                      <div className="grid gap-5 lg:grid-cols-3">
-                        <div>
-                          <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Items</p>
-                          {detail.items.map((it: any) => (
-                            <div key={it.id} className="flex justify-between text-[12px]">
-                              <span className="text-cream-muted">{it.product} × {num(it.quantity)}</span>
-                              <span className="text-cream">{fmt(num(it.subtotal), detail.invoice.currency)}</span>
-                            </div>
-                          ))}
-                          <div className="mt-2 border-t border-cream/10 pt-2 text-[12px]">
-                            <div className="flex justify-between font-semibold"><span className="text-cream">Grand total</span><span className="text-champagne">{fmt(num(detail.invoice.grand_total), detail.invoice.currency)}</span></div>
-                          </div>
-                        </div>
-                        <div>
-                          <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Status</p>
-                          <select className={input} value={detail.invoice.status} onChange={(e) => patch(detail.invoice.id, { status: e.target.value })}>
-                            {INVOICE_STATUSES.map((s) => <option key={s}>{s}</option>)}
-                          </select>
-                          <p className="mt-2 text-[11.5px] text-cream-dim">{detail.invoice.terms}</p>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <button className="btn-primary" onClick={() => printInvoice(detail)}>🖨 Print / PDF</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-            {rows.length === 0 && <tr><td colSpan={6} className="px-3 py-8 text-center text-cream-dim">No invoices yet.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------- printing -------------------------------- */
+/* ------------------------- print helpers (quotations) ------------------------- */
 
 const COMPANY = {
-  name: "Prime Labels Intl",
-  tag: "Custom Woven · Printed · Satin Labels",
-  email: "info@primelabelsintl.com",
+  name: "Prime Labels International",
+  tag: "Custom Woven Labels · Hang Tags · Packaging",
   site: "primelabelsintl.com",
+  email: "info@primelabelsintl.com",
 };
-
-function openPrint(title: string, bodyHtml: string) {
-  const w = window.open("", "_blank", "width=820,height=1000");
-  if (!w) return alert("Please allow pop-ups to print.");
-  w.document.write(`<!doctype html><html><head><title>${title}</title><style>
-    * { box-sizing: border-box; margin: 0; font-family: Georgia, 'Times New Roman', serif; }
-    body { color: #1c1a17; padding: 48px 56px; }
-    .hdr { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #b9985a; padding-bottom: 18px; margin-bottom: 26px; }
-    .brand { font-size: 26px; letter-spacing: 1px; }
-    .tag { color: #7a736a; font-size: 12px; margin-top: 4px; }
-    h1 { font-size: 20px; letter-spacing: 3px; text-transform: uppercase; color: #b9985a; text-align: right; }
-    .meta { color: #4c473f; font-size: 12.5px; text-align: right; margin-top: 6px; line-height: 1.55; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; color: #7a736a; border-bottom: 1.5px solid #d8cfc0; padding: 8px 6px; }
-    td { padding: 9px 6px; font-size: 13px; border-bottom: 1px solid #ece7dd; }
-    .r { text-align: right; }
-    .tot { width: 260px; margin-left: auto; margin-top: 14px; }
-    .tot td { border: none; padding: 5px 6px; font-size: 13px; }
-    .grand td { font-size: 15px; font-weight: bold; border-top: 2px solid #b9985a; }
-    .foot { margin-top: 40px; border-top: 1px solid #d8cfc0; padding-top: 14px; color: #7a736a; font-size: 11.5px; line-height: 1.7; }
-    .terms { margin-top: 26px; font-size: 12px; color: #4c473f; line-height: 1.7; }
-    @media print { body { padding: 24px 32px; } }
-  </style></head><body>${bodyHtml}</body></html>`);
-  w.document.close();
-  setTimeout(() => w.print(), 350);
-}
-
-function esc(s: any) { return String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string)); }
-const n2 = (x: number) => x.toLocaleString("en-PK", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const esc = (s: any) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const n2 = (n: number) => (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function itemRows(items: any[], ccy: string) {
-  return items.map((it) => `<tr><td>${esc(it.product)}</td><td class="r">${n2(num(it.quantity))}</td><td class="r">${n2(num(it.unit_price))}</td><td class="r">${ccy} ${n2(num(it.subtotal))}</td></tr>`).join("");
+  return (items || []).map((it: any) =>
+    `<tr><td>${esc(it.product)}${it.notes ? `<br><span style="color:#777;font-size:10px">${esc(it.notes)}</span>` : ""}</td>
+     <td class="r">${n2(num(it.quantity))}</td><td class="r">${ccy} ${n2(num(it.unit_price ?? it.rate))}</td>
+     <td class="r">${ccy} ${n2(num(it.subtotal))}</td></tr>`).join("");
+}
+
+function openPrint(title: string, body: string) {
+  const w = window.open("", "_blank");
+  if (!w) return;
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>
+    @page { size: A4; margin: 14mm 12mm; }
+    body { font: 12px/1.5 "Helvetica Neue", Arial, sans-serif; color: #16161a; margin: 24px; }
+    .hdr { display: flex; justify-content: space-between; border-bottom: 2px solid #9e8046; padding-bottom: 10px; }
+    .brand { font-size: 19px; font-weight: 700; } .tag { color: #777; font-size: 10px; }
+    h1 { font-size: 20px; letter-spacing: 2px; color: #9e8046; margin: 0; text-align: right; }
+    .meta { text-align: right; font-size: 11px; color: #555; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th { background: #f4f1ea; text-align: left; font-size: 10px; padding: 6px; }
+    td { padding: 7px 6px; border-bottom: 1px solid #e7e3da; vertical-align: top; }
+    .r { text-align: right; }
+    table.tot { width: 260px; margin-left: auto; } table.tot td { border: none; }
+    tr.grand td { font-weight: 700; font-size: 13px; border-top: 1px solid #9e8046; }
+    .terms { margin-top: 16px; font-size: 10.5px; color: #444; }
+    .foot { margin-top: 22px; border-top: 1px solid #e7e3da; padding-top: 8px; font-size: 10px; color: #777; }
+    thead { display: table-header-group; } tr { page-break-inside: avoid; }
+  </style></head><body>${body}<script>window.onload = () => window.print();</script></body></html>`);
+  w.document.close();
 }
 
 export function printQuote(d: any) {
-  const q = d.quote; const ccy = q.currency;
+  const q = d.quote; const ccy = q.currency || "PKR";
   openPrint(`Quotation ${q.q_number}`, `
     <div class="hdr"><div><div class="brand">${COMPANY.name}</div><div class="tag">${COMPANY.tag}</div></div>
-    <div><h1>Quotation</h1><div class="meta">${esc(q.q_number)}<br>${new Date(q.created_at).toLocaleDateString()}<br>Valid ${q.validity_days} days</div></div></div>
-    <div style="font-size:13.5px;line-height:1.7;margin-bottom:18px"><b>${esc(d.customer?.brand_name || d.customer?.full_name || "Valued Customer")}</b><br>
-    ${esc([d.customer?.city, d.customer?.country].filter(Boolean).join(", "))}<br>${esc(d.customer?.whatsapp || "")}</div>
+    <div><h1>Quotation</h1><div class="meta">${esc(q.q_number)}<br>${String(q.created_at || q.date || "").slice(0, 10)}</div></div></div>
+    <div style="font-size:13.5px;line-height:1.7;margin-bottom:16px"><b>${esc(d.customer?.brand_name || d.customer?.full_name || q.customer_name || "Customer")}</b><br>
+    ${esc([d.customer?.city, d.customer?.country].filter(Boolean).join(", ") || q.country || "")}<br>${esc(d.customer?.whatsapp || q.phone || "")}</div>
     <table><thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Amount</th></tr></thead>
     <tbody>${itemRows(d.items, ccy)}</tbody></table>
     <table class="tot"><tbody>
-      <tr><td>Discount</td><td class="r">−${ccy} ${n2(num(q.discount))}</td></tr>
-      <tr><td>Delivery</td><td class="r">${ccy} ${n2(num(q.delivery_charge))}</td></tr>
       <tr class="grand"><td>Grand total</td><td class="r">${ccy} ${n2(num(q.grand_total))}</td></tr>
     </tbody></table>
     <div class="terms"><b>Production time:</b> ${esc(q.production_time || "—")}<br><b>Delivery time:</b> ${esc(q.delivery_time || "—")}<br><b>Payment terms:</b> ${esc(q.payment_terms)}<br>${esc(q.notes || "")}</div>
     <div class="foot">${COMPANY.name} · ${COMPANY.site} · ${COMPANY.email}<br>Thank you for considering us for your brand labels.</div>`);
-}
-
-export function printInvoice(d: any) {
-  const inv = d.invoice; const ccy = inv.currency;
-  openPrint(`Invoice ${inv.inv_number}`, `
-    <div class="hdr"><div><div class="brand">${COMPANY.name}</div><div class="tag">${COMPANY.tag}</div></div>
-    <div><h1>Invoice</h1><div class="meta">${esc(inv.inv_number)}<br>${String(inv.date).slice(0, 10)}${d.order?.order_ref ? `<br>Order ${esc(d.order.order_ref)}` : ""}</div></div></div>
-    <div style="font-size:13.5px;line-height:1.7;margin-bottom:18px"><b>${esc(d.customer?.brand_name || d.customer?.full_name || d.order?.name || "Customer")}</b><br>
-    ${esc([d.customer?.city, d.customer?.country].filter(Boolean).join(", ") || d.order?.country || "")}<br>${esc(d.customer?.whatsapp || d.order?.phone || "")}</div>
-    <table><thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Amount</th></tr></thead>
-    <tbody>${itemRows(d.items, ccy)}</tbody></table>
-    <table class="tot"><tbody>
-      <tr><td>Discount</td><td class="r">−${ccy} ${n2(num(inv.discount))}</td></tr>
-      <tr><td>Delivery</td><td class="r">${ccy} ${n2(num(inv.delivery))}</td></tr>
-      <tr class="grand"><td>Grand total</td><td class="r">${ccy} ${n2(num(inv.grand_total))}</td></tr>
-    </tbody></table>
-    <div class="terms"><b>Terms:</b> ${esc(inv.terms)}<br>${esc(inv.notes || "")}</div>
-    <div class="foot">${COMPANY.name} · ${COMPANY.site} · ${COMPANY.email}<br>Payment confirmation via Western Union / Bank Transfer. Please quote the invoice number.</div>`);
 }

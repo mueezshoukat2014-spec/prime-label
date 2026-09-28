@@ -251,6 +251,40 @@ async function run(): Promise<void> {
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS next_follow_up DATE`;
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS follow_up_notes TEXT DEFAULT ''`;
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS crm_status TEXT DEFAULT 'NEW'`;
+
+  // ---- invoice system v2 (additive migration — history preserved) ----------
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS due_date DATE`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS tax NUMERIC DEFAULT 0`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS amount_paid NUMERIC DEFAULT 0`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_status TEXT DEFAULT 'UNPAID'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_method TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_date DATE`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_reference TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_notes TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_terms_type TEXT DEFAULT 'ADVANCE_50'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_terms_custom TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS delivery_status TEXT DEFAULT 'PENDING'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS delivery_method TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS courier TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS tracking_number TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS estimated_delivery DATE`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS delivery_notes TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS customer_snapshot JSONB DEFAULT '{}'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS design_attachment JSONB`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS archived BOOLEAN DEFAULT FALSE`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS voided BOOLEAN DEFAULT FALSE`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS voided_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS voided_by TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS void_reason TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS created_by TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS updated_by TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS description TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS size TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS shape TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS color TEXT DEFAULT ''`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS unit TEXT DEFAULT 'pcs'`;
+  await sql`ALTER TABLE biz_invoice_items ADD COLUMN IF NOT EXISTS discount NUMERIC DEFAULT 0`;
 }
 
 export function ensureBizSchema(): Promise<void> {
