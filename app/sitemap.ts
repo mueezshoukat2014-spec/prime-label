@@ -38,6 +38,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     /* DB unreachable — core pages alone still ship */
   }
 
+  const guideUrls: MetadataRoute.Sitemap = [
+    {
+      url: `${base}/guides/label-folds-sizes`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+  ];
+
   let blogUrls: MetadataRoute.Sitemap = [];
   try {
     const posts = await getPublishedPosts();
@@ -55,6 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [
+    ...guideUrls,
     {
       url: base,
       lastModified,

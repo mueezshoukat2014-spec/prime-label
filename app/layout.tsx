@@ -72,7 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${name}`,
     },
     description:
-      "Premium custom woven labels, satin labels, hang tags, stickers, packaging and garment branding accessories for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
+      "Premium custom woven labels, satin care & size labels, hang tags, hem tags, stickers, packaging and garment branding accessories for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
     keywords: [...PRIMARY_KEYWORDS],
     applicationName: BRAND_NAME,
     authors: [{ name: BRAND_NAME }],

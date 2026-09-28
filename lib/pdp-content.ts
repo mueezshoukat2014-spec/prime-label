@@ -81,7 +81,7 @@ export const PDP: Record<string, PdpContent> = {
   "satin-labels": {
     h1: "Soft Satin Clothing Labels",
     intro:
-      "Silky-smooth satin labels for abayas, lingerie, kidswear and premium ready-to-wear — luxury softness with crisp printed or woven branding.",
+      "Silky-smooth satin care labels, size labels and neck labels for abayas, lingerie, kidswear and premium ready-to-wear — luxury softness with crisp printed or woven branding.",
     folds: ["Straight Cut", "Center Fold", "End Fold"],
     finishes: ["Printed Satin", "Woven Satin", "Metallic Accent"],
     specs: [

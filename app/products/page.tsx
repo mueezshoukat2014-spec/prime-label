@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Custom Labels, Hang Tags & Brand Packaging — All Products",
   description:
-    "Browse every garment branding product we produce: custom woven labels, satin labels, hang tags, stickers, packaging sleeves, zipper bags, woven patches and steel logo tags. Low MOQs, 24h digital proofs, DDP delivery worldwide.",
+    "Browse every garment branding product we produce: custom woven labels, satin labels, hang tags, stickers, packaging sleeves, zipper bags, woven patches, steel logo tags, satin care labels, size labels and hem tags. Low MOQs, 24h digital proofs, DDP delivery worldwide.",
   alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
     type: "website",

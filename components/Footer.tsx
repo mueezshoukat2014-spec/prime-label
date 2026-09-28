@@ -28,6 +28,7 @@ const COLS = [
       { label: "Blog", href: "/blog" },
       { label: "المدونة بالعربي", href: "/ar/blog" },
       { label: "Cost Calculator", href: "/calculator" },
+      { label: "Label Folds & Sizes Guide", href: "/guides/label-folds-sizes" },
       { label: "GCC Custom Labels", href: "/gcc-custom-labels" },
     ],
   },

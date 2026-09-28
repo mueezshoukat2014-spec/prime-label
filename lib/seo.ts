@@ -59,6 +59,36 @@ export const ARABIC_KEYWORDS = [
   "ليبل منسوج",
 ] as const;
 
+export const LONG_TAIL_KEYWORDS = [
+  "care labels for clothing",
+  "wash care labels",
+  "printed care labels",
+  "satin care labels",
+  "size labels for clothing",
+  "woven neck labels",
+  "main labels for clothing",
+  "hem tags for clothing",
+  "loop fold hem tags",
+  "side seam labels",
+  "damask woven labels",
+  "end fold woven labels",
+  "center fold neck labels",
+  "manhattan fold labels",
+  "mitre fold labels",
+  "book cover fold labels",
+  "woven labels for small clothing brands",
+  "low MOQ woven labels",
+  "clothing brand starter kit",
+  "fashion brand packaging supplier",
+  "woven label cost calculator",
+  "how much do woven labels cost",
+  "label fold types guide",
+  "care label sizes",
+  "ليبلات عناية للملابس",
+  "ليبل مقاسات",
+  "تاقات هيم للملابس",
+] as const;
+
 export const PRIMARY_KEYWORDS = [
   "custom woven labels Saudi Arabia",
   "clothing labels Saudi Arabia",
@@ -76,6 +106,7 @@ export const PRIMARY_KEYWORDS = [
   "premium clothing labels supplier",
   ...SEO_PRODUCTS,
   ...ARABIC_KEYWORDS,
+  ...LONG_TAIL_KEYWORDS,
 ] as const;
 
 export const organizationJsonLd = {
