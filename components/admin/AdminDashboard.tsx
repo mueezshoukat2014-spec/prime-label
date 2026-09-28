@@ -383,9 +383,9 @@ function Leads() {
                   {l.artwork_name || "Download artwork"}
                 </a>
               )}
-              <div className="mt-4 flex gap-2">
-                <button onClick={() => setStatus(l.id, "contacted")} className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">Mark contacted</button>
-                <button onClick={() => setStatus(l.id, "done")} className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">Mark done</button>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button onClick={() => setStatus(l.id, "contacted")} className="rounded-md border border-line px-3 py-2 text-[12px] hover:border-champagne/40">Mark contacted</button>
+                <button onClick={() => setStatus(l.id, "done")} className="rounded-md border border-line px-3 py-2 text-[12px] hover:border-champagne/40">Mark done</button>
                 <button
                   onClick={() =>
                     setQuoteLead({
@@ -398,11 +398,11 @@ function Leads() {
                       country: l.country,
                     })
                   }
-                  className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-3 py-1.5 text-[12px] text-champagne transition-colors hover:bg-champagne/[0.16]"
+                  className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-3 py-2 text-[12px] text-champagne transition-colors hover:bg-champagne/[0.16]"
                 >
                   Send Quote
                 </button>
-                {l.phone && <a href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hi, regarding your enquiry with Prime Labels International")}`} target="_blank" rel="noopener noreferrer" className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">WhatsApp</a>}
+                {l.phone && <a href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hi, regarding your enquiry with Prime Labels International")}`} target="_blank" rel="noopener noreferrer" className="rounded-md border border-line px-3 py-2 text-[12px] hover:border-champagne/40">WhatsApp</a>}
                 {l.phone && (
                   <a
                     href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
@@ -411,12 +411,12 @@ function Leads() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title="Send a review request on WhatsApp"
-                    className="rounded-md border border-emerald-500/35 bg-emerald-500/[0.08] px-3 py-1.5 text-[12px] text-emerald-300 transition-colors hover:bg-emerald-500/[0.16]"
+                    className="rounded-md border border-emerald-500/35 bg-emerald-500/[0.08] px-3 py-2 text-[12px] text-emerald-300 transition-colors hover:bg-emerald-500/[0.16]"
                   >
                     ★ Ask for review
                   </a>
                 )}
-                <button onClick={() => del(l.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-1.5 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
+                <button onClick={() => del(l.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-2 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
               </div>
             </Card>
           ))}
@@ -500,7 +500,7 @@ function Messages() {
                   </p>
                 )}
 
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {replyEmail && (
                     <button
                       type="button"
@@ -513,14 +513,14 @@ function Messages() {
                           message: m.message,
                         })
                       }
-                      className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-3 py-1.5 text-[12px] text-champagne transition-colors hover:bg-champagne/[0.16]"
+                      className="rounded-md border border-champagne/45 bg-champagne/[0.08] px-3 py-2 text-[12px] text-champagne transition-colors hover:bg-champagne/[0.16]"
                     >
                       {m.status === "replied" ? "Reply again" : "Reply by email"}
                     </button>
                   )}
                   <button
                     onClick={() => del(m.id)}
-                    className="ml-auto rounded-md border border-red-500/30 px-3 py-1.5 text-[12px] text-red-300 hover:bg-red-500/10"
+                    className="ml-auto rounded-md border border-red-500/30 px-3 py-2 text-[12px] text-red-300 hover:bg-red-500/10"
                   >
                     Delete
                   </button>
@@ -818,9 +818,9 @@ function FaqRow({ f, onSave, onDelete }: any) {
     <Card>
       <input className={input + " mb-2"} value={q} onChange={(e) => setQ(e.target.value)} />
       <textarea rows={2} className={input + " resize-none"} value={a} onChange={(e) => setA(e.target.value)} />
-      <div className="mt-3 flex gap-2">
-        <button onClick={() => onSave(f.id, q, a)} className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">Save</button>
-        <button onClick={() => onDelete(f.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-1.5 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button onClick={() => onSave(f.id, q, a)} className="rounded-md border border-line px-3 py-2 text-[12px] hover:border-champagne/40">Save</button>
+        <button onClick={() => onDelete(f.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-2 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
       </div>
     </Card>
   );
@@ -911,9 +911,9 @@ function TestiRow({ t, onSave, onDelete }: any) {
           <input type="checkbox" checked={v.approved} onChange={(e) => set("approved", e.target.checked)} /> Show on site
         </label>
       </div>
-      <div className="mt-3 flex gap-2">
-        <button onClick={() => onSave(v)} className="rounded-md border border-line px-3 py-1.5 text-[12px] hover:border-champagne/40">Save</button>
-        <button onClick={() => onDelete(t.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-1.5 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button onClick={() => onSave(v)} className="rounded-md border border-line px-3 py-2 text-[12px] hover:border-champagne/40">Save</button>
+        <button onClick={() => onDelete(t.id)} className="ml-auto rounded-md border border-red-500/30 px-3 py-2 text-[12px] text-red-300 hover:bg-red-500/10">Delete</button>
       </div>
     </Card>
   );
