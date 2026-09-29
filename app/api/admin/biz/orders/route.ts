@@ -4,7 +4,6 @@ import { isAuthed } from "@/lib/auth";
 import { ensureBizSchema, nextNumber } from "@/lib/biz/schema";
 import { num, toPkr } from "@/lib/biz/money";
 import { computeOrderTotals, refreshPaymentStatus, suggestCostPkr } from "@/lib/biz/calc";
-import { recordPayment } from "@/lib/biz/payments";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -92,9 +91,6 @@ export async function POST(req: Request) {
   await writeCosts(o.id, b.costs);
 
   // Optional inline first payment (fast one-screen order entry).
-  if (num(b.pay_amount) > 0) {
-    await recordPayment({ ...b, order_id: o.id, order_currency: currency });
-  }
 
   // Suggested default production cost from the cost book (only if blank).
   if (!Array.isArray(b.costs) && num(b.sale_amount) > 0 && b.suggest_cost !== false) {

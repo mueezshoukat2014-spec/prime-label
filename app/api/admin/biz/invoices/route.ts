@@ -120,7 +120,16 @@ export async function POST(req: Request) {
     customerId = c.id;
   }
 
-  const invNumber = await nextInvoiceNumber();
+  const manualNum = String(b.inv_number ?? "").trim();
+  let invNumber: string;
+  if (manualNum) {
+    if (manualNum.length > 40) return NextResponse.json({ ok: false, error: "Invoice number is too long (max 40 chars)." }, { status: 400 });
+    const [ex] = await sql`SELECT 1 FROM biz_invoices WHERE inv_number = ${manualNum}`;
+    if (ex) return NextResponse.json({ ok: false, error: `Invoice number ${manualNum} already exists — numbers must be unique.` }, { status: 400 });
+    invNumber = manualNum;
+  } else {
+    invNumber = await nextInvoiceNumber();
+  }
   const [inv] = await sql`
     INSERT INTO biz_invoices
       (inv_number, order_id, customer_id, date, due_date, currency, subtotal, discount, delivery, tax, grand_total,
@@ -170,6 +179,14 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ ok: true });
   }
   if (cur.voided) return NextResponse.json({ ok: false, error: "Voided invoices cannot be edited." }, { status: 409 });
+
+  const manualNumPatch = String(b.inv_number ?? "").trim();
+  if (manualNumPatch && manualNumPatch !== cur.inv_number) {
+    if (manualNumPatch.length > 40) return NextResponse.json({ ok: false, error: "Invoice number is too long (max 40 chars)." }, { status: 400 });
+    const [ex] = await sql`SELECT 1 FROM biz_invoices WHERE inv_number = ${manualNumPatch}`;
+    if (ex) return NextResponse.json({ ok: false, error: `Invoice number ${manualNumPatch} already exists — numbers must be unique.` }, { status: 400 });
+    await sql`UPDATE biz_invoices SET inv_number = ${manualNumPatch} WHERE id = ${cur.id}`;
+  }
 
   const v = validateInvoiceBody({ ...curToBody(cur), ...b });
   if ("error" in v) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });

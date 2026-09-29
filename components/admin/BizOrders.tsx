@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  CURRENCIES, DELIVERY_MODES, ORDER_COST_CATEGORIES, ORDER_STATUSES,
-  PAYMENT_METHODS, fmt, num,
+  CURRENCIES, DELIVERY_MODES, ORDER_STATUSES, fmt, num,
 } from "@/lib/biz/money";
 
 const input =
@@ -92,23 +91,15 @@ export default function BizOrders() {
     else flash(j?.error || "Could not delete order");
   }
 
-  async function addPayment(orderId: number, p: any) {
-    const res = await fetch("/api/admin/biz/payments", {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: orderId, ...p }),
-    });
-    const j = await res.json().catch(() => ({}));
-    if (j?.ok) { flash("Payment recorded"); const r = await fetch(`/api/admin/biz/orders?id=${orderId}`); const jj = await r.json(); if (jj?.ok) setDetail(jj); load(q); }
-    else flash(j?.error || "Payment failed");
-  }
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="display text-3xl">Orders</h1>
-          <p className="mt-1 text-[12.5px] text-cream-muted">Sales, direct costs, payments and per-order gross profit.</p>
+          <p className="mt-1 text-[12.5px] text-cream-muted">Sales orders, workflow and invoicing.</p>
         </div>
-        <button className="btn-primary" onClick={() => { setShowNew(!showNew); setForm({ name: "", customer_id: "", country: "", currency: "PKR", rate: "", product: "", quantity: "", sale_amount: "", discount: 0, customer_delivery_charge: 0, delivery_mode: "CUSTOM", actual_delivery_cost: 0, delivery_currency: "PKR", status: "NEW", pay_amount: 0, method: "Cash", received_currency: "PKR", received_amount: 0 }); }}>
+        <button className="btn-primary" onClick={() => { setShowNew(!showNew); setForm({ name: "", customer_id: "", country: "", currency: "PKR", rate: "", product: "", quantity: "", sale_amount: "", discount: 0, customer_delivery_charge: 0, delivery_mode: "CUSTOM", actual_delivery_cost: 0, delivery_currency: "PKR", status: "NEW" }); }}>
           + New Order
         </button>
       </div>
@@ -142,14 +133,6 @@ export default function BizOrders() {
             <select className={input} value={form.delivery_currency} onChange={(e) => set("delivery_currency", e.target.value)}>{CURRENCIES.map((c) => <option key={c}>{c}</option>)}</select></div>
           <div><span className={label}>Status</span>
             <select className={input} value={form.status} onChange={(e) => set("status", e.target.value)}>{ORDER_STATUSES.map((s) => <option key={s}>{s}</option>)}</select></div>
-          <div><span className={label}>Advance now ({form.currency})</span><input className={input} type="number" step="0.01" value={form.pay_amount} onChange={(e) => set("pay_amount", e.target.value)} /></div>
-          <div><span className={label}>Method</span>
-            <select className={input} value={form.method} onChange={(e) => set("method", e.target.value)}>{PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}</select></div>
-          <div><span className={label}>Received currency</span>
-            <select className={input} value={form.received_currency} onChange={(e) => set("received_currency", e.target.value)}>{CURRENCIES.map((c) => <option key={c}>{c}</option>)}</select></div>
-          {form.pay_amount > 0 && form.received_currency !== form.currency && (
-            <div><span className={label}>Actual received ({form.received_currency})</span><input className={input} type="number" step="0.01" value={form.received_amount} onChange={(e) => set("received_amount", e.target.value)} placeholder="e.g. 12500 PKR" /></div>
-          )}
           <details className="sm:col-span-4 text-[12px] text-cream-muted">
             <summary className="cursor-pointer text-champagne">Advanced (notes, email, phone)</summary>
             <div className="mt-2 grid gap-3 sm:grid-cols-3">
@@ -174,7 +157,6 @@ export default function BizOrders() {
               <th className="px-3 py-2.5">Order</th><th className="px-3 py-2.5">Customer</th>
               <th className="px-3 py-2.5">Status</th><th className="px-3 py-2.5">Payment</th>
               <th className="px-3 py-2.5 text-right">Billed</th><th className="px-3 py-2.5 text-right">Outstanding</th>
-              <th className="px-3 py-2.5 text-right">Gross (PKR)</th>
               <th className="px-3 py-2.5 text-right">Action</th>
             </tr>
           </thead>
@@ -182,9 +164,9 @@ export default function BizOrders() {
             {rows.map((o) => (
               <OrderRow key={o.id} o={o} open={open === o.id} onToggle={() => openOrder(o.id)}
                 detail={open === o.id ? detail : null}
-                onPatch={patchOrder} onPayment={addPayment} onDelete={deleteOrder} flash={flash} />
+                onPatch={patchOrder} onDelete={deleteOrder} flash={flash} />
             ))}
-            {rows.length === 0 && <tr><td colSpan={8} className="px-3 py-8 text-center text-cream-dim">No orders yet.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={7} className="px-3 py-8 text-center text-cream-dim">No orders yet.</td></tr>}
           </tbody>
         </table>
       </div>
@@ -192,9 +174,7 @@ export default function BizOrders() {
   );
 }
 
-function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, flash }: any) {
-  const [pay, setPay] = useState<any>({ order_amount: "", method: "Cash", received_currency: "PKR", received_amount: "", fee: 0, fee_paid_by: "customer", wu_ref: "" });
-  const [cost, setCost] = useState<any>({ description: "", category: "Production", amount: "", currency: "PKR", rate: 1 });
+function OrderRow({ o, open, onToggle, detail, onPatch, onDelete, flash }: any) {
   const t = o.totals || {};
   return (
     <>
@@ -205,7 +185,6 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, fla
         <td className="px-3 py-2.5"><span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${badge(o.payment_status)}`}>{o.payment_status}</span></td>
         <td className="px-3 py-2.5 text-right text-cream">{fmt(t.billedCcy ?? 0, o.currency)}</td>
         <td className="px-3 py-2.5 text-right text-cream-muted">{fmt(t.outstandingCcy ?? 0, o.currency)}</td>
-        <td className="px-3 py-2.5 text-right text-emerald-400">{fmt(t.grossPkr ?? 0)}</td>
         <td className="px-3 py-2.5 text-right">
           <button
             className="rounded-lg border border-red-400/40 px-2.5 py-1.5 text-[11px] text-red-300 transition-colors hover:bg-red-500/10"
@@ -219,7 +198,7 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, fla
       </tr>
       {open && detail && (
         <tr className="border-t border-cream/5 bg-cream/[0.02]">
-          <td colSpan={8} className="px-4 py-4">
+          <td colSpan={7} className="px-4 py-4">
             <div className="grid gap-5 lg:grid-cols-3">
               <div>
                 <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Status & workflow</p>
@@ -232,8 +211,6 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, fla
                   <span>Discount: <b className="text-cream">{fmt(num(detail.order.discount), detail.order.currency)}</b></span>
                   <span>Cust. delivery: <b className="text-cream">{fmt(num(detail.order.customer_delivery_charge), detail.order.currency)}</b></span>
                   <span>Actual delivery: <b className="text-cream">{fmt(num(detail.order.actual_delivery_pkr))} PKR</b></span>
-                  <span>Costs: <b className="text-red-300">{fmt(t.costsPkr ?? 0)}</b></span>
-                  <span>Received: <b className="text-emerald-400">{fmt(t.receivedPkr ?? 0)}</b></span>
                 </div>
                 {/* stable, backend-generated invoice numbers for this order */}
                 <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -280,65 +257,7 @@ function OrderRow({ o, open, onToggle, detail, onPatch, onPayment, onDelete, fla
                   );
                 })()}
               </div>
-              <div>
-                <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Direct costs</p>
-                <div className="max-h-40 space-y-1 overflow-y-auto pr-1">
-                  {detail.costs.map((c: any) => (
-                    <div key={c.id} className="flex justify-between text-[12px]">
-                      <span className="text-cream-muted">{c.category} — {c.description}</span>
-                      <span className="text-red-300">{fmt(num(c.pkr))}</span>
-                    </div>
-                  ))}
-                  {detail.costs.length === 0 && <p className="text-[11.5px] text-cream-dim">No costs recorded.</p>}
-                </div>
-                <div className="mt-2 flex gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  <input className={input} placeholder="Description" value={cost.description} onChange={(e) => setCost({ ...cost, description: e.target.value })} />
-                  <select className={input + " w-32"} value={cost.category} onChange={(e) => setCost({ ...cost, category: e.target.value })}>
-                    {ORDER_COST_CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-                  </select>
-                  <input className={input + " w-24"} type="number" placeholder="PKR" value={cost.amount} onChange={(e) => setCost({ ...cost, amount: e.target.value, currency: "PKR" })} />
-                  <button className="btn-ghost whitespace-nowrap" onClick={async () => {
-                    if (!num(cost.amount)) return flash("Enter a cost amount");
-                    await onPatch(detail.order.id, { costs: [...detail.costs.map((c: any) => ({ description: c.description, category: c.category, amount: c.amount, currency: c.currency, rate: c.rate, pkr: c.pkr, date: c.date, notes: c.notes })), cost] });
-                    setCost({ description: "", category: "Production", amount: "", currency: "PKR", rate: 1 });
-                    flash("Cost added");
-                  }}>Add</button>
-                </div>
-              </div>
-              <div onClick={(e) => e.stopPropagation()}>
-                <p className="mb-2 text-[10px] uppercase tracking-wide2 text-cream-dim">Payments</p>
-                <div className="max-h-32 space-y-1 overflow-y-auto pr-1">
-                  {detail.payments.map((p: any) => (
-                    <div key={p.id} className="flex justify-between text-[12px]">
-                      <span className="text-cream-muted">{p.date} · {p.method}{p.wu_ref ? ` · ${p.wu_ref}` : ""}</span>
-                      <span className="text-emerald-400">{fmt(num(p.order_amount), p.order_currency)} → {fmt(num(p.received_pkr))}</span>
-                    </div>
-                  ))}
-                  {detail.payments.length === 0 && <p className="text-[11.5px] text-cream-dim">No payments yet.</p>}
-                </div>
-                <div className="mt-2 grid grid-cols-2 gap-1.5">
-                  <input className={input} type="number" placeholder={`Amount (${detail.order.currency})`} value={pay.order_amount} onChange={(e) => setPay({ ...pay, order_amount: e.target.value })} />
-                  <select className={input} value={pay.method} onChange={(e) => setPay({ ...pay, method: e.target.value })}>
-                    {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
-                  </select>
-                  <select className={input} value={pay.received_currency} onChange={(e) => setPay({ ...pay, received_currency: e.target.value })}>
-                    {CURRENCIES.map((c) => <option key={c}>{c}</option>)}
-                  </select>
-                  <input className={input} type="number" placeholder={pay.received_currency !== detail.order.currency ? `Actual received (${pay.received_currency})` : "Actual received"} value={pay.received_amount} onChange={(e) => setPay({ ...pay, received_amount: e.target.value })} />
-                  <input className={input} placeholder="WU ref (optional)" value={pay.wu_ref} onChange={(e) => setPay({ ...pay, wu_ref: e.target.value })} />
-                  <button className="btn-primary" onClick={() => {
-                    if (!num(pay.order_amount)) return flash("Enter payment amount");
-                    onPayment(detail.order.id, {
-                      order_currency: detail.order.currency, order_amount: num(pay.order_amount),
-                      method: pay.method, received_currency: pay.received_currency,
-                      received_amount: num(pay.received_amount) || num(pay.order_amount),
-                      fee: num(pay.fee), fee_paid_by: pay.fee_paid_by, wu_ref: pay.wu_ref,
-                    });
-                    setPay({ order_amount: "", method: "Cash", received_currency: "PKR", received_amount: "", fee: 0, fee_paid_by: "customer", wu_ref: "" });
-                  }}>Record payment</button>
-                </div>
-              </div>
-            </div>
+                          </div>
           </td>
         </tr>
       )}

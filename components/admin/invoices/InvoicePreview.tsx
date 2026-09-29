@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { printInvoiceHtml } from "@/lib/biz/invoice-print";
 import { paymentTermsText } from "@/lib/biz/invoice-types";
+import { LOGO_DATA_URI } from "@/lib/biz/logo-data";
 
 const payLabel: Record<string, string> = { UNPAID: "Unpaid", PARTIALLY_PAID: "Partially Paid", PAID: "Paid", REFUNDED: "Refunded", CANCELLED: "Cancelled" };
 const delLabel: Record<string, string> = { PENDING: "Pending", PROCESSING: "Processing", SHIPPED: "Shipped", OUT_FOR_DELIVERY: "Out for Delivery", DELIVERED: "Delivered", CANCELLED: "Cancelled" };
@@ -52,6 +53,7 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
       <div className="mx-auto max-w-[840px] bg-white p-10 text-[#141416] shadow-2xl" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
         <div className="flex items-start justify-between border-b-2 pb-4" style={{ borderColor: "#9e8046" }}>
           <div>
+            <img src={LOGO_DATA_URI} alt="Prime Labels International" style={{ height: 46, width: 46, objectFit: "contain", marginBottom: 6 }} />
             <p className="text-[19px] font-bold">Prime Labels International</p>
             <p className="mt-1 whitespace-pre-line text-[9.5px] text-[#6e6c68]">{[st.address, st.taxNumber && `Tax / VAT No: ${st.taxNumber}`, "Phone / WhatsApp: +92 324 4999224", "info@primelabelsintl.com", "primelabelsintl.com"].filter(Boolean).join("\n")}</p>
           </div>

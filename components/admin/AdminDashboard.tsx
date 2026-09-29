@@ -12,12 +12,8 @@ import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import SiteSettings from "@/components/admin/SiteSettings";
 import OrdersManager from "@/components/admin/OrdersManager";
 import BizOrders from "@/components/admin/BizOrders";
-import PaymentsManager from "@/components/admin/PaymentsManager";
 import CustomersManager from "@/components/admin/CustomersManager";
-import ExpensesManager from "@/components/admin/ExpensesManager";
-import CashManager from "@/components/admin/CashManager";
 import DocumentsManager from "@/components/admin/DocumentsManager";
-import ReportsManager from "@/components/admin/ReportsManager";
 import ReferralsManager from "@/components/admin/ReferralsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import SendQuoteModal, { type QuoteLead } from "@/components/admin/SendQuoteModal";
@@ -34,12 +30,8 @@ type Tab =
   | "leads"
   | "customers"
   | "orders"
-  | "payments"
-  | "expenses"
-  | "cash"
   | "docs"
   | "invoices"
-  | "reports"
   | "tracking"
   | "referrals"
   | "messages"
@@ -55,14 +47,10 @@ type Tab =
   | "settings";
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
-  { id: "reports", label: "Business Reports" },
   { id: "analytics", label: "Analytics" },
   { id: "leads", label: "Leads" },
   { id: "customers", label: "Customers" },
   { id: "orders", label: "Orders" },
-  { id: "payments", label: "Payments" },
-  { id: "expenses", label: "Expenses" },
-  { id: "cash", label: "Business Cash" },
   { id: "docs", label: "Quotes" },
   { id: "invoices", label: "Invoices" },
   { id: "tracking", label: "Tracking / Shipments" },
@@ -144,14 +132,10 @@ export default function AdminDashboard() {
 
         <div className="min-w-0 flex-1">
           {tab === "overview" && <Overview onJump={setTab} />}
-          {tab === "reports" && <ReportsManager />}
           {tab === "analytics" && <AnalyticsPanel />}
           {tab === "leads" && <Leads />}
           {tab === "customers" && <CustomersManager />}
           {tab === "orders" && <BizOrders />}
-          {tab === "payments" && <PaymentsManager />}
-          {tab === "expenses" && <ExpensesManager />}
-          {tab === "cash" && <CashManager />}
           {tab === "docs" && <DocumentsManager />}
           {tab === "invoices" && <InvoicesManager initialOrderId={pendingInvoiceOrder} onOrderConsumed={() => setPendingInvoiceOrder(null)} />}
           {tab === "tracking" && <OrdersManager />}

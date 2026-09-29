@@ -1,4 +1,6 @@
 /* Client-safe: builds a clean A4 print document for an invoice (no admin UI). */
+import { LOGO_DATA_URI } from "@/lib/biz/logo-data";
+
 export function printInvoiceHtml(d: any): string {
   const inv = d.invoice;
   const items = d.items || [];
@@ -51,7 +53,7 @@ export function printInvoiceHtml(d: any): string {
   tr { page-break-inside: avoid; }
 </style></head><body>
 <div class="hd">
-  <div><div class="biz">${esc(d.business?.name || "Prime Labels International")}</div>
+  <div><img src="${LOGO_DATA_URI}" alt="Prime Labels International" style="height:46px;width:46px;object-fit:contain;margin-bottom:6px;display:block"><div class="biz">${esc(d.business?.name || "Prime Labels International")}</div>
     <div class="sub">${esc([st.address, st.taxNumber && "Tax / VAT No: " + st.taxNumber, "Phone / WhatsApp: " + (d.business?.phone || ""), d.business?.email, d.business?.website].filter(Boolean).join("\n"))}</div></div>
   <div class="ttl"><div class="t">INVOICE</div><div class="n">${esc(inv.inv_number)}</div>
     <div class="d">Invoice date: ${esc(inv.date || "")}\nDue date: ${esc(inv.due_date || "—")}</div></div>

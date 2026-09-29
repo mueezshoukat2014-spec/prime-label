@@ -124,12 +124,24 @@ export function validateInvoiceBody(b: any):
     if (!product) return { error: "Every item needs a product / service name." };
     const quantity = money(it?.quantity);
     if (quantity <= 0) return { error: `Invalid quantity for "${product}".` };
-    const unitPrice = money(it?.unit_price);
-    if (unitPrice < 0) return { error: `Invalid unit price for "${product}".` };
-    const lineDiscount = money(it?.discount);
-    if (lineDiscount < 0) return { error: `Invalid discount for "${product}".` };
-    const gross = money(quantity * unitPrice);
-    if (lineDiscount > gross) return { error: `Discount exceeds line total for "${product}".` };
+    // The admin UI asks for the line TOTAL and derives the unit price; the
+    // legacy unit_price path is kept for API/mirrored-order compatibility.
+    const lineTotalIn = money(it?.line_total);
+    let unitPrice: number;
+    let lineDiscount = 0;
+    let lineTotal: number;
+    if (lineTotalIn > 0) {
+      lineTotal = lineTotalIn;
+      unitPrice = Math.round((lineTotal / quantity) * 10000) / 10000;
+    } else {
+      unitPrice = money(it?.unit_price);
+      if (unitPrice < 0) return { error: `Invalid unit price for "${product}".` };
+      lineDiscount = money(it?.discount);
+      if (lineDiscount < 0) return { error: `Invalid discount for "${product}".` };
+      const gross = money(quantity * unitPrice);
+      if (lineDiscount > gross) return { error: `Discount exceeds line total for "${product}".` };
+      lineTotal = money(gross - lineDiscount);
+    }
     items.push({
       product,
       description: str(it?.description, 2000),
@@ -140,7 +152,7 @@ export function validateInvoiceBody(b: any):
       unit: str(it?.unit, 20) || "pcs",
       unitPrice,
       discount: lineDiscount,
-      lineTotal: money(gross - lineDiscount),
+      lineTotal,
     });
   }
 
@@ -190,7 +202,7 @@ export function validateInvoiceBody(b: any):
       estimatedDelivery: str(b?.estimated_delivery, 10) || null,
       deliveryNotes: str(b?.delivery_notes, 2000),
       dueDate: str(b?.due_date, 10) || null,
-      date: str(b?.date, 10) || new Date().toISOString().slice(0, 10),
+      date: b?.date === undefined ? new Date().toISOString().slice(0, 10) : str(b?.date, 10) || null,
       notes: str(b?.notes, 4000),
       terms: str(b?.terms, 8000),
       orderRef: str(b?.order_ref, 60),
