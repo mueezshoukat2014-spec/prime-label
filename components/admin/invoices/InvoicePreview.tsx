@@ -28,7 +28,7 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
 
   const print = () => {
     const w = window.open("", "_blank");
-    if (w) { w.document.write(printInvoiceHtml({ ...d, business: { name: "Prime Labels International", phone: "+92 324 4999224", email: "info@primelabelsintl.com", website: "primelabelsintl.com" } })); w.document.close(); }
+    if (w) { w.document.write(printInvoiceHtml({ ...d, business: { name: "Prime Labels International", phone: "+92 324 4999224", email: "Primelabelsintl@gmail.com", website: "primelabelsintl.com" } })); w.document.close(); }
   };
 
   return (
@@ -55,7 +55,7 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
           <div>
             <img src={LOGO_DATA_URI} alt="Prime Labels International" style={{ height: 46, width: 46, objectFit: "contain", marginBottom: 6 }} />
             <p className="text-[19px] font-bold">Prime Labels International</p>
-            <p className="mt-1 whitespace-pre-line text-[9.5px] text-[#6e6c68]">{[st.address, st.taxNumber && `Tax / VAT No: ${st.taxNumber}`, "Phone / WhatsApp: +92 324 4999224", "info@primelabelsintl.com", "primelabelsintl.com"].filter(Boolean).join("\n")}</p>
+            <p className="mt-1 whitespace-pre-line text-[9.5px] text-[#6e6c68]">{[st.address, st.taxNumber && `Tax / VAT No: ${st.taxNumber}`, "Phone / WhatsApp: +92 324 4999224", "Primelabelsintl@gmail.com", "primelabelsintl.com"].filter(Boolean).join("\n")}</p>
           </div>
           <div className="text-right">
             <p className="text-[22px] font-bold tracking-[2px]" style={{ color: "#9e8046" }}>INVOICE</p>

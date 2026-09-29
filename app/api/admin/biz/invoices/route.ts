@@ -136,6 +136,7 @@ export async function POST(req: Request) {
        amount_paid, payment_status, payment_method, payment_date, payment_reference, payment_notes,
        payment_terms_type, payment_terms_custom, terms, notes,
        delivery_status, delivery_method, courier, tracking_number, estimated_delivery, delivery_notes,
+       delivery_paid_by, pdf_name,
        customer_snapshot, design_attachment, status, created_by)
     VALUES
       (${invNumber}, ${orderId}, ${customerId}, ${v.fields.date}, ${v.fields.dueDate}, ${v.fields.currency},
@@ -145,6 +146,7 @@ export async function POST(req: Request) {
        ${v.fields.termsType}, ${v.fields.paymentTermsCustom}, ${v.fields.terms}, ${v.fields.notes},
        ${v.fields.deliveryStatus}, ${v.fields.deliveryMethod}, ${v.fields.courier}, ${v.fields.trackingNumber},
        ${v.fields.estimatedDelivery}, ${v.fields.deliveryNotes},
+       ${v.fields.deliveryPaidBy}, ${v.fields.pdfName},
        ${JSON.stringify(v.fields.customerSnapshot)}, ${b.design_attachment ? JSON.stringify(b.design_attachment) : null},
        ${v.fields.paymentStatus === "PAID" ? "PAID" : "ISSUED"}, ${ADMIN()})
     RETURNING *`;
@@ -200,6 +202,7 @@ export async function PATCH(req: Request) {
     terms = ${v.fields.terms}, notes = ${v.fields.notes},
     delivery_status = ${v.fields.deliveryStatus}, delivery_method = ${v.fields.deliveryMethod}, courier = ${v.fields.courier},
     tracking_number = ${v.fields.trackingNumber}, estimated_delivery = ${v.fields.estimatedDelivery}, delivery_notes = ${v.fields.deliveryNotes},
+    delivery_paid_by = ${v.fields.deliveryPaidBy}, pdf_name = ${v.fields.pdfName},
     customer_snapshot = ${JSON.stringify(v.fields.customerSnapshot)},
     customer_id = ${b.customer_id ? Number(b.customer_id) : cur.customer_id},
     status = ${v.fields.paymentStatus === "PAID" ? "PAID" : "ISSUED"},

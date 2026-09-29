@@ -76,21 +76,22 @@ export function buildInvoicePdf(d: PdfData): Promise<Buffer> {
   const delLabel: Record<string, string> = { PENDING: "Pending", PROCESSING: "Processing", SHIPPED: "Shipped", OUT_FOR_DELIVERY: "Out for Delivery", DELIVERED: "Delivered", CANCELLED: "Cancelled" };
   const metaLines = [
     `Payment status: ${payLabel[inv.payment_status] || inv.payment_status}`,
-    `Payment method: ${inv.payment_method || "—"}`,
+    inv.payment_method ? `Payment method: ${inv.payment_method}` : "",
     `Delivery status: ${delLabel[inv.delivery_status] || inv.delivery_status}`,
     inv.order_id || inv.order_ref ? `Order ref: ${d.order?.order_ref || inv.order_ref || "—"}` : "",
     inv.design_attachment ? "Design Attached ✓" : "",
   ].filter(Boolean);
-  doc.text(metaLines.join("\n"), metaX, y + 12, { width: IW - 290, lineGap: 1.6 });
+  doc.text(metaLines.filter(Boolean).join("\n"), metaX, y + 12, { width: IW - 290, lineGap: 1.6 });
   y += Math.max(custBlockH + 40, 96) + 8;
 
   /* items table */
+  const anyDisc = d.items.some((it: any) => Number(it.discount) > 0);
   const cols = [
     { w: 150, label: "PRODUCT / SERVICE" },
     { w: 92, label: "DETAILS" },
     { w: 38, label: "QTY", right: true },
     { w: 62, label: "UNIT PRICE", right: true },
-    { w: 52, label: "DISC.", right: true },
+    ...(anyDisc ? [{ w: 52, label: "DISC.", right: true }] : []),
     { w: 66, label: "LINE TOTAL", right: true },
   ];
   const tableHeader = (yy: number) => {
@@ -132,8 +133,8 @@ export function buildInvoicePdf(d: PdfData): Promise<Buffer> {
     doc.fontSize(8.2).fillColor(INK);
     doc.text(`${Number(it.quantity)}`, colX(2) + 4, y + 4, { width: cols[2].w - 8, align: "right" });
     doc.text(money(Number(it.unit_price), ccy), colX(3) + 4, y + 4, { width: cols[3].w - 8, align: "right" });
-    doc.text(money(Number(it.discount), ccy), colX(4) + 4, y + 4, { width: cols[4].w - 8, align: "right" });
-    doc.font("Helvetica-Bold").text(money(Number(it.subtotal), ccy), colX(5) + 4, y + 4, { width: cols[5].w - 8, align: "right" });
+    if (anyDisc) doc.text(money(Number(it.discount), ccy), colX(4) + 4, y + 4, { width: cols[4].w - 8, align: "right" });
+    doc.font("Helvetica-Bold").text(money(Number(it.subtotal), ccy), colX(anyDisc ? 5 : 4) + 4, y + 4, { width: cols[anyDisc ? 5 : 4].w - 8, align: "right" });
     doc.font("Helvetica");
     y += lineH;
     doc.strokeColor([235, 231, 224]).lineWidth(0.5).moveTo(M, y).lineTo(A4W - M, y).stroke();
@@ -152,7 +153,7 @@ export function buildInvoicePdf(d: PdfData): Promise<Buffer> {
   };
   row("Subtotal", money(Number(inv.subtotal), ccy));
   if (Number(inv.discount)) row("Discount", `− ${money(Number(inv.discount), ccy)}`);
-  if (Number(inv.delivery)) row("Delivery / Shipping", money(Number(inv.delivery), ccy));
+  if (Number(inv.delivery) && (inv.delivery_paid_by || "CLIENT") !== "SELLER") row("Delivery (estimate)", money(Number(inv.delivery), ccy));
   if (Number(inv.tax)) row("Tax", money(Number(inv.tax), ccy));
   y += 2;
   row("GRAND TOTAL", money(Number(inv.grand_total), ccy), true, true);
@@ -181,9 +182,12 @@ export function buildInvoicePdf(d: PdfData): Promise<Buffer> {
   /* delivery block full width after totals if space, else new page */
   y = Math.max(y, doc.y) + 14;
   const delLines = [
-    `Delivery method: ${inv.delivery_method || "—"}`,
-    `Courier: ${inv.courier || "—"}${inv.tracking_number ? `   Tracking: ${inv.tracking_number}` : ""}`,
-    `Estimated delivery: ${inv.estimated_delivery || "—"}`,
+    (inv.delivery_paid_by || "CLIENT") === "SELLER"
+      ? "Delivery: arranged & paid by Prime Labels"
+      : Number(inv.delivery) ? "Delivery charge is an estimate — final amount to be confirmed before dispatch." : "",
+    inv.delivery_method ? `Delivery method: ${inv.delivery_method}` : "",
+    inv.courier || inv.tracking_number ? `Courier: ${inv.courier || "—"}${inv.tracking_number ? `   Tracking: ${inv.tracking_number}` : ""}` : "",
+    inv.estimated_delivery ? `Estimated delivery: ${inv.estimated_delivery}` : "",
     inv.delivery_notes ? `Notes: ${inv.delivery_notes}` : "",
   ].filter(Boolean);
   if (y + 60 > BOTTOM) { doc.addPage(); y = M; }

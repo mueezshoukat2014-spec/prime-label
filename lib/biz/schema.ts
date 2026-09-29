@@ -257,6 +257,8 @@ async function run(): Promise<void> {
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS tax NUMERIC DEFAULT 0`;
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS amount_paid NUMERIC DEFAULT 0`;
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_status TEXT DEFAULT 'UNPAID'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS delivery_paid_by TEXT DEFAULT 'CLIENT'`;
+  await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS pdf_name TEXT DEFAULT ''`;
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_method TEXT DEFAULT ''`;
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_date DATE`;
   await sql`ALTER TABLE biz_invoices ADD COLUMN IF NOT EXISTS payment_reference TEXT DEFAULT ''`;

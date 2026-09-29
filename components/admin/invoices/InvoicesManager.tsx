@@ -79,7 +79,7 @@ function List({ reload, open }: { reload: number; open: (v: View) => void }) {
       const j = await fetch(`/api/admin/biz/invoices?id=${id}`).then((x) => x.json()).catch(() => ({}));
       if (j?.ok) {
         const w = window.open("", "_blank");
-        if (w) { w.document.write(printInvoiceHtml({ ...j, business: { name: "Prime Labels International", website: "primelabelsintl.com" } })); w.document.close(); }
+        if (w) { w.document.write(printInvoiceHtml({ ...j, business: { name: "Prime Labels International", email: "Primelabelsintl@gmail.com", website: "primelabelsintl.com" } })); w.document.close(); }
       }
       return;
     }

@@ -42,7 +42,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
         items: [blankItem()], discount: 0, delivery: st.defaultDelivery || 0, tax: st.defaultTax || 0, amount_paid: 0,
         payment_status: "UNPAID", payment_method: "", payment_date: "", payment_reference: "", payment_notes: "",
         payment_terms_type: st.defaultPaymentTerms || "ADVANCE_50", payment_terms_custom: "",
-        delivery_status: "PENDING", delivery_method: "", courier: "", tracking_number: "", estimated_delivery: "", delivery_notes: "",
+        delivery_status: "PENDING", delivery_method: "", courier: "", tracking_number: "", estimated_delivery: "", delivery_notes: "", delivery_paid_by: "CLIENT", pdf_name: "",
         notes: st.defaultNotes || "", terms: st.termsAndConditions || "", design_attachment: null,
       };
       if (id) {
@@ -60,7 +60,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
             payment_reference: inv.payment_reference || "", payment_notes: inv.payment_notes || "",
             payment_terms_type: inv.payment_terms_type, payment_terms_custom: inv.payment_terms_custom || "",
             delivery_status: dup ? "PENDING" : inv.delivery_status, delivery_method: inv.delivery_method || "", courier: inv.courier || "",
-            tracking_number: dup ? "" : inv.tracking_number || "", estimated_delivery: inv.estimated_delivery || "", delivery_notes: inv.delivery_notes || "",
+            tracking_number: dup ? "" : inv.tracking_number || "", estimated_delivery: inv.estimated_delivery || "", delivery_notes: inv.delivery_notes || "", delivery_paid_by: inv.delivery_paid_by || "CLIENT", pdf_name: dup ? "" : inv.pdf_name || "",
             notes: inv.notes || "", terms: inv.terms || st.termsAndConditions || "", design_attachment: dup ? null : inv.design_attachment || null,
           });
           if (!base.items.length) base.items = [blankItem()];
@@ -95,7 +95,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
     if (!f) return null;
     const lines = (f.items as any[]).map((it) => lineTotalOf(it));
     const subtotal = lines.reduce((s, v) => s + v, 0);
-    const grand = Math.max(0, subtotal - (Number(f.discount) || 0) + (Number(f.delivery) || 0) + (Number(f.tax) || 0));
+    const grand = Math.max(0, subtotal - (Number(f.discount) || 0) + ((f.delivery_paid_by || "CLIENT") === "SELLER" ? 0 : Number(f.delivery) || 0) + (Number(f.tax) || 0));
     return { subtotal, grand, balance: grand - (Number(f.amount_paid) || 0) };
   }, [f]);
 
@@ -187,6 +187,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
           <p className="mb-3 text-[10px] uppercase tracking-wide2 text-cream-dim">Invoice information</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2"><span className={label}>Invoice # (optional — your own number)</span><input className={input} value={f.inv_number || ""} placeholder="Leave empty for automatic PL-INV number" onChange={(e) => set("inv_number", e.target.value)} /></div>
+            <div className="sm:col-span-2"><span className={label}>PDF / file name (optional)</span><input className={input} value={f.pdf_name || ""} placeholder="e.g. Shanxay-Sethi-Invoice — leave empty for auto name" onChange={(e) => set("pdf_name", e.target.value)} /></div>
             <div><span className={label}>Invoice date</span><div className="flex gap-1"><input className={input} type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /><button type="button" title="Clear date" className="shrink-0 rounded-lg border border-line px-2 text-[12px] text-cream-muted hover:text-red-300" onClick={() => set("date", "")}>✕</button></div></div>
             <div><span className={label}>Due date</span><div className="flex gap-1"><input className={input} type="date" value={f.due_date} onChange={(e) => set("due_date", e.target.value)} /><button type="button" title="Clear date" className="shrink-0 rounded-lg border border-line px-2 text-[12px] text-cream-muted hover:text-red-300" onClick={() => set("due_date", "")}>✕</button></div></div>
             <div><span className={label}>Currency (one per invoice)</span><select className={input} value={f.currency} onChange={(e) => set("currency", e.target.value)}>{INV_CURRENCIES.map((c) => <option key={c}>{c}</option>)}</select></div>
@@ -194,7 +195,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
             <div><span className={label}>Payment method</span><select className={input} value={f.payment_method} onChange={(e) => set("payment_method", e.target.value)}><option value="">—</option>{PAYMENT_METHODS.map((s) => <option key={s}>{s}</option>)}</select></div>
             <div><span className={label}>Payment date</span><div className="flex gap-1"><input className={input} type="date" value={f.payment_date} onChange={(e) => set("payment_date", e.target.value)} /><button type="button" title="Clear date" className="shrink-0 rounded-lg border border-line px-2 text-[12px] text-cream-muted hover:text-red-300" onClick={() => set("payment_date", "")}>✕</button></div></div>
             <div><span className={label}>Payment reference</span><input className={input} value={f.payment_reference} onChange={(e) => set("payment_reference", e.target.value)} /></div>
-            <div><span className={label}>Payment terms</span><select className={input} value={f.payment_terms_type} onChange={(e) => set("payment_terms_type", e.target.value)}>{PAYMENT_TERMS_TYPES.map((s) => <option key={s} value={s}>{s === "ADVANCE_100" ? "100% Advance" : s === "ADVANCE_50" ? "50% Advance + 50% Before Dispatch" : "Custom terms"}</option>)}</select></div>
+            <div><span className={label}>Payment terms</span><select className={input} value={f.payment_terms_type} onChange={(e) => set("payment_terms_type", e.target.value)}>{PAYMENT_TERMS_TYPES.map((s) => <option key={s} value={s}>{s === "ADVANCE_100" ? "100% Advance" : s === "ADVANCE_50" ? "50% Advance + 50% Before Dispatch" : s === "ADVANCE_50_PHOTOS" ? "50% Advance + 50% After Photos/Videos" : "Custom terms"}</option>)}</select></div>
             {f.payment_terms_type === "CUSTOM" && (
               <div className="sm:col-span-2"><span className={label}>Custom payment terms</span><textarea className={input} rows={2} value={f.payment_terms_custom} onChange={(e) => set("payment_terms_custom", e.target.value)} /></div>)}
             <div className="sm:col-span-2"><span className={label}>Payment notes</span><input className={input} value={f.payment_notes} onChange={(e) => set("payment_notes", e.target.value)} /></div>
@@ -246,7 +247,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
           <div className="space-y-2 text-[12.5px]">
             <div className="flex justify-between"><span className="text-cream-muted">Subtotal</span><b className="text-cream">{money(totals.subtotal)}</b></div>
             <div className="flex items-center justify-between gap-2"><span className="text-cream-muted">Discount</span><input className={`${input} !w-28 text-right`} type="number" min="0" value={f.discount} onChange={(e) => set("discount", e.target.value)} /></div>
-            <div className="flex items-center justify-between gap-2"><span className="text-cream-muted">Delivery / shipping</span><input className={`${input} !w-28 text-right`} type="number" min="0" value={f.delivery} onChange={(e) => set("delivery", e.target.value)} /></div>
+            <div className="flex items-center justify-between gap-2"><span className="text-cream-muted">Delivery / shipping{f.delivery_paid_by === "SELLER" ? " (we pay)" : " (estimate)"}</span><input className={`${input} !w-28 text-right`} type="number" min="0" disabled={(f.delivery_paid_by || "CLIENT") === "SELLER"} value={f.delivery} onChange={(e) => set("delivery", e.target.value)} /></div>
             <div className="flex items-center justify-between gap-2"><span className="text-cream-muted">Tax</span><input className={`${input} !w-28 text-right`} type="number" min="0" value={f.tax} onChange={(e) => set("tax", e.target.value)} /></div>
             <div className="flex justify-between border-t border-champagne/30 pt-2 text-[14px]"><span className="font-semibold text-champagne">Grand total</span><b className="text-champagne">{money(totals.grand)}</b></div>
             <div className="flex items-center justify-between gap-2"><span className="text-cream-muted">Amount paid</span><input className={`${input} !w-28 text-right`} type="number" min="0" value={f.amount_paid} onChange={(e) => set("amount_paid", e.target.value)} /></div>
@@ -259,6 +260,7 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
           <p className="mb-3 text-[10px] uppercase tracking-wide2 text-cream-dim">Delivery</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <div><span className={label}>Delivery status</span><select className={input} value={f.delivery_status} onChange={(e) => set("delivery_status", e.target.value)}>{DELIVERY_STATUSES.map((s) => <option key={s}>{s}</option>)}</select></div>
+            <div><span className={label}>Delivery paid by</span><select className={input} value={f.delivery_paid_by || "CLIENT"} onChange={(e) => set("delivery_paid_by", e.target.value)}><option value="CLIENT">Client pays (estimate shown)</option><option value="SELLER">We pay (not charged)</option></select></div>
             <div><span className={label}>Delivery method</span><input className={input} value={f.delivery_method} onChange={(e) => set("delivery_method", e.target.value)} placeholder="Express DDP" /></div>
             <div><span className={label}>Courier</span><select className={input} value={f.courier} onChange={(e) => set("courier", e.target.value)}><option value="">—</option>{COURIERS.map((s) => <option key={s}>{s}</option>)}</select></div>
             <div><span className={label}>Tracking number</span><input className={input} value={f.tracking_number} onChange={(e) => set("tracking_number", e.target.value)} /></div>

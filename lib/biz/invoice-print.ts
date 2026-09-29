@@ -20,7 +20,7 @@ export function printInvoiceHtml(d: any): string {
         ? "<b>50% Advance Payment:</b> 50% payment is required before production starts.<br><b>Remaining 50%:</b> The remaining balance must be paid before dispatch."
         : esc(inv.payment_terms_custom || "As agreed.");
 
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(inv.inv_number)}</title>
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(inv.pdf_name || inv.inv_number)}</title>
 <style>
   @page { size: A4; margin: 14mm 12mm; }
   * { box-sizing: border-box; }
@@ -54,7 +54,7 @@ export function printInvoiceHtml(d: any): string {
 </style></head><body>
 <div class="hd">
   <div><img src="${LOGO_DATA_URI}" alt="Prime Labels International" style="height:46px;width:46px;object-fit:contain;margin-bottom:6px;display:block"><div class="biz">${esc(d.business?.name || "Prime Labels International")}</div>
-    <div class="sub">${esc([st.address, st.taxNumber && "Tax / VAT No: " + st.taxNumber, "Phone / WhatsApp: " + (d.business?.phone || ""), d.business?.email, d.business?.website].filter(Boolean).join("\n"))}</div></div>
+    <div class="sub">${esc([st.address, st.taxNumber && "Tax / VAT No: " + st.taxNumber, "Phone / WhatsApp: " + (d.business?.phone || ""), (d.business?.email || "Primelabelsintl@gmail.com"), d.business?.website || "primelabelsintl.com"].filter(Boolean).join("\n"))}</div></div>
   <div class="ttl"><div class="t">INVOICE</div><div class="n">${esc(inv.inv_number)}</div>
     <div class="d">Invoice date: ${esc(inv.date || "")}\nDue date: ${esc(inv.due_date || "—")}</div></div>
 </div>
@@ -62,14 +62,14 @@ export function printInvoiceHtml(d: any): string {
   <div><div class="lbl">BILLED TO</div>
     <div class="blk"><b>${esc(snap.name || d.customer?.full_name || "Customer")}</b>\n${esc([snap.company, snap.address, [snap.city, snap.country].filter(Boolean).join(", "), [snap.phone, snap.whatsapp].filter(Boolean).join(" / "), snap.email, snap.reference && "Ref: " + snap.reference].filter(Boolean).join("\n"))}</div></div>
   <div><div class="lbl">INVOICE INFORMATION</div>
-    <div class="blk">Payment status: ${esc(payLabel[inv.payment_status] || inv.payment_status)}\nPayment method: ${esc(inv.payment_method || "—")}\nDelivery status: ${esc(delLabel[inv.delivery_status] || inv.delivery_status)}${inv.order_id || inv.order_ref ? "\nOrder ref: " + esc(d.order?.order_ref || inv.order_ref || "—") : ""}${inv.design_attachment ? "\nDesign Attached ✓" : ""}</div></div>
+    <div class="blk">Payment status: ${esc(payLabel[inv.payment_status] || inv.payment_status)}${inv.payment_method ? "\nPayment method: " + esc(inv.payment_method) : ""}\nDelivery status: ${esc(delLabel[inv.delivery_status] || inv.delivery_status)}${inv.order_id || inv.order_ref ? "\nOrder ref: " + esc(d.order?.order_ref || inv.order_ref || "—") : ""}${inv.design_attachment ? "\nDesign Attached ✓" : ""}</div></div>
 </div>
-<table><thead><tr><th>PRODUCT / SERVICE</th><th>DETAILS</th><th class="r">QTY</th><th class="r">UNIT PRICE</th><th class="r">DISC.</th><th class="r">LINE TOTAL</th></tr></thead>
-<tbody>${items.map((it: any) => `<tr><td>${esc(it.product)}</td><td><span class="det">${esc([it.description, [it.size && "Size: " + it.size, it.shape && "Shape: " + it.shape, it.color && "Color: " + it.color].filter(Boolean).join("  ")].filter(Boolean).join("\n"))}</span></td><td class="r">${Number(it.quantity)}</td><td class="r">${money(it.unit_price)}</td><td class="r">${money(it.discount)}</td><td class="r"><b>${money(it.subtotal)}</b></td></tr>`).join("")}</tbody></table>
+<table><thead><tr><th>PRODUCT / SERVICE</th><th>DETAILS</th><th class="r">QTY</th><th class="r">UNIT PRICE</th>${items.some((it: any) => Number(it.discount) > 0) ? '<th class="r">DISC.</th>' : ""}<th class="r">LINE TOTAL</th></tr></thead>
+<tbody>${items.map((it: any) => `<tr><td>${esc(it.product)}</td><td><span class="det">${esc([it.description, [it.size && "Size: " + it.size, it.shape && "Shape: " + it.shape, it.color && "Color: " + it.color].filter(Boolean).join("  ")].filter(Boolean).join("\n"))}</span></td><td class="r">${Number(it.quantity)}</td><td class="r">${money(it.unit_price)}</td>${items.some((x: any) => Number(x.discount) > 0) ? `<td class="r">${money(it.discount)}</td>` : ""}<td class="r"><b>${money(it.subtotal)}</b></td></tr>`).join("")}</tbody></table>
 <div class="tot">
   <div class="row"><span>Subtotal</span><span>${money(inv.subtotal)}</span></div>
   ${Number(inv.discount) ? `<div class="row"><span>Discount</span><span>− ${money(inv.discount)}</span></div>` : ""}
-  ${Number(inv.delivery) ? `<div class="row"><span>Delivery / Shipping</span><span>${money(inv.delivery)}</span></div>` : ""}
+  ${Number(inv.delivery) && (inv.delivery_paid_by || "CLIENT") !== "SELLER" ? `<div class="row"><span>Delivery / Shipping (estimate)</span><span>${money(inv.delivery)}</span></div>` : ""}
   ${Number(inv.tax) ? `<div class="row"><span>Tax</span><span>${money(inv.tax)}</span></div>` : ""}
   <div class="row gt"><span>GRAND TOTAL</span><span>${money(inv.grand_total)}</span></div>
   <div class="row"><span>Amount Paid</span><span>${money(inv.amount_paid)}</span></div>
@@ -78,11 +78,11 @@ export function printInvoiceHtml(d: any): string {
 <div class="sec3">
   <div><div class="lbl">PAYMENT TERMS</div><div class="small">${payTerms}</div>
     ${[st.bankName, st.accountName && "Account name: " + st.accountName, st.accountNumber && "Account no: " + st.accountNumber, st.iban && "IBAN: " + st.iban, st.paymentInstructions].filter(Boolean).length ? `<div class="lbl" style="margin-top:8px">PAYMENT INFORMATION</div><div class="small">${esc([st.bankName, st.accountName && "Account name: " + st.accountName, st.accountNumber && "Account no: " + st.accountNumber, st.iban && "IBAN: " + st.iban, st.paymentInstructions].filter(Boolean).join("\n"))}</div>` : ""}</div>
-  <div><div class="lbl">DELIVERY</div><div class="small">${esc([ "Method: " + (inv.delivery_method || "—"), "Courier: " + (inv.courier || "—") + (inv.tracking_number ? "   Tracking: " + inv.tracking_number : ""), "Estimated: " + (inv.estimated_delivery || "—"), inv.delivery_notes && "Notes: " + inv.delivery_notes].filter(Boolean).join("\n"))}</div>
+  <div><div class="lbl">DELIVERY</div><div class="small">${esc([ (inv.delivery_paid_by || "CLIENT") === "SELLER" ? "Delivery: arranged & paid by Prime Labels" : (Number(inv.delivery) ? "Delivery charge is an estimate — final amount to be confirmed before dispatch." : ""), inv.delivery_method && "Method: " + inv.delivery_method, (inv.courier || inv.tracking_number) ? "Courier: " + (inv.courier || "—") + (inv.tracking_number ? "   Tracking: " + inv.tracking_number : "") : "", inv.estimated_delivery && "Estimated: " + inv.estimated_delivery, inv.delivery_notes && "Notes: " + inv.delivery_notes].filter(Boolean).join("\n"))}</div>
     ${inv.notes ? `<div class="lbl" style="margin-top:8px">NOTES</div><div class="small">${esc(inv.notes)}</div>` : ""}</div>
 </div>
 ${terms.length ? `<div class="tc"><div class="lbl">TERMS &amp; CONDITIONS</div><ol>${terms.map((t) => `<li>${esc(t)}</li>`).join("")}</ol></div>` : ""}
-<div class="ft"><span>${esc(st.footer || "")}</span><span>${esc(d.business?.website || "")}</span></div>
+<div class="ft"><span>${esc(st.footer || "")}</span><span>${esc(d.business?.website || "primelabelsintl.com")}</span></div>
 <script>window.onload = () => window.print();</script>
 </body></html>`;
 }

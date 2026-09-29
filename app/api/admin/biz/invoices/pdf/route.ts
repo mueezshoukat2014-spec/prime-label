@@ -34,7 +34,7 @@ export async function GET(req: Request) {
     business: {
       name: site.businessName || "Prime Labels International",
       phone: site.phone || "+92 324 4999224",
-      email: site.email || "info@primelabelsintl.com",
+      email: "Primelabelsintl@gmail.com",
       website: "primelabelsintl.com",
       instagram: site.instagram,
     },
@@ -43,7 +43,7 @@ export async function GET(req: Request) {
   return new NextResponse(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="PrimeLabels-Invoice-${inv.inv_number}.pdf"`,
+      "Content-Disposition": `inline; filename="${((inv.pdf_name || "").trim().replace(/[^\w\- .]+/g, "") || "PrimeLabels-Invoice-" + inv.inv_number).replace(/\.pdf$/i, "")}.pdf"`,
       "Cache-Control": "no-store",
     },
   });

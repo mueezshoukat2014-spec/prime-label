@@ -161,9 +161,10 @@ export function validateInvoiceBody(b: any):
   if (discount < 0 || discount > subtotal) return { error: "Invoice discount must be between 0 and subtotal." };
   const delivery = money(b?.delivery);
   if (delivery < 0) return { error: "Delivery charge cannot be negative." };
+  const deliveryPaidBy = String(b?.delivery_paid_by || "CLIENT").toUpperCase() === "SELLER" ? "SELLER" : "CLIENT";
   const tax = money(b?.tax);
   if (tax < 0) return { error: "Tax cannot be negative." };
-  const grandTotal = money(subtotal - discount + delivery + tax);
+  const grandTotal = money(subtotal - discount + (deliveryPaidBy === "CLIENT" ? delivery : 0) + tax);
   const amountPaid = money(b?.amount_paid);
   if (amountPaid < 0) return { error: "Amount paid cannot be negative." };
   const balanceDue = money(grandTotal - amountPaid);
@@ -192,6 +193,8 @@ export function validateInvoiceBody(b: any):
       deliveryStatus,
       termsType,
       paymentMethod: str(b?.payment_method, 40),
+      deliveryPaidBy,
+      pdfName: str(b?.pdf_name, 120),
       paymentTermsCustom: str(b?.payment_terms_custom, 2000),
       paymentDate: str(b?.payment_date, 10) || null,
       paymentReference: str(b?.payment_reference, 200),

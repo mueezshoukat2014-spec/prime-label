@@ -1,10 +1,10 @@
 /* Client-safe invoice constants & helpers (no server-only imports). */
 export const INV_CURRENCIES = ["PKR", "SAR", "AED", "KWD", "QAR", "USD"] as const;
 export const PAYMENT_STATUSES = ["UNPAID", "PARTIALLY_PAID", "PAID", "REFUNDED", "CANCELLED"] as const;
-export const PAYMENT_METHODS = ["Bank Transfer", "Cash", "Online Payment", "Other"] as const;
+export const PAYMENT_METHODS = ["Bank Transfer", "Cash", "Online Payment", "Yet to decide", "Other"] as const;
 export const DELIVERY_STATUSES = ["PENDING", "PROCESSING", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"] as const;
 export const COURIERS = ["DHL", "Aramex", "FedEx", "Other"] as const;
-export const PAYMENT_TERMS_TYPES = ["ADVANCE_100", "ADVANCE_50", "CUSTOM"] as const;
+export const PAYMENT_TERMS_TYPES = ["ADVANCE_100", "ADVANCE_50", "ADVANCE_50_PHOTOS", "CUSTOM"] as const;
 
 export const DEFAULT_TERMS_AND_CONDITIONS = [
   "Payment must be made according to the payment terms stated on the invoice.",
@@ -26,5 +26,7 @@ export function paymentTermsText(type: string, custom: string): string {
     return "100% Advance Payment:\nFull payment must be received before production starts.";
   if (type === "ADVANCE_50")
     return "50% Advance Payment:\n50% payment is required before production starts.\n\nRemaining 50%:\nThe remaining balance must be paid before dispatch.";
+  if (type === "ADVANCE_50_PHOTOS")
+    return "50% Advance Payment:\n50% payment is required before production starts.\n\nRemaining 50%:\nThe remaining balance must be paid before dispatch, after showing you your product photos/videos.";
   return custom || "As agreed between Prime Labels and the customer.";
 }
