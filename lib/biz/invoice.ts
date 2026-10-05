@@ -102,6 +102,21 @@ const finite = (v: unknown, fallback = 0) => {
 const money = (v: unknown) => Math.round(finite(v) * 100) / 100;
 const str = (v: unknown, max = 500) => String(v ?? "").slice(0, max).trim();
 
+/** Drivers differ: Neon HTTP returns "2026-10-05" strings, postgres.js returns
+ *  Date objects. String(Date).slice(0,10) yields garbage like "Mon Oct 05"
+ *  which Postgres then mangles into a wrong year. Always normalise to YYYY-MM-DD. */
+const dateOnly = (v: unknown): string | null => {
+  if (v == null || v === "") return null;
+  if (v instanceof Date) {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
+  }
+  const s = String(v).slice(0, 10).trim();
+  // Strict: anything that is not YYYY-MM-DD would be mangled by Postgres's
+  // permissive date parser (e.g. "Mon Oct 05" -> year 2001). Drop it instead.
+  return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+};
+
 export function validateInvoiceBody(b: any):
   | { error: string }
   | {
@@ -196,16 +211,16 @@ export function validateInvoiceBody(b: any):
       deliveryPaidBy,
       pdfName: str(b?.pdf_name, 120),
       paymentTermsCustom: str(b?.payment_terms_custom, 2000),
-      paymentDate: str(b?.payment_date, 10) || null,
+      paymentDate: dateOnly(b?.payment_date),
       paymentReference: str(b?.payment_reference, 200),
       paymentNotes: str(b?.payment_notes, 2000),
       deliveryMethod: str(b?.delivery_method, 100),
       courier: str(b?.courier, 40),
       trackingNumber: str(b?.tracking_number, 100),
-      estimatedDelivery: str(b?.estimated_delivery, 10) || null,
+      estimatedDelivery: dateOnly(b?.estimated_delivery),
       deliveryNotes: str(b?.delivery_notes, 2000),
-      dueDate: str(b?.due_date, 10) || null,
-      date: b?.date === undefined ? new Date().toISOString().slice(0, 10) : str(b?.date, 10) || null,
+      dueDate: dateOnly(b?.due_date),
+      date: b?.date === undefined ? new Date().toISOString().slice(0, 10) : dateOnly(b?.date),
       notes: str(b?.notes, 4000),
       terms: str(b?.terms, 8000),
       orderRef: str(b?.order_ref, 60),

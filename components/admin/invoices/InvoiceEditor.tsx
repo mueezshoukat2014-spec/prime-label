@@ -221,19 +221,28 @@ export default function InvoiceEditor({ id, orderId, dup, onDone, onBack }: {
         </div>
         <div className="space-y-3">
           {f.items.map((it: any, i: number) => (
-            <div key={i} className="grid gap-2 rounded-xl border border-cream/5 p-3 sm:grid-cols-4 lg:grid-cols-8">
-              <div className="sm:col-span-2 lg:col-span-2"><span className={label}>Product / service *</span><input className={input} value={it.product} onChange={(e) => setItem(i, "product", e.target.value)} placeholder="Custom woven labels" /></div>
-              <div className="sm:col-span-2 lg:col-span-2"><span className={label}>Description</span><input className={input} value={it.description} onChange={(e) => setItem(i, "description", e.target.value)} /></div>
-              <div><span className={label}>Size</span><input className={input} value={it.size} onChange={(e) => setItem(i, "size", e.target.value)} /></div>
-              <div><span className={label}>Shape</span><input className={input} value={it.shape} onChange={(e) => setItem(i, "shape", e.target.value)} /></div>
-              <div><span className={label}>Color</span><input className={input} value={it.color} onChange={(e) => setItem(i, "color", e.target.value)} /></div>
-              <div><span className={label}>Qty</span><input className={input} type="number" min="1" value={it.quantity} onChange={(e) => setItem(i, "quantity", e.target.value)} /></div>
-              <div><span className={label}>Unit</span><input className={input} value={it.unit} onChange={(e) => setItem(i, "unit", e.target.value)} /></div>
-              <div><span className={label}>Total price ({f.currency}) *</span><input className={input} type="number" min="0" step="0.01" value={it.line_total === "" || it.line_total == null ? String(Math.max(0, (Number(it.quantity) || 0) * (Number(it.unit_price) || 0) - (Number(it.discount) || 0))) : it.line_total} onChange={(e) => setItem(i, "line_total", e.target.value)} placeholder="Line total" /></div>
-              <div className="flex items-end"><span className="text-[12px] text-cream-muted">Unit price (auto):<br /><b className="text-cream">{(Number(it.quantity) || 0) > 0 ? `${f.currency} ${money(lineTotalOf(it) / (Number(it.quantity) || 1))}` : "—"}</b></span></div>
-              <div className="flex items-end justify-between gap-2 lg:col-span-2">
-                <span className="text-[12px] text-cream-muted">Line total:<br /><b className="text-cream">{f.currency} {money(lineTotalOf(it))}</b></span>
-                <button className="text-[11px] text-red-300" onClick={() => set("items", f.items.filter((_: any, j: number) => j !== i))} disabled={f.items.length === 1}>✕ Remove</button>
+            <div key={i} className="rounded-xl border border-cream/10 bg-ink/20 p-3 sm:p-4">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="rounded-full border border-champagne/30 bg-champagne/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide2 text-champagne">Item {i + 1}</span>
+                <button type="button" className="text-[11px] text-red-300 disabled:opacity-40" onClick={() => set("items", f.items.filter((_: any, j: number) => j !== i))} disabled={f.items.length === 1}>✕ Remove</button>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div><span className={label}>Product / service *</span><input className={input} value={it.product} onChange={(e) => setItem(i, "product", e.target.value)} placeholder="Custom woven labels" /></div>
+                <div><span className={label}>Description</span><input className={input} value={it.description} onChange={(e) => setItem(i, "description", e.target.value)} placeholder="Damask weave, logo both sides" /></div>
+              </div>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                <div><span className={label}>Size</span><input className={input} value={it.size} onChange={(e) => setItem(i, "size", e.target.value)} placeholder="15×50 mm" /></div>
+                <div><span className={label}>Shape</span><input className={input} value={it.shape} onChange={(e) => setItem(i, "shape", e.target.value)} placeholder="End fold" /></div>
+                <div><span className={label}>Color</span><input className={input} value={it.color} onChange={(e) => setItem(i, "color", e.target.value)} placeholder="Champagne" /></div>
+              </div>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                <div><span className={label}>Qty</span><input className={input} type="number" min="1" value={it.quantity} onChange={(e) => setItem(i, "quantity", e.target.value)} /></div>
+                <div><span className={label}>Unit</span><input className={input} value={it.unit} onChange={(e) => setItem(i, "unit", e.target.value)} /></div>
+                <div><span className={label}>Total price ({f.currency}) *</span><input className={input} type="number" min="0" step="0.01" value={it.line_total === "" || it.line_total == null ? String(Math.max(0, (Number(it.quantity) || 0) * (Number(it.unit_price) || 0) - (Number(it.discount) || 0))) : it.line_total} onChange={(e) => setItem(i, "line_total", e.target.value)} placeholder="Line total" /></div>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-champagne/20 bg-champagne/5 px-3 py-2 text-[12px]">
+                <span className="text-cream-muted">Unit price (auto): <b className="text-cream">{(Number(it.quantity) || 0) > 0 ? `${f.currency} ${money(lineTotalOf(it) / (Number(it.quantity) || 1))}` : "—"}</b></span>
+                <span className="text-cream-muted">Line total: <b className="text-champagne">{f.currency} {money(lineTotalOf(it))}</b></span>
               </div>
             </div>
           ))}

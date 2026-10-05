@@ -143,6 +143,34 @@ export default async function ProductPage({ params }: { params: { slug: string }
             </nav>
           </Reveal>
 
+          {/* quick product switcher — browse other products without going back */}
+          {(allProducts as any[]).length > 1 && (
+            <Reveal>
+              <div className="-mx-4 mb-10 px-4 sm:mx-0 sm:px-0">
+                <div className="flex snap-x gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {(allProducts as any[]).map((p) => {
+                    const active = p.slug === product.slug;
+                    return (
+                      <Link
+                        key={p.slug}
+                        href={`/products/${p.slug}`}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex shrink-0 snap-start items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-4 text-[12.5px] transition-all duration-300 ${
+                          active
+                            ? "border-champagne bg-champagne/15 text-champagne shadow-glow-sm"
+                            : "border-line text-cream-muted hover:border-champagne/50 hover:text-cream"
+                        }`}
+                      >
+                        <img src={p.image} alt="" className="h-7 w-7 rounded-full object-cover" />
+                        {p.title}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            </Reveal>
+          )}
+
           <ProductPdp product={product} content={content} />
 
           {/* other products */}

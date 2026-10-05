@@ -28,8 +28,27 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
 
   const print = () => {
     const w = window.open("", "_blank");
-    if (w) { w.document.write(printInvoiceHtml({ ...d, business: { name: "Prime Labels International", phone: "+92 324 4999224", email: "Primelabelsintl@gmail.com", website: "primelabelsintl.com" } })); w.document.close(); }
+    if (!w) return;
+    w.document.write(printInvoiceHtml({ ...d, business: { name: "Prime Labels International", phone: "+92 324 4999224", email: "Primelabelsintl@gmail.com", website: "primelabelsintl.com" } }));
+    w.document.close();
+    // The browser's print footer shows the printed document's URL. The popup
+    // starts as about:blank (same-origin), so rewrite it to the site root —
+    // the footer then reads primelabelsintl.com instead of …/admin.
+    try { w.history.replaceState(null, "", "/"); } catch { /* older browsers */ }
   };
+
+  // Same trick when printing straight from the browser menu on /admin.
+  useEffect(() => {
+    let prev = "";
+    const before = () => {
+      prev = window.location.pathname + window.location.search;
+      if (prev !== "/") { try { window.history.replaceState(null, "", "/"); } catch {} }
+    };
+    const after = () => { if (prev && prev !== "/") { try { window.history.replaceState(null, "", prev); } catch {} } };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => { window.removeEventListener("beforeprint", before); window.removeEventListener("afterprint", after); };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -49,8 +68,10 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
       </div>
       {toast && <div className="rounded-xl border border-champagne/30 bg-champagne/10 px-4 py-2 text-[12px] text-champagne">{toast}</div>}
 
-      {/* A4 sheet */}
-      <div className="mx-auto max-w-[840px] bg-white p-10 text-[#141416] shadow-2xl" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+      {/* A4 sheet — swipe horizontally on phones instead of crushing the layout */}
+      <p className="text-center text-[11px] text-cream-dim sm:hidden">← swipe left / right to view the full invoice →</p>
+      <div className="overflow-x-auto pb-2">
+      <div className="mx-auto min-w-[720px] max-w-[840px] bg-white p-10 text-[#141416] shadow-2xl" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
         <div className="flex items-start justify-between border-b-2 pb-4" style={{ borderColor: "#9e8046" }}>
           <div>
             <img src={LOGO_DATA_URI} alt="Prime Labels International" style={{ height: 46, width: 46, objectFit: "contain", marginBottom: 6 }} />
@@ -132,6 +153,7 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
         <div className="mt-8 flex justify-between border-t border-[#ebe7e0] pt-2 text-[9px] text-[#6e6c68]">
           <span>{st.footer || ""}</span><span>primelabelsintl.com</span>
         </div>
+      </div>
       </div>
     </div>
   );

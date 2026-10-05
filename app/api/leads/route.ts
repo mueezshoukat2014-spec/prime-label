@@ -10,6 +10,7 @@ import {
 } from "@/lib/upload-rules";
 import { normalizePhone, parseQuoteProducts, validateQuote } from "@/lib/quote-validation";
 import { sendQuoteAlert } from "@/lib/notify";
+import { sendCapiLead } from "@/lib/meta-capi";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -210,6 +211,11 @@ export async function POST(req: Request) {
       // diagnosable instead of invisible.
       console.error(`[leads] quote alert NOT sent for lead ${rows[0]?.id}: ${alert.reason}`);
     }
+
+    // ---- Meta Conversions API — Qualified Leads CRM upload -----------------
+    // Awaited on purpose (Vercel freezes the fn after the response is sent).
+    // sendCapiLead never throws, so a Meta outage cannot break the lead flow.
+    await sendCapiLead({ leadId: rows[0]?.id ?? "unknown", email: fields.email, phone: fields.phone });
 
     return NextResponse.json({
       ok: true,

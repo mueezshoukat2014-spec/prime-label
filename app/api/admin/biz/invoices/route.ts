@@ -18,7 +18,28 @@ const parseJson = (v: any) => {
   if (typeof v === "string") { try { return JSON.parse(v); } catch { return {}; } }
   return v;
 };
-const norm = (r: any) => ({ ...r, customer_snapshot: parseJson(r.customer_snapshot), design_attachment: parseJson(r.design_attachment) });
+/** Normalise DATE columns to YYYY-MM-DD no matter what the driver returns
+ *  (Neon HTTP returns strings, postgres.js returns Date objects). Keeps date
+ *  inputs, lists and print/PDF views free of ISO timestamps / epoch numbers. */
+const dOnly = (v: any) => {
+  if (v == null || v === "") return v;
+  if (v instanceof Date) {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
+  }
+  const s = String(v);
+  return s.length >= 10 ? s.slice(0, 10) : s;
+};
+
+const norm = (r: any) => ({
+  ...r,
+  date: dOnly(r.date),
+  due_date: dOnly(r.due_date),
+  payment_date: dOnly(r.payment_date),
+  estimated_delivery: dOnly(r.estimated_delivery),
+  customer_snapshot: parseJson(r.customer_snapshot),
+  design_attachment: parseJson(r.design_attachment),
+});
 
 export async function GET(req: Request) {
   if (!(await isAuthed())) return NextResponse.json({ ok: false }, { status: 401 });
@@ -190,7 +211,18 @@ export async function PATCH(req: Request) {
     await sql`UPDATE biz_invoices SET inv_number = ${manualNumPatch} WHERE id = ${cur.id}`;
   }
 
-  const v = validateInvoiceBody({ ...curToBody(cur), ...b });
+  // Partial PATCHes (notes-only, status-only from the manager/preview) carry no
+  // items — fall back to the stored lines so validation still passes.
+  let patchItems = b.items;
+  if (!Array.isArray(patchItems)) {
+    const curItems = await sql`SELECT * FROM biz_invoice_items WHERE invoice_id = ${id} ORDER BY id`;
+    patchItems = curItems.map((it: any) => ({
+      product: it.product, description: it.description, size: it.size, shape: it.shape, color: it.color,
+      quantity: it.quantity, unit: it.unit, unit_price: it.unit_price, discount: it.discount,
+      line_total: String(it.subtotal),
+    }));
+  }
+  const v = validateInvoiceBody({ ...curToBody(cur), ...b, items: patchItems });
   if ("error" in v) return NextResponse.json({ ok: false, error: v.error }, { status: 400 });
 
   await sql`UPDATE biz_invoices SET

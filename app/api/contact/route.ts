@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { sendContactAlert } from "@/lib/notify";
+import { sendCapiLead } from "@/lib/meta-capi";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +39,9 @@ export async function POST(req: Request) {
         `[contact] alert NOT sent for message ${rows[0]?.id}: ${alert.reason}`
       );
     }
+
+    // Meta Conversions API — Qualified Leads CRM upload (awaited; never throws).
+    await sendCapiLead({ leadId: rows[0]?.id ?? "unknown", email, source: "Prime Labels Contact Form" });
 
     return NextResponse.json({ ok: true });
   } catch (e: any) {
