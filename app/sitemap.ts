@@ -45,6 +45,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
+    {
+      url: `${base}/guides/woven-labels-saudi-arabia`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${base}/guides/start-clothing-brand-saudi-arabia`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
   ];
 
   let blogUrls: MetadataRoute.Sitemap = [];

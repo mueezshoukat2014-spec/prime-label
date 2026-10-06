@@ -57,6 +57,10 @@ export const ARABIC_KEYWORDS = [
   "ستيكرات مخصصة",
   "إكسسوارات براند الملابس",
   "ليبل منسوج",
+  "علامات منسوجة السعودية",
+  "ليبلات للعبايات",
+  "تأسيس براند ملابس",
+  "بطاقات شكر للبراندات",
 ] as const;
 
 export const LONG_TAIL_KEYWORDS = [
@@ -78,6 +82,15 @@ export const LONG_TAIL_KEYWORDS = [
   "book cover fold labels",
   "woven labels for small clothing brands",
   "low MOQ woven labels",
+  "woven labels Saudi Arabia supplier",
+  "custom clothing labels Riyadh",
+  "clothing labels Jeddah",
+  "abaya labels and tags",
+  "boutique hang tags Saudi Arabia",
+  "thank you cards for clothing brands",
+  "start a clothing brand in Saudi Arabia",
+  "abaya brand startup packaging",
+  "clothing label supplier with DDP delivery",
   "clothing brand starter kit",
   "fashion brand packaging supplier",
   "woven label cost calculator",

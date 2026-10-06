@@ -208,6 +208,18 @@ export default async function LabelFoldsSizesGuide() {
               >
                 Get a quote
               </Link>
+              <Link
+                href="/guides/woven-labels-saudi-arabia"
+                className="rounded-lg border border-line px-4 py-2.5 text-[13px] text-cream transition-colors hover:border-champagne/40"
+              >
+                Woven labels Saudi Arabia guide
+              </Link>
+              <Link
+                href="/guides/start-clothing-brand-saudi-arabia"
+                className="rounded-lg border border-line px-4 py-2.5 text-[13px] text-cream transition-colors hover:border-champagne/40"
+              >
+                Start a clothing brand (KSA)
+              </Link>
             </div>
           </Reveal>
         </div>

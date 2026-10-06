@@ -485,10 +485,9 @@ export default function QuoteForm({
       void celebrate();
 
       setTimeout(() => {
-        const win = window.open(link, "_blank", "noopener,noreferrer");
-        if (!win) {
-          toast.toast("Tap “Continue on WhatsApp” to send us your details.", "info");
-        }
+        // Straight redirect to WhatsApp (top-level navigation is never
+        // popup-blocked, unlike window.open) — as requested.
+        window.location.href = link;
       }, 900);
     } catch (e: unknown) {
       const msg =

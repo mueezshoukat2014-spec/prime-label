@@ -29,6 +29,8 @@ const COLS = [
       { label: "المدونة بالعربي", href: "/ar/blog" },
       { label: "Cost Calculator", href: "/calculator" },
       { label: "Label Folds & Sizes Guide", href: "/guides/label-folds-sizes" },
+      { label: "Woven Labels Saudi Arabia", href: "/guides/woven-labels-saudi-arabia" },
+      { label: "Start a Clothing Brand (KSA)", href: "/guides/start-clothing-brand-saudi-arabia" },
       { label: "GCC Custom Labels", href: "/gcc-custom-labels" },
     ],
   },

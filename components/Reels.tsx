@@ -177,7 +177,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 controls={false}
                 disablePictureInPicture
                 controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
