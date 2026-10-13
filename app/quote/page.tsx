@@ -98,6 +98,11 @@ export default async function QuotePage({
                   your quantity and your timeline.
                 </p>
               </Reveal>
+              <Reveal delay={0.25}>
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-champagne/30 bg-champagne/10 px-4 py-2 text-[12px] text-champagne">
+                  For clothing brands, boutiques &amp; abaya houses — MOQ 100 pcs per design
+                </p>
+              </Reveal>
 
               <Reveal delay={0.3}>
                 <div className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line">

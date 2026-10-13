@@ -33,17 +33,42 @@ function canTrack() {
   return typeof window !== "undefined" && typeof window.gtag === "function";
 }
 
-/** Fire when a lead form (quote / quick quote / designer) is successfully submitted. */
-export function trackAdsLead(source?: string): void {
-  if (!canTrack()) return;
+/**
+ * Max wait for Google to confirm the conversion hit before callers may
+ * navigate away (matches gtag's own default event_timeout). Only reached
+ * when gtag.js is blocked/slow — normally the callback lands in a few
+ * hundred ms.
+ */
+const ADS_CALLBACK_TIMEOUT_MS = 2000;
+
+/**
+ * Fire when a lead form (quote / quick quote / designer) is successfully
+ * submitted. Resolves once gtag confirms the conversion hit was dispatched
+ * (event_callback — Google's own pattern for "convert, then navigate"), or
+ * after ADS_CALLBACK_TIMEOUT_MS as a fallback. Callers that leave the page
+ * right after (the quote form's WhatsApp redirect) must await this —
+ * navigating away earlier can cancel the conversion request mid-flight.
+ */
+export function trackAdsLead(source?: string): Promise<void> {
+  if (!canTrack()) return Promise.resolve();
   window.gtag?.("event", "generate_lead", { event_category: "lead", event_label: source || "form" });
-  if (LEAD_CONVERSION_LABEL) {
+  if (!LEAD_CONVERSION_LABEL) return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    window.setTimeout(finish, ADS_CALLBACK_TIMEOUT_MS);
     window.gtag?.("event", "conversion", {
       send_to: `${GOOGLE_ADS_ID}/${LEAD_CONVERSION_LABEL}`,
       value: 1.0,
       currency: "PKR",
+      event_callback: finish,
+      event_timeout: ADS_CALLBACK_TIMEOUT_MS,
     });
-  }
+  });
 }
 
 /** Fire on WhatsApp click — the primary contact channel for this market. */

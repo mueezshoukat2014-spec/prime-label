@@ -83,6 +83,9 @@ export default async function ArQuotePage({
                   كل طلب مخصص، لذلك كل تسعيرة مخصصة. شاركنا التفاصيل وسنرسل لك سعراً
                   يناسب براندك وكميتك وجدولك الزمني.
                 </p>
+                <p className="arabic-text mt-4 inline-flex items-center gap-2 rounded-full border border-champagne/30 bg-champagne/10 px-4 py-2 text-[12px] text-champagne">
+                  مخصص لبراندات الملابس والبوتيكات ومشاغل العبايات — الحد الأدنى 100 قطعة لكل تصميم
+                </p>
               </Reveal>
 
               <Reveal delay={0.1}>

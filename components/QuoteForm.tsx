@@ -459,7 +459,7 @@ export default function QuoteForm({
 
       // Fire Meta Lead only after the API confirms the lead was saved.
       trackLead(productForSubmission);
-      trackAdsLead("quote-form");
+      const adsLeadSent = trackAdsLead("quote-form");
       trackEvent("lead_submit", productForSubmission);
 
       const uploaded = (data.artworkUrl as string | null) ?? null;
@@ -484,11 +484,17 @@ export default function QuoteForm({
       toast.success("Quote request sent. Opening WhatsApp…");
       void celebrate();
 
-      setTimeout(() => {
-        // Straight redirect to WhatsApp (top-level navigation is never
-        // popup-blocked, unlike window.open) — as requested.
+      // Straight redirect to WhatsApp (top-level navigation is never
+      // popup-blocked, unlike window.open) — as requested. Wait for BOTH the
+      // 900ms success moment AND Google Ads confirming the conversion hit
+      // (capped at 2s inside trackAdsLead): leaving the page earlier can
+      // cancel the request, so the lead never reaches Google Ads.
+      void Promise.all([
+        adsLeadSent,
+        new Promise<void>((r) => setTimeout(r, 900)),
+      ]).then(() => {
         window.location.href = link;
-      }, 900);
+      });
     } catch (e: unknown) {
       const msg =
         e instanceof Error
