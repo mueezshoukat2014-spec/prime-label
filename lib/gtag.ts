@@ -17,8 +17,14 @@
 
 export const GOOGLE_ADS_ID = "AW-18430949817";
 
-/** Conversion label for "Submit lead form" — from Google Ads conversion action. */
-const LEAD_CONVERSION_LABEL = "k0f6CMul004cELnzx9RE";
+/**
+ * Conversion label for "Submit lead form" — from Google Ads conversion action.
+ * Always COPY-PASTE from the Google Ads event snippet, never retype: labels
+ * mix letter O and digit 0 (the 10th character here is a capital O — an
+ * earlier retyped "0" silently sent every conversion to a label that did
+ * not exist, leaving the action "Unverified").
+ */
+const LEAD_CONVERSION_LABEL = "k0f6CMul0O4cELnzx9RE";
 
 /** Conversion label for WhatsApp click (optional secondary action). */
 const WHATSAPP_CONVERSION_LABEL = "";

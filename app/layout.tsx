@@ -219,7 +219,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             during the critical path only wasted early-connection budget. */}
         {/* Google Ads tag (AW-18430949817) — deferred like the Meta Pixel:
             events queue immediately, the network script loads on first
-            interaction or ~5s after window load, so LCP/TBT are unaffected. */}
+            interaction or ~5s after window load, so LCP/TBT are unaffected.
+            EXCEPTION — ad clicks (gclid/gbraid/wbraid in the URL) load it
+            immediately: gtag reads the click ID from the URL when it runs,
+            and a fast tap on a CTA client-side-navigates away (stripping the
+            query string) before a deferred script would execute, which
+            would lose the click → conversion attribution. */}
         <script
           id="google-ads-base"
           dangerouslySetInnerHTML={{
@@ -233,6 +238,7 @@ gtag('config','AW-18430949817',{send_page_view:true});
 var t=document.createElement('script');t.async=true;
 t.src='https://www.googletagmanager.com/gtag/js?id=AW-18430949817';
 var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(t,s)};
+if(/[?&](gclid|gbraid|wbraid)=/.test(location.search)){go();return}
 if(document.readyState==='complete'){setTimeout(go,5000)}
 else{window.addEventListener('load',function(){setTimeout(go,5000)},{once:true})}
 ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
