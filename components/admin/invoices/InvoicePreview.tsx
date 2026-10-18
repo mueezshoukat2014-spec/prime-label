@@ -20,6 +20,24 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
     fetch(`/api/admin/biz/invoices?id=${id}`).then((r) => r.json()).then((j) => j?.ok && setD(j)).catch(() => {});
   }, [id]);
 
+  // Same trick as print() below when printing straight from the browser menu
+  // on /admin. NOTE: every hook must run BEFORE the `if (!d) return` below —
+  // a hook placed after it runs only once data has loaded, so React sees
+  // more hooks than on the first render and crashes the whole page
+  // (minified React error #310 → "Application error: a client-side
+  // exception has occurred").
+  useEffect(() => {
+    let prev = "";
+    const before = () => {
+      prev = window.location.pathname + window.location.search;
+      if (prev !== "/") { try { window.history.replaceState(null, "", "/"); } catch {} }
+    };
+    const after = () => { if (prev && prev !== "/") { try { window.history.replaceState(null, "", prev); } catch {} } };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => { window.removeEventListener("beforeprint", before); window.removeEventListener("afterprint", after); };
+  }, []);
+
   if (!d) return <p className="text-[12.5px] text-cream-muted">Loading invoice…</p>;
   const inv = d.invoice; const st = d.settings || {}; const snap = inv.customer_snapshot || {};
   const ccy = inv.currency || "PKR";
@@ -36,19 +54,6 @@ export default function InvoicePreview({ id, onBack, onEdit, onDuplicate }: {
     // the footer then reads primelabelsintl.com instead of …/admin.
     try { w.history.replaceState(null, "", "/"); } catch { /* older browsers */ }
   };
-
-  // Same trick when printing straight from the browser menu on /admin.
-  useEffect(() => {
-    let prev = "";
-    const before = () => {
-      prev = window.location.pathname + window.location.search;
-      if (prev !== "/") { try { window.history.replaceState(null, "", "/"); } catch {} }
-    };
-    const after = () => { if (prev && prev !== "/") { try { window.history.replaceState(null, "", prev); } catch {} } };
-    window.addEventListener("beforeprint", before);
-    window.addEventListener("afterprint", after);
-    return () => { window.removeEventListener("beforeprint", before); window.removeEventListener("afterprint", after); };
-  }, []);
 
   return (
     <div className="space-y-4">

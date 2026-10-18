@@ -20,15 +20,19 @@ export default function SuggestionBox() {
   const [message, setMessage] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
-  // The owner doesn't need a feedback float inside their own dashboard.
-  if (pathname?.startsWith("/admin")) return null;
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+
+  // The owner doesn't need a feedback float inside their own dashboard.
+  // Must stay AFTER every hook: this component lives in the root layout and
+  // survives client-side navigation, so returning before a hook would change
+  // the hook count when moving between /admin and public pages (React
+  // errors #300/#310 → full-page "Application error").
+  if (pathname?.startsWith("/admin")) return null;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
