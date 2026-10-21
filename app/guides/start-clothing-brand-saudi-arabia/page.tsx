@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 const URL = `${SITE_URL}/guides/start-clothing-brand-saudi-arabia`;
 
 export const metadata: Metadata = {
-  title: "How to Start a Clothing Brand in Saudi Arabia — Labels & Packaging Checklist",
+  title: "Start a Clothing Brand in Saudi Arabia",
   description:
-    "A practical checklist for launching an abaya, boutique or streetwear brand in Saudi Arabia: woven labels, hang tags, thank-you cards and packaging — from 100 pieces, with a free 24h proof and DDP delivery to KSA.",
+    "Starting a clothing brand in Saudi Arabia? A practical checklist for labels, hang tags and packaging — MOQs, Arabic text, proofs and DDP delivery.",
   alternates: {
     canonical: URL,
     languages: { en: URL, "x-default": URL },

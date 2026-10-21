@@ -9,9 +9,9 @@ import { parseQuoteProducts } from "@/lib/quote-validation";
 import { normalizeWaLink, waProductLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "Request a Quote for Custom Labels, Hang Tags & Packaging",
+  title: "Get a Quote — Custom Labels & Hang Tags",
   description:
-    "Get a tailored quote for custom woven labels, satin labels, hang tags, stickers and brand packaging for Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide shipping.",
+    "Get a tailored quote for custom woven labels, satin labels, hang tags, stickers and brand packaging — free digital proof in 24h, DDP delivery worldwide.",
   keywords: ["custom labels quote", "woven labels Saudi Arabia", "hang tags UAE", "brand packaging GCC", "clothing labels quote"],
   alternates: {
     canonical: "https://primelabelsintl.com/quote",

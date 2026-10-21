@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `Request a Sample Kit — Feel the Quality First`,
   description:
-    "See and feel our label quality before you order: photo samples of your design within 24 hours, physical swatch options for woven labels, satin labels, hang tags and packaging.",
+    "Feel our label quality before you order: photo samples of your design within 24 hours and swatch options for woven labels, satin labels and hang tags.",
   alternates: {
     canonical: `${SITE_URL}/samples`,
     languages: { en: `${SITE_URL}/samples`, "x-default": `${SITE_URL}/samples` },

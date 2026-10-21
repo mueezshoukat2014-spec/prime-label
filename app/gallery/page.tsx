@@ -6,9 +6,9 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent, getGallery, getCategoryNames } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Gallery of Custom Labels, Hang Tags & Packaging",
+  title: "Gallery of Custom Labels & Hang Tags",
   description:
-    "View premium custom woven labels, hang tags, stickers, packaging, patches and garment branding accessories made for fashion brands across Saudi Arabia, UAE, GCC and worldwide.",
+    "Custom woven labels, hang tags, stickers, packaging and patches we’ve made for fashion brands across Saudi Arabia, the UAE, the GCC and worldwide.",
   keywords: ["custom labels gallery", "woven labels examples", "hang tags portfolio", "packaging for clothing brands", "GCC apparel branding"],
   alternates: {
     canonical: "https://primelabelsintl.com/gallery",

@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 const URL = `${SITE_URL}/guides/woven-labels-saudi-arabia`;
 
 export const metadata: Metadata = {
-  title: "Woven Labels Saudi Arabia — Custom Clothing Labels Supplier for KSA Brands",
+  title: "Woven Labels Saudi Arabia — Supplier Guide",
   description:
-    "Custom woven labels for Saudi clothing brands: damask weave, low MOQ from 100, free digital proof in 24 hours and DDP delivery to Riyadh, Jeddah & all KSA in 3–5 days. Arabic & English support on WhatsApp.",
+    "Custom woven labels for Saudi clothing brands: damask weave, MOQ from 100, free digital proof in 24h and DDP delivery to Riyadh, Jeddah & all KSA.",
   alternates: {
     canonical: URL,
     languages: { en: URL, "x-default": URL },

@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `About Us — Custom Label & Branding Studio`,
   description:
-    "Prime Labels International is a custom garment branding studio producing woven labels, satin labels, hang tags and packaging for fashion brands across the GCC, UK, USA and worldwide.",
+    "Prime Labels International is a custom garment branding studio making woven labels, satin labels, hang tags and packaging for fashion brands worldwide.",
   alternates: {
     canonical: `${SITE_URL}/about`,
     languages: { en: `${SITE_URL}/about`, "x-default": `${SITE_URL}/about` },

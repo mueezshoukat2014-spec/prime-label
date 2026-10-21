@@ -8,6 +8,7 @@ import { getProducts, getSiteContent } from "@/lib/data";
 import { getArPdpContent, AR_PDP } from "@/lib/pdp-content-ar";
 import { normalizeWaLink } from "@/lib/whatsapp";
 import { SITE_URL, BRAND_NAME, DEMAND_MARKETS } from "@/lib/seo";
+import { fitTitle, fitDescription } from "@/lib/seo-meta";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +27,11 @@ export async function generateMetadata({
   if (!product || !ar) return { title: "الصفحة غير موجودة" };
   const url = `${SITE_URL}/ar/products/${product.slug}`;
   const enUrl = `${SITE_URL}/products/${product.slug}`;
-  const title = `${ar.h1} | أقل كمية ${product.moq ?? 100} قطعة`;
-  const description = `${ar.intro.slice(0, 120)} بروفة مجانية خلال 24 ساعة وشحن سريع DDP للسعودية والخليج.`;
+  const fullTitle = `${ar.h1} | أقل كمية ${product.moq ?? 100} قطعة`;
+  const title = fullTitle.length + 15 <= 60 ? fullTitle : ar.h1;
+  const description = `${fitDescription(ar.intro, 100)} بروفة مجانية خلال 24 ساعة وشحن DDP للسعودية والخليج.`;
   return {
-    title,
+    title: fitTitle(title),
     description,
     alternates: {
       canonical: url,

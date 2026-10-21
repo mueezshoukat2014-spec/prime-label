@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `Label & Branding Guides for Clothing Brands`,
   description:
-    "Practical guides on woven labels, satin care labels, hang tags, label fold types, MOQs and garment branding — written for fashion founders in the GCC, UK, USA and worldwide.",
+    "Practical guides on woven labels, care labels, hang tags, label folds, MOQs and garment branding — written for fashion founders worldwide.",
   alternates: {
     canonical: `${SITE_URL}/blog`,
     languages: { en: `${SITE_URL}/blog`, "x-default": `${SITE_URL}/blog` },

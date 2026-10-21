@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `FAQs — Custom Labels, MOQs, Proofs & Delivery`,
   description:
-    "Answers to the most common questions about custom woven labels, satin labels, hang tags and packaging — minimum orders, digital proofs, Pantone matching, production times and DDP delivery.",
+    "Answers about custom woven labels, satin labels, hang tags and packaging — minimum orders, free digital proofs, Pantone matching, lead times and DDP.",
   alternates: {
     canonical: `${SITE_URL}/faq`,
     languages: { en: `${SITE_URL}/faq`, "x-default": `${SITE_URL}/faq` },

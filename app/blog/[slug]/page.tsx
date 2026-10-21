@@ -8,6 +8,7 @@ import { Markdown } from "@/lib/markdown";
 import { getSiteContent } from "@/lib/data";
 import { getPost, getPublishedPosts, readingTime } from "@/lib/blog";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
+import { fitTitle } from "@/lib/seo-meta";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export async function generateMetadata({
   if (!post) return { title: "Article not found" };
   const url = `${SITE_URL}/blog/${post.slug}`;
   return {
-    title: `${post.title} — ${BRAND_NAME}`,
+    title: fitTitle(post.title),
     description: post.excerpt,
     alternates: { canonical: url, languages: { en: url, "x-default": url } },
     openGraph: {

@@ -8,9 +8,9 @@ import { getGallery, getSiteContent } from "@/lib/data";
 import { GCC_COUNTRIES, SEO_PRODUCTS, SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Custom Woven Labels & Packaging for Saudi Arabia, UAE & GCC",
+  title: "Custom Woven Labels for Saudi, UAE & GCC",
   description:
-    "Premium custom woven labels, satin labels, hang tags, stickers and clothing brand packaging for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
+    "Custom woven labels, satin labels, hang tags and brand packaging for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain and Oman. DDP delivery.",
   alternates: {
     canonical: `${SITE_URL}/gcc-custom-labels`,
     languages: { en: `${SITE_URL}/gcc-custom-labels`, "x-default": `${SITE_URL}/gcc-custom-labels` },

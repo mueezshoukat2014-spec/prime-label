@@ -10,9 +10,9 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Custom Labels, Hang Tags & Brand Packaging — All Products",
+  title: "Custom Clothing Labels, Tags & Packaging",
   description:
-    "Browse every garment branding product we produce: custom woven labels, satin labels, hang tags, stickers, packaging sleeves, zipper bags, woven patches, steel logo tags, satin care labels, size labels and hem tags. Low MOQs, 24h digital proofs, DDP delivery worldwide.",
+    "Every garment branding product we make: woven & satin labels, care and size labels, hang tags, stickers, patches, zipper bags and packaging. Low MOQs.",
   alternates: { canonical: `${SITE_URL}/products` },
   openGraph: {
     type: "website",

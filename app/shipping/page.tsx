@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `Shipping & Delivery — DDP Worldwide`,
   description:
-    "Express DDP delivery for custom labels and packaging: 3–5 days to Saudi Arabia & UAE, 3–6 days across the GCC, 5–8 days to UK & USA. Duties prepaid — nothing to pay at your door.",
+    "Express DDP delivery for custom labels: 3–5 days to Saudi Arabia & UAE, 3–6 days across the GCC, 5–8 days to the UK & USA. No duties to pay at the door.",
   alternates: {
     canonical: `${SITE_URL}/shipping`,
     languages: { en: `${SITE_URL}/shipping`, "x-default": `${SITE_URL}/shipping` },

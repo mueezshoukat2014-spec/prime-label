@@ -23,6 +23,14 @@ export type Market = {
   /** Who we serve there — persona bullets. */
   personas: string[];
   faqs: MarketFaq[];
+  /** Optional: the labelling law summary for this country (with its source). */
+  labelRules?: { title: string; points: string[]; source: { name: string; url: string } };
+  /** Optional overrides for domestic markets (no customs / DDP wording). */
+  shippingHeading?: string;
+  shippingCopy?: string;
+  deliveryLabel?: string;
+  /** Closing CTA secondary link (defaults to the GCC guide). */
+  ctaLink?: { href: string; label: string };
 };
 
 export const MARKETS: Market[] = [
@@ -30,14 +38,15 @@ export const MARKETS: Market[] = [
     slug: "custom-labels-saudi-arabia",
     country: "Saudi Arabia",
     flag: "🇸🇦",
-    metaTitle: "Custom Clothing Labels Saudi Arabia | Woven Labels Riyadh & Jeddah",
+    metaTitle: "Clothing Labels & Hang Tags Saudi Arabia",
     metaDescription:
-      "Premium custom woven labels, satin labels, hang tags & brand packaging for Saudi fashion brands. Low MOQ, free 24h digital proof, DDP express delivery to Riyadh, Jeddah & Dammam.",
+      "Custom woven labels, satin labels, hang tags and brand packaging for Saudi fashion brands. MOQ from 100, free 24h proof, DDP to Riyadh, Jeddah & Dammam.",
     h1: "Custom Clothing Labels & Branding for Saudi Arabia",
     intro:
       "High-density woven labels, soft satin labels for abayas, luxury hang tags and brand packaging accessories — produced for Saudi fashion houses and delivered DDP to your door in Riyadh, Jeddah or Dammam with no surprise customs.",
     cities: ["Riyadh", "Jeddah", "Dammam", "Makkah", "Madinah"],
     delivery: "3–5 days express (DHL / Aramex), DDP — customs cleared & duties paid",
+    labelRules: {"title": "What Saudi labels must show", "points": ["Arabic is mandatory on the label — another language may be added alongside it", "Fibre composition with mass percentages, plus the size or dimensions", "Country of origin (“Made in …”) and care instructions as symbols or text", "The supplier’s name and commercial registration on the outer packaging"], "source": {"name": "SGS — Saudi Technical Regulation for Textile Products (2024 edition)", "url": "https://www.sgs.com/en/news/2024/05/safeguards-7024-saudi-arabia-updates-technical-regulations-for-textile-products"}},
     keywords: [
       "clothing labels Saudi Arabia",
       "woven labels Riyadh",
@@ -75,9 +84,9 @@ export const MARKETS: Market[] = [
     slug: "custom-labels-uae",
     country: "United Arab Emirates",
     flag: "🇦🇪",
-    metaTitle: "Custom Clothing Labels UAE | Woven Labels & Hang Tags Dubai",
+    metaTitle: "Clothing Labels & Hang Tags UAE — Dubai",
     metaDescription:
-      "Custom woven labels, satin labels, luxury hang tags & packaging accessories for UAE fashion brands. Low MOQ, free 24h proof, DDP express delivery to Dubai, Abu Dhabi & Sharjah.",
+      "Custom woven labels, satin labels, hang tags and packaging for UAE fashion brands. MOQ from 100, free 24h proof, DDP to Dubai, Abu Dhabi & Sharjah.",
     h1: "Custom Clothing Labels & Branding for the UAE",
     intro:
       "From Dubai streetwear drops to Abu Dhabi boutiques — high-density woven labels, satin labels, hang tags and packaging accessories delivered DDP across the Emirates in days, not weeks.",
@@ -119,14 +128,16 @@ export const MARKETS: Market[] = [
     slug: "custom-clothing-labels-uk",
     country: "United Kingdom",
     flag: "🇬🇧",
-    metaTitle: "Custom Clothing Labels UK | Low MOQ Woven Labels London",
+    metaTitle: "Custom Woven Clothing Labels UK — MOQ 100",
     metaDescription:
-      "Custom woven labels, satin labels & hang tags for UK clothing brands. Low MOQ from 100 units, free 24h digital proof, express DDP delivery to London, Manchester & UK-wide.",
+      "Custom woven labels, hem tags, patches and hang tags for UK clothing brands. MOQ from 100, free 24h digital proof, DDP delivery — VAT & duties handled.",
     h1: "Custom Clothing Labels for UK Brands",
     intro:
       "Independent UK labels deserve big-brand finishing. High-density damask woven labels, satin care labels and luxury hang tags — low MOQ from 100 units, delivered DDP to London, Manchester, Birmingham and UK-wide.",
     cities: ["London", "Manchester", "Birmingham", "Leeds", "Glasgow"],
     delivery: "5–8 days express (DHL / FedEx), DDP — VAT & duties handled",
+    labelRules: {"title": "What UK labels must show", "points": ["Fibre composition using approved fibre names and percentages — required for textiles sold in the UK", "Care labels are voluntary in the UK, but retailers and buyers expect them (ISO 3758 symbols are the norm)", "Selling into the EU too? Its General Product Safety Regulation asks for the manufacturer’s name, postal and email address on the product or its packaging"], "source": {"name": "The Textile Products (Labelling and Fibre Composition) Regulations 2012", "url": "https://www.legislation.gov.uk/uksi/2012/1102"}},
+    ctaLink: {"href": "/guides/clothing-label-requirements", "label": "Clothing label requirements by country →"},
     keywords: [
       "custom clothing labels UK",
       "woven labels London",
@@ -162,7 +173,7 @@ export const MARKETS: Market[] = [
     slug: "custom-clothing-labels-usa",
     country: "United States",
     flag: "🇺🇸",
-    metaTitle: "Custom Clothing Labels USA | Woven Labels for Streetwear Brands",
+    metaTitle: "Custom Woven Clothing Labels USA — MOQ 100",
     metaDescription:
       "Custom woven labels, hem tags, patches & hang tags for US clothing brands. Low MOQ from 100 units, free 24h digital proof, express DDP delivery across the USA.",
     h1: "Custom Clothing Labels for US Brands",
@@ -170,6 +181,8 @@ export const MARKETS: Market[] = [
       "From LA streetwear to NYC boutiques — damask woven labels, hem tags, woven patches and luxury hang tags with the density and softness your customers can feel. Low MOQ, express DDP shipping across all 50 states.",
     cities: ["Los Angeles", "New York", "Miami", "Chicago", "Houston"],
     delivery: "5–8 days express (DHL / FedEx), DDP — customs & duties handled",
+    labelRules: {"title": "What US labels must show", "points": ["Fibre content: generic fibre names with percentages by weight, in descending order", "Country of origin — on garments with a neck, inside the centre of the neck", "Who is responsible: your company name or an FTC-issued RN (RNs go to US businesses only)", "Care instructions on a permanent label, under the FTC Care Labeling Rule"], "source": {"name": "FTC — Threading Your Way Through the Labeling Requirements", "url": "https://www.ftc.gov/business-guidance/resources/threading-your-way-through-labeling-requirements-under-textile-wool-acts"}},
+    ctaLink: {"href": "/guides/clothing-label-requirements", "label": "Clothing label requirements by country →"},
     keywords: [
       "custom clothing labels USA",
       "woven labels for streetwear",
@@ -205,9 +218,9 @@ export const MARKETS: Market[] = [
     slug: "custom-labels-qatar",
     country: "Qatar",
     flag: "🇶🇦",
-    metaTitle: "Custom Clothing Labels Qatar | Woven Labels & Hang Tags Doha",
+    metaTitle: "Clothing Labels & Hang Tags Qatar — Doha",
     metaDescription:
-      "Premium custom woven labels, satin labels, hang tags & brand packaging for Qatari fashion brands. Low MOQ, free 24h digital proof, DDP express delivery to Doha & Qatar-wide.",
+      "Custom woven labels, satin labels, hang tags and packaging for Qatari fashion brands. MOQ from 100, free 24h proof, DDP delivery to Doha in 3–6 days.",
     h1: "Custom Clothing Labels & Branding for Qatar",
     intro:
       "From Doha boutiques to modest-wear houses — high-density woven labels, soft satin labels, luxury hang tags and packaging accessories delivered DDP across Qatar with duties prepaid and no customs surprises.",
@@ -250,9 +263,9 @@ export const MARKETS: Market[] = [
     slug: "custom-labels-kuwait",
     country: "Kuwait",
     flag: "🇰🇼",
-    metaTitle: "Custom Clothing Labels Kuwait | Woven Labels & Hang Tags Kuwait City",
+    metaTitle: "Clothing Labels & Hang Tags Kuwait",
     metaDescription:
-      "Custom woven labels, satin labels, hang tags & packaging accessories for Kuwaiti fashion brands. Low MOQ from 100 units, free 24h proof, DDP express delivery to Kuwait City.",
+      "Custom woven labels, satin labels, hang tags and packaging for Kuwaiti fashion brands. MOQ from 100, free 24h proof, DDP to Kuwait City in 3–6 days.",
     h1: "Custom Clothing Labels & Branding for Kuwait",
     intro:
       "Kuwaiti fashion brands get the same export-grade branding as global labels — damask woven labels, satin labels, foil hang tags and packaging accessories, delivered DDP to Kuwait City with duties prepaid.",
@@ -289,6 +302,77 @@ export const MARKETS: Market[] = [
         q: "How do I get a price in Kuwait?",
         a: "Send your design and quantity through the quote form or WhatsApp — a tailored DDP quote for Kuwait lands within 12–24 hours with a free digital proof.",
       },
+    ],
+  },
+  {
+    slug: "custom-clothing-labels-pakistan",
+    country: "Pakistan",
+    flag: "🇵🇰",
+    metaTitle: "Clothing Labels & Brand Tags in Pakistan",
+    metaDescription:
+      "Custom woven labels, brand tags, hang tags and packaging for Pakistani clothing brands. MOQ from 100, free 24h proof, PKR invoicing, nationwide delivery.",
+    h1: "Custom Clothing Labels & Brand Tags for Pakistani Brands",
+    intro: "Damask woven labels, printed care labels, hang tags and packaging for clothing brands across Pakistan — from Lahore and Karachi to Islamabad and Faisalabad. Order on WhatsApp, approve a free digital proof within 24 hours, and get invoiced in PKR.",
+    cities: ["Lahore", "Karachi", "Islamabad", "Faisalabad", "Rawalpindi"],
+    delivery: "Nationwide courier delivery (door-to-door across Pakistan)",
+    shippingHeading: "Delivered to your door across",
+    shippingCopy: "Door-to-door courier delivery to Lahore, Karachi, Islamabad, Faisalabad and Rawalpindi — and every city in between.",
+    deliveryLabel: "Delivery",
+    ctaLink: {"href": "/guides/clothing-label-requirements", "label": "Clothing label requirements by country →"},
+    keywords: ["brand tags for clothing in Pakistan", "clothing labels online in Pakistan", "woven labels manufacturer Pakistan", "label manufacturers in Pakistan", "clothing tags Lahore", "clothing tags Karachi", "hang tags Pakistan"],
+    personas: ["Online and Instagram clothing brands launching their first collection", "Boutiques and eastern-wear labels upgrading to damask neck labels and satin care labels", "Brands that want labels, hang tags and packaging from one supplier, in one order"],
+    faqs: [
+      { q: "Do you deliver custom labels across Pakistan?", a: "Yes — orders are couriered to your door anywhere in Pakistan, from Lahore and Karachi to Islamabad and Faisalabad." },
+      { q: "What is the minimum order?", a: "Woven labels start at 100 pieces per design; satin labels and hang tags start at 500, with better per-piece rates on larger runs." },
+      { q: "Can I pay in Pakistani rupees?", a: "Yes — orders for Pakistani brands are invoiced in PKR." },
+      { q: "How do I order?", a: "Send your logo and quantity on WhatsApp or through the quote form. You get a free digital proof within 24 hours, and production starts only after you approve it." },
+      { q: "Do you make labels for brands that export?", a: "Yes — we weave and print care, size and main labels to your text. Selling abroad? Our guide covers what labels must show in the USA, UK, EU, Canada, Australia and Saudi Arabia." },
+    ],
+  },
+  {
+    slug: "custom-clothing-labels-canada",
+    country: "Canada",
+    flag: "🇨🇦",
+    metaTitle: "Custom Woven Clothing Labels Canada",
+    metaDescription:
+      "Custom woven labels, bilingual care labels, hang tags and patches for Canadian clothing brands. MOQ from 100, free 24h proof, DDP delivery across Canada.",
+    h1: "Custom Clothing Labels for Canadian Brands",
+    intro: "Damask woven labels, bilingual English/French content labels, hem tags, patches and hang tags for Canadian clothing brands — produced to your artwork and shipped DDP, so duties are handled before your order reaches the door.",
+    cities: ["Toronto", "Montreal", "Vancouver", "Calgary", "Ottawa"],
+    delivery: "Express international courier (DDP — duties & taxes handled)",
+    labelRules: {"title": "What Canadian labels must show", "points": ["Fibre content: the generic name and percentage of every fibre making up 5% or more — in English and French", "Dealer identity: your company name and postal address, or a CA identification number (Canadian businesses only)", "Care instructions are voluntary — but if you show them, the words or symbols must be accurate"], "source": {"name": "Competition Bureau Canada — Textile labelling requirements", "url": "https://competition-bureau.canada.ca/en/labelling/textile-labelling/textile-labelling-requirements"}},
+    ctaLink: {"href": "/guides/clothing-label-requirements", "label": "Clothing label requirements by country →"},
+    keywords: ["custom woven labels Canada", "custom clothing labels Canada", "woven clothing labels Canada", "bilingual clothing labels", "custom woven patches Canada", "clothing label requirements Canada"],
+    personas: ["Streetwear and athleisure founders launching with damask neck labels", "Brands that need bilingual English/French content labels alongside the main label", "Makers and small studios ordering their first 100 woven labels"],
+    faqs: [
+      { q: "Do Canadian clothing labels need French?", a: "Yes — under the Textile Labelling Act the fibre-content information must appear in both English and French. Dealer identity and country of origin don’t have to be bilingual." },
+      { q: "What is a CA number?", a: "A CA identification number is issued by the Competition Bureau to Canadian businesses and can replace your company name and postal address on the label. Without one, the label shows your name and full postal address." },
+      { q: "Are care labels mandatory in Canada?", a: "Care labelling is voluntary in Canada, but if you include care instructions — words or symbols — they must be accurate. We weave and print care text and symbols to your specification." },
+      { q: "What is the minimum order?", a: "Woven labels start at 100 pieces per design; satin labels and hang tags start at 500, with better per-piece rates on larger runs." },
+      { q: "Do you ship to Canada?", a: "Yes — express courier shipping to Canada with DDP available, so duties and taxes are handled before delivery." },
+    ],
+  },
+  {
+    slug: "custom-clothing-labels-australia",
+    country: "Australia",
+    flag: "🇦🇺",
+    metaTitle: "Custom Woven Clothing Labels Australia",
+    metaDescription:
+      "Custom woven labels, care labels with ISO symbols, hang tags and patches for Australian clothing brands. MOQ from 100, free 24h proof, DDP delivery.",
+    h1: "Custom Clothing Labels for Australian Brands",
+    intro: "Damask woven neck labels, care labels with English text or ISO 3758 care symbols, hem tags, patches and hang tags for Australian clothing brands — produced to your artwork and shipped DDP to your door.",
+    cities: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"],
+    delivery: "Express international courier (DDP — duties & taxes handled)",
+    labelRules: {"title": "What Australian labels must show", "points": ["Care instructions are mandatory — permanently attached, in English, ISO 3758 care symbols, or both", "Country of origin is required in the trade description of imported clothing", "Fibre content isn’t required by the national standard, but any fibre claim must be accurate"], "source": {"name": "ACCC Product Safety Australia — Care labelling mandatory standard", "url": "https://www.productsafety.gov.au/business/search-mandatory-standards/care-labelling-for-clothing-and-textiles-mandatory-standard"}},
+    ctaLink: {"href": "/guides/clothing-label-requirements", "label": "Clothing label requirements by country →"},
+    keywords: ["custom woven labels Australia", "custom clothing labels Australia", "woven clothing labels Australia", "care labels Australia", "custom woven patches Australia", "clothing label requirements Australia"],
+    personas: ["Streetwear, swim and activewear founders launching with damask neck labels", "Brands that need care labels in English or ISO care symbols", "Small studios ordering their first 100 woven labels"],
+    faqs: [
+      { q: "Are care labels mandatory in Australia?", a: "Yes — the Consumer Goods (Care Labelling) Information Standard 2023 requires adequate care instructions permanently attached to clothing. Since 5 March 2024 they can be written in English, shown with ISO 3758 care symbols, or both." },
+      { q: "Do Australian labels need fibre content?", a: "Fibre content isn’t required by the national care labelling standard, but it’s widely expected — and any fibre claim must be accurate under Australian Consumer Law." },
+      { q: "Is country of origin required?", a: "For imported clothing, yes — a true trade description including the country of origin is required at the border under the Commerce (Trade Descriptions) Act 1905." },
+      { q: "What is the minimum order?", a: "Woven labels start at 100 pieces per design; satin labels and hang tags start at 500, with better per-piece rates on larger runs." },
+      { q: "Do you ship to Australia?", a: "Yes — express courier shipping to Australia with DDP available, so duties and taxes are handled before delivery." },
     ],
   },
 ];

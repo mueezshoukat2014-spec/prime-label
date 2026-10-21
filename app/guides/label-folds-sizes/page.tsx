@@ -9,9 +9,9 @@ import { SITE_URL, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Label Fold Types & Sizes Guide — End Fold, Center Fold, Mitre, Hem Tags",
+  title: "Label Fold Types & Sizes: End, Center, Mitre",
   description:
-    "How to choose the right fold for custom woven labels: end fold, center fold, loop fold, mitre fold, Manhattan and book cover — plus care label and size label sizing. A practical buyer's guide for clothing brands.",
+    "How to choose a fold for custom woven labels — end, center, loop, mitre, Manhattan and book-cover — plus care label and size label dimensions.",
   alternates: {
     canonical: `${SITE_URL}/guides/label-folds-sizes`,
     languages: { en: `${SITE_URL}/guides/label-folds-sizes`, "x-default": `${SITE_URL}/guides/label-folds-sizes` },

@@ -136,13 +136,14 @@ export default async function MarketPage({ params }: { params: { market: string 
             <Reveal>
               <div>
                 <h2 className="display text-3xl sm:text-4xl">
-                  Delivered DDP across <span className="gradient-text italic">{market.country}.</span>
+                  {market.shippingHeading ?? "Delivered DDP across"} <span className="gradient-text italic">{market.country}.</span>
                 </h2>
                 <p className="mt-4 text-[14px] leading-relaxed text-cream-muted">
-                  Express, door-to-door and customs-cleared. We ship to {market.cities.slice(0, -1).join(", ")} and {market.cities.slice(-1)} — and everywhere in between.
+                  {market.shippingCopy ??
+                    `Express, door-to-door and customs-cleared. We ship to ${market.cities.slice(0, -1).join(", ")} and ${market.cities.slice(-1)} — and everywhere in between.`}
                 </p>
                 <div className="mt-6 rounded-2xl border border-champagne/20 bg-surface/40 p-5">
-                  <p className="text-[11px] uppercase tracking-wide2 text-cream-dim">Express delivery</p>
+                  <p className="text-[11px] uppercase tracking-wide2 text-cream-dim">{market.deliveryLabel ?? "Express delivery"}</p>
                   <p className="mt-1.5 text-[14px] text-cream">{market.delivery}</p>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -170,6 +171,36 @@ export default async function MarketPage({ params }: { params: { market: string 
           </div>
         </div>
       </section>
+
+      {/* labelling rules for this country (only where researched + sourced) */}
+      {market.labelRules && (
+        <section className="relative border-t border-line py-14 sm:py-20">
+          <div className="container-lux">
+            <Reveal>
+              <h2 className="display text-3xl sm:text-4xl">{market.labelRules.title}</h2>
+              <ul className="mt-6 grid gap-3 md:grid-cols-2">
+                {market.labelRules.points.map((p) => (
+                  <li key={p} className="flex gap-3 rounded-2xl border border-line bg-surface/30 p-4">
+                    <span className="mt-0.5 text-champagne">✦</span>
+                    <span className="text-[13.5px] leading-relaxed text-cream-muted">{p}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 text-[12.5px] leading-relaxed text-cream-dim">
+                Source:{" "}
+                <a href={market.labelRules.source.url} target="_blank" rel="noopener noreferrer" className="text-champagne underline-offset-4 hover:underline">
+                  {market.labelRules.source.name}
+                </a>
+                . General guidance, not legal advice — full breakdown in our{" "}
+                <Link href="/guides/clothing-label-requirements" className="text-champagne underline-offset-4 hover:underline">
+                  clothing label requirements guide
+                </Link>
+                .
+              </p>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* products grid */}
       <section className="relative border-t border-line py-14 sm:py-24">
@@ -236,10 +267,10 @@ export default async function MarketPage({ params }: { params: { market: string 
                   Customize Your Order
                 </Link>
                 <Link
-                  href="/gcc-custom-labels"
+                  href={market.ctaLink?.href ?? "/gcc-custom-labels"}
                   className="text-[13px] text-cream-muted underline underline-offset-4 transition-colors hover:text-champagne"
                 >
-                  GCC custom labels guide →
+                  {market.ctaLink?.label ?? "GCC custom labels guide →"}
                 </Link>
               </div>
             </div>

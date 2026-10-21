@@ -9,6 +9,7 @@ import { getProducts, getSiteContent, getPdpOverride } from "@/lib/data";
 import { getPdpContent, mergePdpContent, type PdpOverrideRow } from "@/lib/pdp-content";
 import { SITE_URL, BRAND_NAME, DEMAND_MARKETS, breadcrumbJsonLd } from "@/lib/seo";
 import { AR_PDP } from "@/lib/pdp-content-ar";
+import { fitTitle, fitDescription, productSeo } from "@/lib/seo-meta";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +30,11 @@ export async function generateMetadata({
     (await getPdpOverride(product.slug)) as PdpOverrideRow | null
   );
   const url = `${SITE_URL}/products/${product.slug}`;
-  const title = `${content.h1} | Low MOQ ${product.moq ?? 100}`;
-  const description = `${content.intro.slice(0, 140)} Free 24h digital proof, DDP express delivery to KSA, UAE, GCC, UK & USA.`;
+  const seo = productSeo(product.slug, product.moq);
+  const title = seo?.title ?? `${content.h1} | Low MOQ ${product.moq ?? 100}`;
+  const description = seo?.description ?? fitDescription(`${content.intro} Free 24h digital proof, DDP delivery worldwide.`);
   return {
-    title,
+    title: fitTitle(title),
     description,
     alternates: {
       canonical: url,
@@ -172,6 +174,18 @@ export default async function ProductPage({ params }: { params: { slug: string }
           )}
 
           <ProductPdp product={product} content={content} />
+
+          {/* buyer guides — useful next reads + internal links */}
+          <Reveal delay={0.05}>
+            <div className="mt-14 rounded-2xl border border-line bg-cream/[0.02] p-5 sm:p-6">
+              <p className="text-[11px] uppercase tracking-wide2 text-cream-dim">Guides for clothing brands</p>
+              <div className="mt-3 flex flex-col gap-2 text-[13.5px] sm:flex-row sm:flex-wrap sm:gap-x-6">
+                <Link href="/guides/clothing-label-requirements" className="text-champagne underline-offset-4 hover:underline">What must be on a clothing label, by country</Link>
+                <Link href="/guides/label-folds-sizes" className="text-champagne underline-offset-4 hover:underline">Label fold types &amp; sizes</Link>
+                <Link href="/blog/woven-vs-printed-vs-satin-labels" className="text-champagne underline-offset-4 hover:underline">Woven vs printed vs satin labels</Link>
+              </div>
+            </div>
+          </Reveal>
 
           {/* other products */}
           {others.length > 0 && (

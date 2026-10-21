@@ -7,6 +7,7 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { AR_POSTS, getArPost } from "@/lib/blog-ar";
 import { SITE_URL, BRAND_NAME } from "@/lib/seo";
+import { fitTitle } from "@/lib/seo-meta";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const post = getArPost(params.slug);
   if (!post) return {};
   return {
-    title: `${post.title}`,
+    title: fitTitle(post.title),
     description: post.excerpt,
     alternates: {
       canonical: `${SITE_URL}/ar/blog/${post.slug}`,

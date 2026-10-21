@@ -10,9 +10,9 @@ import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Label Cost Calculator — See How Volume Pricing Works`,
+  title: "Woven Label Price Calculator — Volume Pricing",
   description:
-    "Estimate woven label costs: slide the quantity and see how per-piece price bands drop for woven labels, hang tags and packaging. Understand MOQ economics — then get your exact quote in 24 hours.",
+    "Estimate woven label costs: slide the quantity and watch per-piece price bands drop for labels, hang tags and packaging — then get an exact quote in 24h.",
   alternates: {
     canonical: `${SITE_URL}/calculator`,
     languages: { en: `${SITE_URL}/calculator`, "x-default": `${SITE_URL}/calculator` },

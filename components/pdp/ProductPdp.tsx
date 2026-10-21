@@ -163,7 +163,7 @@ export default function ProductPdp({
                     i === activeImg ? "border-champagne shadow-glow-sm" : "border-line opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <img src={g} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  <img src={g} alt={`${product.title} — photo ${i + 1}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
                 </button>
               ))}
             </div>

@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `Refer a Brand — You Both Get 10% Off`,
   description:
-    "Know a designer or brand owner who needs labels, hang tags or packaging? Refer them to Prime Labels — they get 10% off their first order, you get 10% off your next one.",
+    "Know a brand owner who needs labels, hang tags or packaging? Refer them to Prime Labels — they get 10% off their first order, you get 10% off your next.",
   alternates: {
     canonical: `${SITE_URL}/refer`,
     languages: { en: `${SITE_URL}/refer`, "x-default": `${SITE_URL}/refer` },

@@ -76,6 +76,7 @@ export const PDP: Record<string, PdpContent> = {
       { q: "Which fold types can I choose?", a: "Straight cut, center fold, end fold and Manhattan fold. If you're unsure, send your garment type on WhatsApp and we'll recommend the right fold." },
       { q: "How long does production and delivery take?", a: "Production runs 7–14 working days after proof approval, then express shipping: 3–5 days to Saudi Arabia/UAE, 5–8 days to UK/USA." },
       { q: "Do I get to approve the design before production?", a: "Always. A free, accurate digital mockup is sent within 24 hours — nothing is woven until you approve it." },
+      { q: "What is the HS code for woven labels?", a: "Woven labels ship under HS 5807.10 (woven labels and badges of textile materials, not embroidered). National digits vary by country — your customs broker confirms the full code." },
     ],
   },
   "satin-labels": {
@@ -98,6 +99,7 @@ export const PDP: Record<string, PdpContent> = {
       { q: "What is the minimum order quantity?", a: "Satin label runs start at 500 units, with better per-unit rates at 1,000 and 5,000+." },
       { q: "Can you print washing/care instructions in Arabic?", a: "Yes — full Arabic, English or bilingual care text is supported at no extra setup cost." },
       { q: "How fast can I get them in Riyadh or Dubai?", a: "Production 7 working days + 3–5 days express delivery — roughly two weeks door-to-door with DDP (no surprise customs)." },
+      { q: "What should a care label include?", a: "It depends on where you sell — usually fibre content, care instructions, country of origin and your brand or importer details. Our clothing label requirements guide covers the USA, UK, EU, Canada, Australia and Saudi Arabia." },
     ],
   },
   "hang-tags": {
@@ -203,6 +205,7 @@ export const PDP: Record<string, PdpContent> = {
       { q: "Do iron-on patches survive washing?", a: "Yes — properly heat-applied patches last 50+ washes. We include application instructions with every order." },
       { q: "Can you do glow-in-the-dark or metallic thread?", a: "Yes — metallic gold/silver, neon and glow threads are all available." },
       { q: "How fast can I get samples?", a: "A photo sample of your actual patch is shared before dispatch; pre-production digital proofs arrive within 24 hours." },
+      { q: "What HS code do patches use?", a: "Woven patches fall under HS 5807.10 and embroidered patches under HS 5810. National digits vary by country — your customs broker confirms the full code." },
     ],
   },
   "steel-logo": {

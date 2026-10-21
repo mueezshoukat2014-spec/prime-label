@@ -63,16 +63,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteContent();
   const name = s.businessName;
   const url = SITE_URL;
-  const title = `${name} | Custom Woven Labels, Hang Tags & Packaging for Saudi Arabia & GCC`;
+  // Short brand in the title suffix ("Prime Labels") keeps titles within ~60 chars;
+  // the full legal name still ships in Organization/WebSite JSON-LD + og:site_name.
+  const shortName = name.replace(/\s+International$/i, "").trim() || name;
+  const title = `Custom Woven Labels, Hang Tags & Packaging | ${shortName}`;
 
   return {
     metadataBase: new URL(url),
     title: {
       default: title,
-      template: `%s | ${name}`,
+      template: `%s | ${shortName}`,
     },
     description:
-      "Premium custom woven labels, satin care & size labels, hang tags, hem tags, stickers, packaging and garment branding accessories for fashion brands in Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman and worldwide.",
+      "Custom woven labels, care & size labels, hang tags and brand packaging for clothing brands worldwide. MOQ from 100, free 24h digital proof, DDP delivery.",
     keywords: [...PRIMARY_KEYWORDS],
     applicationName: BRAND_NAME,
     authors: [{ name: BRAND_NAME }],
