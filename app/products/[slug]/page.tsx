@@ -175,17 +175,6 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
           <ProductPdp product={product} content={content} />
 
-          {/* buyer guides — useful next reads + internal links */}
-          <Reveal delay={0.05}>
-            <div className="mt-14 rounded-2xl border border-line bg-cream/[0.02] p-5 sm:p-6">
-              <p className="text-[11px] uppercase tracking-wide2 text-cream-dim">Guides for clothing brands</p>
-              <div className="mt-3 flex flex-col gap-2 text-[13.5px] sm:flex-row sm:flex-wrap sm:gap-x-6">
-                <Link href="/guides/clothing-label-requirements" className="text-champagne underline-offset-4 hover:underline">What must be on a clothing label, by country</Link>
-                <Link href="/guides/label-folds-sizes" className="text-champagne underline-offset-4 hover:underline">Label fold types &amp; sizes</Link>
-                <Link href="/blog/woven-vs-printed-vs-satin-labels" className="text-champagne underline-offset-4 hover:underline">Woven vs printed vs satin labels</Link>
-              </div>
-            </div>
-          </Reveal>
 
           {/* other products */}
           {others.length > 0 && (

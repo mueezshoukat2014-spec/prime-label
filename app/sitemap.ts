@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { getProducts } from "@/lib/data";
-import { MARKETS } from "@/lib/markets";
 import { getPublishedPosts } from "@/lib/blog";
 import { CASE_STUDIES } from "@/lib/case-studies";
 import { AR_PDP } from "@/lib/pdp-content-ar";
@@ -38,32 +37,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     /* DB unreachable — core pages alone still ship */
   }
 
-  const guideUrls: MetadataRoute.Sitemap = [
-    {
-      url: `${base}/guides/label-folds-sizes`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${base}/guides/woven-labels-saudi-arabia`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${base}/guides/start-clothing-brand-saudi-arabia`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${base}/guides/clothing-label-requirements`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-  ];
 
   let blogUrls: MetadataRoute.Sitemap = [];
   try {
@@ -82,7 +55,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [
-    ...guideUrls,
     {
       url: base,
       lastModified,
@@ -103,7 +75,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.93,
     },
-    { url: `${base}/gcc-custom-labels`, lastModified, changeFrequency: "weekly", priority: 0.92 },
     {
       url: `${base}/ar`,
       lastModified,
@@ -131,12 +102,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.65,
-    })),
-    ...MARKETS.map((m) => ({
-      url: `${base}/${m.slug}`,
-      lastModified,
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
     })),
     ...productUrls,
     { url: `${base}/work`, lastModified, changeFrequency: "monthly", priority: 0.85 },

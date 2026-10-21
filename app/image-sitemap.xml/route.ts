@@ -12,14 +12,6 @@ const entries: Array<{ loc: string; images: ImageEntry[] }> = [
     ],
   },
   {
-    loc: `${base}/gcc-custom-labels`,
-    images: [
-      ["/photos/DaNaYhvEwXS_0.jpg", "Woven labels for Saudi Arabia and GCC brands"],
-      ["/photos/ai-hang-tags.jpg", "Custom hang tags for apparel brands"],
-      ["/photos/ai-zipper-bags.jpg", "Custom zipper bags and packaging"],
-    ],
-  },
-  {
     loc: `${base}/gallery`,
     images: [
       ["/photos/DaNaoG7kxUT_0.jpg", "Garment branding portfolio image"],

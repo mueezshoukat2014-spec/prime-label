@@ -33,17 +33,17 @@ const nextConfig = {
    */
   async redirects() {
     return [
-      { source: '/uk', destination: '/custom-clothing-labels-uk', permanent: true },
-      { source: '/usa', destination: '/custom-clothing-labels-usa', permanent: true },
-      { source: '/us', destination: '/custom-clothing-labels-usa', permanent: true },
-      { source: '/uae', destination: '/custom-labels-uae', permanent: true },
-      { source: '/dubai', destination: '/custom-labels-uae', permanent: true },
-      { source: '/saudi', destination: '/custom-labels-saudi-arabia', permanent: true },
-      { source: '/saudi-arabia', destination: '/custom-labels-saudi-arabia', permanent: true },
-      { source: '/ksa', destination: '/custom-labels-saudi-arabia', permanent: true },
-      { source: '/qatar', destination: '/custom-labels-qatar', permanent: true },
-      { source: '/doha', destination: '/custom-labels-qatar', permanent: true },
-      { source: '/kuwait', destination: '/custom-labels-kuwait', permanent: true },
+      { source: '/uk', destination: '/', permanent: true },
+      { source: '/usa', destination: '/', permanent: true },
+      { source: '/us', destination: '/', permanent: true },
+      { source: '/uae', destination: '/', permanent: true },
+      { source: '/dubai', destination: '/', permanent: true },
+      { source: '/saudi', destination: '/', permanent: true },
+      { source: '/saudi-arabia', destination: '/', permanent: true },
+      { source: '/ksa', destination: '/', permanent: true },
+      { source: '/qatar', destination: '/', permanent: true },
+      { source: '/doha', destination: '/', permanent: true },
+      { source: '/kuwait', destination: '/', permanent: true },
       { source: '/arabic', destination: '/ar', permanent: true },
 
       /*
@@ -53,8 +53,29 @@ const nextConfig = {
        * link equity consolidates instead of 404ing. Exact-match only — the
        * /products, /products/:slug and /ar/products/:slug pages are real routes.
        */
-      { source: '/custom-labels-uk', destination: '/custom-clothing-labels-uk', permanent: true },
-      { source: '/custom-labels-usa', destination: '/custom-clothing-labels-usa', permanent: true },
+      { source: '/custom-labels-uk', destination: '/', permanent: true },
+      { source: '/custom-labels-usa', destination: '/', permanent: true },
+      /*
+       * Site minimised (Oct 2026): country landing pages, the GCC page and the
+       * guides were retired. Each old URL 301s to the closest live page so
+       * rankings and old links carry over (specific rules before the catch-all).
+       */
+      { source: '/custom-labels-saudi-arabia', destination: '/', permanent: true },
+      { source: '/custom-labels-uae', destination: '/', permanent: true },
+      { source: '/custom-labels-qatar', destination: '/', permanent: true },
+      { source: '/custom-labels-kuwait', destination: '/', permanent: true },
+      { source: '/custom-clothing-labels-uk', destination: '/', permanent: true },
+      { source: '/custom-clothing-labels-usa', destination: '/', permanent: true },
+      { source: '/custom-clothing-labels-pakistan', destination: '/', permanent: true },
+      { source: '/custom-clothing-labels-canada', destination: '/', permanent: true },
+      { source: '/custom-clothing-labels-australia', destination: '/', permanent: true },
+      { source: '/gcc-custom-labels', destination: '/', permanent: true },
+      { source: '/guides/label-folds-sizes', destination: '/products/woven-labels', permanent: true },
+      { source: '/guides/woven-labels-saudi-arabia', destination: '/products/woven-labels', permanent: true },
+      { source: '/guides/start-clothing-brand-saudi-arabia', destination: '/starter-kit', permanent: true },
+      { source: '/guides/clothing-label-requirements', destination: '/products/satin-labels', permanent: true },
+      { source: '/guides', destination: '/products', permanent: true },
+      { source: '/guides/:path*', destination: '/products', permanent: true },
       { source: '/home', destination: '/', permanent: true },
       { source: '/index', destination: '/', permanent: true },
       { source: '/index.html', destination: '/', permanent: true },

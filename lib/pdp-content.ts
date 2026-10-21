@@ -99,7 +99,7 @@ export const PDP: Record<string, PdpContent> = {
       { q: "What is the minimum order quantity?", a: "Satin label runs start at 500 units, with better per-unit rates at 1,000 and 5,000+." },
       { q: "Can you print washing/care instructions in Arabic?", a: "Yes — full Arabic, English or bilingual care text is supported at no extra setup cost." },
       { q: "How fast can I get them in Riyadh or Dubai?", a: "Production 7 working days + 3–5 days express delivery — roughly two weeks door-to-door with DDP (no surprise customs)." },
-      { q: "What should a care label include?", a: "It depends on where you sell — usually fibre content, care instructions, country of origin and your brand or importer details. Our clothing label requirements guide covers the USA, UK, EU, Canada, Australia and Saudi Arabia." },
+      { q: "What should a care label include?", a: "It depends on where you sell — usually fibre content, care instructions, country of origin and your brand or importer details. Send us your text and we’ll lay it out cleanly on the label." },
     ],
   },
   "hang-tags": {

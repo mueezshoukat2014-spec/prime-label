@@ -10,59 +10,27 @@ const COLS = [
     title: "Products",
     links: [
       { label: "Woven Labels", href: "/products/woven-labels" },
-      { label: "Satin Labels", href: "/products/satin-labels" },
       { label: "Hang Tags", href: "/products/hang-tags" },
       { label: "Brand Packaging", href: "/products/brand-packaging" },
-      { label: "Zipper Bags", href: "/products/zipper-bags" },
+      { label: "All Products", href: "/products" },
     ],
   },
   {
     title: "Studio",
     links: [
       { label: "Our Work", href: "/gallery" },
-      { label: "Case Studies", href: "/work" },
-      { label: "Process", href: "/#process" },
       { label: "About", href: "/about" },
-      { label: "FAQs", href: "/faq" },
-      { label: "Shipping & Delivery", href: "/shipping" },
       { label: "Blog", href: "/blog" },
-      { label: "المدونة بالعربي", href: "/ar/blog" },
-      { label: "Cost Calculator", href: "/calculator" },
-      { label: "Label Folds & Sizes Guide", href: "/guides/label-folds-sizes" },
-      { label: "Clothing Label Requirements", href: "/guides/clothing-label-requirements" },
-      { label: "Woven Labels Saudi Arabia", href: "/guides/woven-labels-saudi-arabia" },
-      { label: "Start a Clothing Brand (KSA)", href: "/guides/start-clothing-brand-saudi-arabia" },
-      { label: "GCC Custom Labels", href: "/gcc-custom-labels" },
-    ],
-  },
-  {
-    title: "Markets",
-    links: [
-      { label: "Saudi Arabia", href: "/custom-labels-saudi-arabia" },
-      { label: "UAE", href: "/custom-labels-uae" },
-      { label: "Qatar", href: "/custom-labels-qatar" },
-      { label: "Kuwait", href: "/custom-labels-kuwait" },
-      { label: "United Kingdom", href: "/custom-clothing-labels-uk" },
-      { label: "United States", href: "/custom-clothing-labels-usa" },
-      { label: "Canada", href: "/custom-clothing-labels-canada" },
-      { label: "Australia", href: "/custom-clothing-labels-australia" },
-      { label: "Pakistan", href: "/custom-clothing-labels-pakistan" },
-      { label: "العربية", href: "/ar" },
+      { label: "FAQs", href: "/faq" },
     ],
   },
   {
     title: "Get in touch",
     links: [
-      { label: "Customize Your Order", href: "/quote" },
-      { label: "Design Your Label", href: "/designer" },
-      { label: "Brand Starter Kit", href: "/starter-kit" },
-      { label: "Request a Sample", href: "/samples" },
-      { label: "Refer & Earn 10%", href: "/refer" },
+      { label: "Get a Quote", href: "/quote" },
       { label: "Track Your Order", href: "/track" },
       { label: "Contact", href: "/contact" },
-      { label: "WhatsApp", href: WHATSAPP_URL },
-      { label: "Instagram", href: "https://www.instagram.com/primelabels_intl" },
-      { label: "Review us on Google ★", href: "https://g.page/r/CYZM4--mhJyZEBM/review" },
+      { label: "العربية", href: "/ar" },
     ],
   },
 ];
@@ -82,7 +50,7 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
         )}
       </Marquee>
 
-      <div className="container-lux grid gap-10 py-14 sm:gap-12 sm:py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
+      <div className="container-lux grid gap-10 py-14 sm:gap-12 sm:py-20 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Logo size={42} />

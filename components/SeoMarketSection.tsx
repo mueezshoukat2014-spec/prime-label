@@ -46,9 +46,6 @@ export default function SeoMarketSection() {
                 Bahrain, Oman and international markets.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/gcc-custom-labels" className="btn-ghost !py-3 !px-5 text-[12px]">
-                  GCC custom labels guide →
-                </Link>
                 <Link href="/quote" className="btn-primary !py-3 !px-5 text-[12px]">
                   Customize Your Order
                 </Link>

@@ -19,13 +19,13 @@ export const metadata: Metadata = {
 };
 
 const DESTINATIONS = [
-  { flag: "🇸🇦", place: "Saudi Arabia", cities: "Riyadh · Jeddah · Dammam", days: "3–5 days", link: "/custom-labels-saudi-arabia" },
-  { flag: "🇦🇪", place: "United Arab Emirates", cities: "Dubai · Abu Dhabi · Sharjah", days: "3–5 days", link: "/custom-labels-uae" },
-  { flag: "🇶🇦", place: "Qatar", cities: "Doha · Lusail", days: "3–6 days", link: "/custom-labels-qatar" },
-  { flag: "🇰🇼", place: "Kuwait", cities: "Kuwait City · Hawally", days: "3–6 days", link: "/custom-labels-kuwait" },
-  { flag: "🇧🇭", place: "Bahrain & Oman", cities: "Manama · Muscat", days: "4–6 days", link: "/gcc-custom-labels" },
-  { flag: "🇬🇧", place: "United Kingdom", cities: "London · Manchester · UK-wide", days: "5–8 days", link: "/custom-clothing-labels-uk" },
-  { flag: "🇺🇸", place: "United States", cities: "All 50 states", days: "5–8 days", link: "/custom-clothing-labels-usa" },
+  { flag: "🇸🇦", place: "Saudi Arabia", cities: "Riyadh · Jeddah · Dammam", days: "3–5 days" },
+  { flag: "🇦🇪", place: "United Arab Emirates", cities: "Dubai · Abu Dhabi · Sharjah", days: "3–5 days" },
+  { flag: "🇶🇦", place: "Qatar", cities: "Doha · Lusail", days: "3–6 days" },
+  { flag: "🇰🇼", place: "Kuwait", cities: "Kuwait City · Hawally", days: "3–6 days" },
+  { flag: "🇧🇭", place: "Bahrain & Oman", cities: "Manama · Muscat", days: "4–6 days" },
+  { flag: "🇬🇧", place: "United Kingdom", cities: "London · Manchester · UK-wide", days: "5–8 days" },
+  { flag: "🇺🇸", place: "United States", cities: "All 50 states", days: "5–8 days" },
   { flag: "🌍", place: "Rest of the world", cities: "100+ countries", days: "5–10 days", link: "/quote" },
 ];
 
@@ -104,9 +104,15 @@ export default async function ShippingPage() {
                   {DESTINATIONS.map((d) => (
                     <tr key={d.place} className="transition-colors hover:bg-cream/[0.02]">
                       <td className="px-5 py-4">
-                        <Link href={d.link} className="font-medium text-cream transition-colors hover:text-champagne">
-                          {d.flag} {d.place}
-                        </Link>
+                        {d.link ? (
+                          <Link href={d.link} className="font-medium text-cream transition-colors hover:text-champagne">
+                            {d.flag} {d.place}
+                          </Link>
+                        ) : (
+                          <span className="font-medium text-cream">
+                            {d.flag} {d.place}
+                          </span>
+                        )}
                       </td>
                       <td className="hidden px-5 py-4 text-cream-muted sm:table-cell">{d.cities}</td>
                       <td className="px-5 py-4 tabular-nums text-cream-muted">{d.days}</td>
