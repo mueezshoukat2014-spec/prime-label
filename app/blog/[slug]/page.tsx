@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { Reveal } from "@/components/anim";
 import { Markdown } from "@/lib/markdown";
 import { getSiteContent } from "@/lib/data";
-import { getPost, getPublishedPosts, readingTime } from "@/lib/blog";
+import { getPost, getPublishedPosts, readingTime, fixRetiredLinks } from "@/lib/blog";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 import { fitTitle } from "@/lib/seo-meta";
 
@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             )}
 
             <div className="mx-auto mt-4 max-w-3xl">
-              <Markdown source={post.body} />
+              <Markdown source={fixRetiredLinks(post.body)} />
 
               {/* CTA */}
               <div className="mt-14 rounded-3xl border border-champagne/25 bg-surface/40 p-8 text-center">

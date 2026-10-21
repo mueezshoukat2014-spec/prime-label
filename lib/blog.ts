@@ -42,3 +42,22 @@ export function readingTime(body: string): number {
   const words = body.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 220));
 }
+
+/**
+ * Pages retired when the site was minimised (Oct 2026) are still linked from a
+ * few older DB posts. Point those links straight at the live page they 301 to,
+ * so readers (and Google) skip the redirect hop. Same targets as next.config.mjs.
+ */
+const RETIRED_LINKS: Array<[RegExp, string]> = [
+  [/\/guides\/(?:label-folds-sizes|woven-labels-saudi-arabia)(?=[)\s"'#?]|$)/g, "/products/woven-labels"],
+  [/\/guides\/start-clothing-brand-saudi-arabia(?=[)\s"'#?]|$)/g, "/starter-kit"],
+  [/\/guides\/clothing-label-requirements(?=[)\s"'#?]|$)/g, "/products/satin-labels"],
+  [
+    /\/(?:custom-labels-(?:saudi-arabia|uae|qatar|kuwait)|custom-clothing-labels-(?:uk|usa|pakistan|canada|australia)|gcc-custom-labels)(?=[)\s"'#?]|$)/g,
+    "/",
+  ],
+];
+
+export function fixRetiredLinks(body: string): string {
+  return RETIRED_LINKS.reduce((s, [re, to]) => s.replace(re, to), body || "");
+}
