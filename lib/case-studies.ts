@@ -11,6 +11,9 @@ export type CaseStudy = {
   market: string;
   flag: string;
   summary: string;
+  /** Optional SEO overrides (≤45-char title so " | Prime Labels" fits; ≤155-char description). */
+  metaTitle?: string;
+  metaDescription?: string;
   cover: string;
   gallery: string[];
   challenge: string;
@@ -23,6 +26,9 @@ export type CaseStudy = {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "streetwear-brand-launch-kit",
+    metaTitle: "Streetwear Launch Kit: Labels to Packaging",
+    metaDescription:
+      "How a first-collection streetwear founder turned relabeled blanks into a real brand with neck labels, hang tags and packaging \u2014 on a six-week deadline.",
     title: "A Streetwear Label's Full Launch Kit — From Blanks to Brand",
     client: "Streetwear brand (name withheld)",
     market: "GCC / International",
@@ -57,6 +63,9 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "abaya-house-premium-labels",
+    metaTitle: "Abaya House: Satin Labels & Packaging",
+    metaDescription:
+      "How an abaya house fixed itchy-label complaints with skin-soft satin labels and bilingual Arabic/English packaging elegant enough for gifting season.",
     title: "An Abaya House Upgrades to Skin-Soft Satin & Coordinated Packaging",
     client: "Modest-wear house (name withheld)",
     market: "Saudi Arabia",

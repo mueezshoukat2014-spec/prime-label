@@ -7,7 +7,7 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { CASE_STUDIES, getCaseStudy } from "@/lib/case-studies";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
-import { fitTitle } from "@/lib/seo-meta";
+import { fitTitle, fitDescription } from "@/lib/seo-meta";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!cs) return { title: "Case study not found" };
   const url = `${SITE_URL}/work/${cs.slug}`;
   return {
-    title: fitTitle(cs.title),
-    description: cs.summary,
+    title: fitTitle(cs.metaTitle ?? cs.title),
+    description: cs.metaDescription ?? fitDescription(cs.summary),
     alternates: { canonical: url, languages: { en: url, "x-default": url } },
     openGraph: {
       type: "article",
