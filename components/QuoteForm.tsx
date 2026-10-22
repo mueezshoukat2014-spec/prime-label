@@ -139,6 +139,51 @@ const COUNTRY_OPTIONS = [
 
 type CountryOption = (typeof COUNTRY_OPTIONS)[number];
 
+/**
+ * Extra search terms per country: common abbreviations (KSA, UAE, UK, USA…)
+ * and Arabic names, so /ar/quote visitors can type "السعودية" and English
+ * visitors can type "UAE" instead of hitting "No match found".
+ */
+const COUNTRY_ALIASES: Record<string, string> = {
+  "Saudi Arabia": "ksa saudi السعودية المملكة العربية السعودية",
+  "United Arab Emirates": "uae emirates dubai abu dhabi sharjah الإمارات العربية المتحدة دبي أبوظبي الشارقة",
+  Qatar: "doha قطر الدوحة",
+  Kuwait: "الكويت",
+  Bahrain: "البحرين",
+  Oman: "muscat عمان سلطنة عمان مسقط",
+  Pakistan: "باكستان",
+  "United Kingdom": "uk britain great britain england london المملكة المتحدة بريطانيا إنجلترا",
+  "United States": "usa us america الولايات المتحدة أمريكا",
+  Canada: "كندا",
+  Australia: "أستراليا",
+  Germany: "deutschland ألمانيا",
+  France: "فرنسا",
+  Italy: "إيطاليا",
+  Turkey: "türkiye turkiye تركيا",
+  Other: "أخرى غير ذلك",
+};
+
+/** Lower-case + fold Arabic letter variants and strip harakat for forgiving search. */
+function normalizeSearch(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[\u064B-\u0652\u0640]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .trim();
+}
+
+function countryMatches(c: CountryOption, raw: string): boolean {
+  const q = normalizeSearch(raw);
+  if (!q) return true;
+  return (
+    normalizeSearch(c.name).includes(q) ||
+    (c.code || "").includes(raw.trim()) ||
+    normalizeSearch(COUNTRY_ALIASES[c.name] || "").includes(q)
+  );
+}
+
 
 const getCountryCode = (country: string) =>
   COUNTRY_OPTIONS.find((c) => c.name === country)?.code || "";
@@ -642,12 +687,7 @@ export default function QuoteForm({
                         className="w-full rounded-xl border border-line bg-surface/40 px-3 py-2 text-[13px] text-cream outline-none placeholder:text-cream-dim focus:border-champagne/50"
                       />
                     </div>
-                    {COUNTRY_OPTIONS.filter(
-                      (c) =>
-                        !countryQuery.trim() ||
-                        c.name.toLowerCase().includes(countryQuery.trim().toLowerCase()) ||
-                        (c.code || "").includes(countryQuery.trim())
-                    ).map((c) => (
+                    {COUNTRY_OPTIONS.filter((c) => countryMatches(c, countryQuery)).map((c) => (
                       <button
                         key={c.name}
                         type="button"
@@ -670,12 +710,7 @@ export default function QuoteForm({
                         {c.code && <span className="shrink-0 text-[12px] text-champagne">{c.code}</span>}
                       </button>
                     ))}
-                    {COUNTRY_OPTIONS.filter(
-                      (c) =>
-                        !countryQuery.trim() ||
-                        c.name.toLowerCase().includes(countryQuery.trim().toLowerCase()) ||
-                        (c.code || "").includes(countryQuery.trim())
-                    ).length === 0 && (
+                    {COUNTRY_OPTIONS.filter((c) => countryMatches(c, countryQuery)).length === 0 && (
                       <button
                         type="button"
                         role="option"

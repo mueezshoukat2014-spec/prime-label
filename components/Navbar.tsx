@@ -99,13 +99,13 @@ export default function Navbar() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[160] flex flex-col bg-ink/95 backdrop-blur-xl lg:hidden"
+            className="fixed inset-0 z-[160] flex flex-col overflow-y-auto overscroll-contain bg-ink/95 backdrop-blur-xl lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="flex items-center justify-between px-6 py-6">
+            <div className="flex shrink-0 items-center justify-between px-6 py-6">
               <span className="display text-2xl gradient-text">Prime Labels</span>
               <div className="flex items-center gap-3">
                 <LanguageSwitcher compact />
@@ -118,7 +118,7 @@ export default function Navbar() {
                 </button>
               </div>
             </div>
-            <nav className="flex flex-1 flex-col justify-center gap-2 px-6">
+            <nav className="flex flex-1 flex-col justify-center gap-2 px-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
               {LINKS.map((l, i) => (
                 <motion.div
                   key={l.href}
@@ -129,7 +129,7 @@ export default function Navbar() {
                   <Link
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="display block border-b border-line py-5 text-5xl text-cream"
+                    className="display block border-b border-line py-3.5 text-4xl text-cream [@media(min-height:760px)]:py-5 [@media(min-height:760px)]:text-5xl"
                   >
                     {l.label}
                   </Link>
