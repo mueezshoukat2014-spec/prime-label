@@ -1,4 +1,4 @@
-// Build step (npm "prebuild"): 540px WebP thumbnails for the repo photos in
+// Build step (npm "prebuild") — lives in tools/ (not scripts/: .vercelignore drops that folder): 540px WebP thumbnails for the repo photos in
 // public/photos → public/photos/thumb/, plus lib/photo-thumbs.json listing the
 // photos that got one. Grid cards (gallery masonry) show the thumbnail on
 // phones instead of the full 900–1080px photo; the lightbox keeps the original.
