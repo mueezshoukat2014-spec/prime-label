@@ -72,6 +72,8 @@ export type QuoteAlertLead = {
   details?: string;
   artworkUrl?: string | null;
   artworkName?: string | null;
+  /** A file was attached but storage failed — ask for it on WhatsApp. */
+  artworkFailed?: boolean;
   createdAt?: string | Date | null;
   /** Admin "send test email" button. */
   test?: boolean;
@@ -131,6 +133,9 @@ function quoteRows(lead: QuoteAlertLead): Array<{ label: string; html: string; t
   if (art) {
     const label = clean(lead.artworkName) || "View artwork";
     rows.push({ label: "Artwork", html: `<a href="${esc(art)}" style="color:#E6CB8C;">${esc(label)}</a>`, text: `${label}: ${art}` });
+  } else if (lead.artworkFailed) {
+    const note = "Attached, but the upload failed — ask the customer to send it on WhatsApp";
+    rows.push({ label: "Artwork", html: `<span style="color:#E6CB8C;">${esc(note)}</span>`, text: note });
   } else {
     rows.push({ label: "Artwork", html: "Not uploaded", text: "Not uploaded" });
   }

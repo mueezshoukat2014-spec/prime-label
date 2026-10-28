@@ -8,7 +8,7 @@ import { Markdown } from "@/lib/markdown";
 import { getSiteContent } from "@/lib/data";
 import { getPost, getPublishedPosts, readingTime, fixRetiredLinks } from "@/lib/blog";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
-import { fitTitle } from "@/lib/seo-meta";
+import { fitTitle, blogSeoTitle } from "@/lib/seo-meta";
 import SmartImg from "@/components/SmartImg";
 
 // Pre-render published posts at build time (edge-cached); posts published
@@ -31,7 +31,7 @@ export async function generateMetadata({
   if (!post) return { title: "Article not found" };
   const url = `${SITE_URL}/blog/${post.slug}`;
   return {
-    title: fitTitle(post.title),
+    title: fitTitle(blogSeoTitle(post.slug, post.title)),
     description: post.excerpt,
     alternates: { canonical: url, languages: { en: url, "x-default": url } },
     openGraph: {

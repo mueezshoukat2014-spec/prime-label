@@ -68,6 +68,8 @@ export function waQuoteSubmittedLink(input: {
   quantity?: string | null;
   details?: string | null;
   artworkUrl?: string | null;
+  /** A file was attached but could not be stored: the customer sends it in this chat. */
+  artworkPending?: boolean;
 }): string {
   const clean = (v: string | null | undefined) => String(v ?? "").trim();
 
@@ -100,7 +102,13 @@ export function waQuoteSubmittedLink(input: {
 
   lines.push("");
   const artwork = clean(input.artworkUrl);
-  lines.push(artwork ? `🎨 *Artwork:* ${artwork}` : "🎨 *Artwork:* not uploaded");
+  lines.push(
+    artwork
+      ? `🎨 *Artwork:* ${artwork}`
+      : input.artworkPending
+        ? "🎨 *Artwork:* I'll send my file here in this chat"
+        : "🎨 *Artwork:* not uploaded"
+  );
 
   lines.push("");
   lines.push("Please share pricing and lead time. Thank you!");

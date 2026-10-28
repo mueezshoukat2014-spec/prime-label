@@ -482,22 +482,41 @@ export default function QuoteForm({
       fd.append("country", countryForSubmission);
 
       // Files over the serverless body limit go straight to Blob storage.
+      // If storage is unavailable the enquiry still goes through without the
+      // file, and the WhatsApp message tells us the file will follow in chat.
+      let artworkFailed = false;
       if (file && file.size > DIRECT_UPLOAD_THRESHOLD) {
         setUploading(true);
+        // Give up on the file (not the enquiry) if storage stops responding:
+        // no upload progress for 25s means an outage or endless retries.
+        const ctrl = new AbortController();
+        let stall: ReturnType<typeof setTimeout> | undefined;
+        const armStall = () => {
+          if (stall) clearTimeout(stall);
+          stall = setTimeout(() => ctrl.abort(), 25_000);
+        };
+        const stalled = new Promise<never>((_, reject) =>
+          ctrl.signal.addEventListener("abort", () => reject(new Error("upload stalled")), { once: true })
+        );
         try {
+          armStall();
           const { upload } = await import("@vercel/blob/client");
-          const blob = await upload(buildBlobPath(file.name), file, {
+          const pending = upload(buildBlobPath(file.name), file, {
             access: "public",
             handleUploadUrl: "/api/artwork/upload",
             contentType: file.type || undefined,
+            abortSignal: ctrl.signal,
+            onUploadProgress: armStall,
           });
+          pending.catch(() => {}); // a late failure after giving up is expected
+          const blob = await Promise.race([pending, stalled]);
           fd.append("artworkUrl", blob.url);
           fd.append("artworkName", file.name);
         } catch {
-          setUploading(false);
-          throw new Error(
-            "We could not upload your artwork. Please try a smaller file, or submit without it and send the file on WhatsApp."
-          );
+          artworkFailed = true;
+          fd.append("artworkFailed", "1"); // so the alert/admin say "ask for the file on WhatsApp"
+        } finally {
+          if (stall) clearTimeout(stall);
         }
         setUploading(false);
       } else if (file) {
@@ -535,6 +554,7 @@ export default function QuoteForm({
 
       const uploaded = (data.artworkUrl as string | null) ?? null;
       setArtworkUrl(uploaded);
+      const artworkPending = Boolean(file) && !uploaded && (artworkFailed || Boolean(data.artworkFailed));
 
       // Pass every field the visitor filled in, so the WhatsApp message is a
       // complete summary and nothing has to be asked for a second time.
@@ -548,11 +568,16 @@ export default function QuoteForm({
         quantity: form.quantity,
         details: form.details.trim(),
         artworkUrl: uploaded,
+        artworkPending,
       });
       setWaHref(link);
 
       setStatus("success");
-      toast.success("Quote request sent. Opening WhatsApp…");
+      toast.success(
+        artworkPending
+          ? "Quote request sent. Please send your logo/artwork in WhatsApp — opening it now…"
+          : "Quote request sent. Opening WhatsApp…"
+      );
       void celebrate();
 
       // Straight redirect to WhatsApp (top-level navigation is never

@@ -14,6 +14,22 @@ export function fitTitle(title: string): string | { absolute: string } {
   return title.length + TITLE_SUFFIX_LEN <= MAX_TITLE ? title : { absolute: title };
 }
 
+/**
+ * Shorter search titles for blog posts whose headline runs past ~60
+ * characters (Google cuts the rest off in results). Only <title> changes —
+ * the article headline (H1) and social title stay exactly as written.
+ */
+const BLOG_SEO_TITLES: Record<string, string> = {
+  "woven-vs-printed-vs-satin-labels": "Woven vs Printed vs Satin Labels: Which Should You Choose?",
+  "ddp-shipping-gcc-apparel-brands": "Import Duties & DDP Shipping for GCC Apparel Brands",
+  "streetwear-branding-101": "Streetwear Branding 101: Neck Labels, Hem Tags & Patches",
+  "clothing-label-moq-guide": "What MOQ to Expect for Custom Clothing Labels in 2026",
+};
+
+export function blogSeoTitle(slug: string, title: string): string {
+  return title.length > MAX_TITLE ? BLOG_SEO_TITLES[slug] ?? title : title;
+}
+
 /** Trim to `max` characters on a word boundary (never mid-word). */
 export function fitDescription(text: string, max = 155): string {
   const t = text.replace(/\s+/g, " ").trim();

@@ -40,6 +40,8 @@ export async function POST(req: Request) {
     // (used for files above the ~4.5 MB serverless body limit).
     let preUploadedUrl = "";
     let preUploadedName = "";
+    // Set when the browser attached a large file but storage refused it.
+    let clientArtworkFailed = false;
 
     if (isMultipart) {
       const form = await req.formData();
@@ -49,6 +51,7 @@ export async function POST(req: Request) {
       }
       preUploadedUrl = str(form.get("artworkUrl"), 800);
       preUploadedName = str(form.get("artworkName"), 255);
+      clientArtworkFailed = str(form.get("artworkFailed"), 5) === "1";
       fields = {
         name: str(form.get("name"), 200),
         email: str(form.get("email"), 200),
@@ -106,6 +109,9 @@ export async function POST(req: Request) {
     // ---- artwork upload (optional) --------------------------------------
     let artworkUrl = "";
     let artworkName = "";
+    // Storage trouble must never cost a lead: if the file cannot be stored, the
+    // enquiry is still saved and the customer is asked to send it on WhatsApp.
+    let artworkFailed = clientArtworkFailed && !preUploadedUrl;
 
     // Case A: the browser uploaded directly to Blob and sent us the URL.
     if (preUploadedUrl) {
@@ -138,38 +144,28 @@ export async function POST(req: Request) {
       }
 
       if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        console.error("BLOB_READ_WRITE_TOKEN is not configured");
-        return NextResponse.json(
-          {
-            ok: false,
-            error:
-              "File uploads are temporarily unavailable. Please submit without the file and send it on WhatsApp.",
-          },
-          { status: 503 }
-        );
-      }
-
-      try {
-        const blob = await put(buildBlobPath(file.name), file, {
-          access: "public",
-          addRandomSuffix: true,
-          contentType: file.type || undefined,
-        });
-        artworkUrl = blob.url;
-        artworkName = file.name.slice(0, 255);
-      } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : String(e);
-        console.error("Blob upload failed:", msg);
-        return NextResponse.json(
-          {
-            ok: false,
-            error:
-              "We could not upload your artwork. Please try again, or submit without it and send the file on WhatsApp.",
-          },
-          { status: 502 }
-        );
+        console.error("BLOB_READ_WRITE_TOKEN is not configured — saving the lead without artwork");
+        artworkFailed = true;
+      } else {
+        try {
+          const blob = await put(buildBlobPath(file.name), file, {
+            access: "public",
+            addRandomSuffix: true,
+            contentType: file.type || undefined,
+          });
+          artworkUrl = blob.url;
+          artworkName = file.name.slice(0, 255);
+        } catch (e: unknown) {
+          const msg = e instanceof Error ? e.message : String(e);
+          console.error("Blob upload failed — saving the lead without artwork:", msg);
+          artworkFailed = true;
+        }
       }
     }
+
+    const detailsToSave = artworkFailed
+      ? `${fields.details}${fields.details ? "\n\n" : ""}[Artwork upload failed on the website — ask the customer to send the file on WhatsApp.]`
+      : fields.details;
 
     // ---- persist to Neon --------------------------------------------------
     const rows = await sql`
@@ -177,7 +173,7 @@ export async function POST(req: Request) {
         (name, email, phone, company, country, product, quantity, details, artwork_url, artwork_name)
       VALUES
         (${fields.name}, ${fields.email}, ${fields.phone}, ${fields.company},
-         ${fields.country}, ${fields.product}, ${fields.quantity}, ${fields.details},
+         ${fields.country}, ${fields.product}, ${fields.quantity}, ${detailsToSave},
          ${artworkUrl || null}, ${artworkName || null})
       RETURNING id, created_at
     `;
@@ -217,6 +213,7 @@ export async function POST(req: Request) {
       details: fields.details,
       artworkUrl: artworkUrl || null,
       artworkName: artworkName || null,
+      artworkFailed,
     });
     if (!alert.sent) {
       // Logged, not returned: the lead is already stored, so the customer must
@@ -235,6 +232,7 @@ export async function POST(req: Request) {
       id: rows[0]?.id ?? null,
       artworkUrl: artworkUrl || null,
       artworkName: artworkName || null,
+      artworkFailed,
     });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
