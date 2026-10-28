@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import SiteShell from "@/components/SiteShell";
 import Footer from "@/components/Footer";
 import ProductPdp from "@/components/pdp/ProductPdp";

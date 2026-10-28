@@ -7,11 +7,13 @@ import { buildRootMetadata, rootViewport } from "../_shared/metadata";
 /*
  * English root layout. Pages are static + ISR: they are served from Vercel's
  * edge cache close to the visitor instead of being rendered in the US on every
- * visit. Content refreshes in the background at most every 5 minutes, and
- * immediately whenever the admin saves (lib/revalidate.ts). /ar has its own
+ * visit. Content refreshes immediately whenever the admin saves
+ * (lib/revalidate.ts), plus a daily background safety-net refresh. /ar has its own
  * root layout (app/ar/layout.tsx) so its HTML ships lang="ar" dir="rtl".
  */
-export const revalidate = 300;
+// Daily safety-net refresh only — admin saves revalidate instantly (lib/revalidate.ts),
+// so frequent time-based re-renders would just spend the free-plan ISR/function quota.
+export const revalidate = 86400;
 
 export const viewport: Viewport = rootViewport;
 

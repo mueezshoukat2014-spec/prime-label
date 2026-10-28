@@ -15,6 +15,8 @@ export function revalidatePublicSite() {
   try {
     revalidatePath("/", "layout");
     revalidatePath("/ar", "layout");
+    revalidatePath("/sitemap.xml");
+    revalidatePath("/image-sitemap.xml");
   } catch (e) {
     console.error("[revalidate] failed:", e);
   }

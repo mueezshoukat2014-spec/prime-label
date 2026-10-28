@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { Magnetic } from "@/components/anim";
 
 export default function NotFound() {

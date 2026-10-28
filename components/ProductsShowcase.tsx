@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { useRef, useState } from "react";
 import { Reveal, EASE } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import Image from "next/image";
 import type { Product } from "@/lib/content";
 import { waProductLink } from "@/lib/whatsapp";

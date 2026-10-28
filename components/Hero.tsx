@@ -2,7 +2,7 @@
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "@/lib/motion-lite";
 import { useEffect, useState } from "react";
 import { TextReveal, Magnetic, Marquee, EASE } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 
 type FloaterItem = {
   src: string;

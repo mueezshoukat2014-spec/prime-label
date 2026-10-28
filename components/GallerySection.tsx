@@ -2,7 +2,7 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import type { GalleryItem } from "@/lib/content";
 
 const CAT_LABELS: Record<string, string> = {

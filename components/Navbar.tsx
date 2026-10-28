@@ -2,7 +2,7 @@
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "@/lib/motion-lite";
 import { useState } from "react";
 import { Magnetic } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 

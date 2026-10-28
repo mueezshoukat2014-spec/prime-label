@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { motion } from "@/lib/motion-lite";
 import { waLink } from "@/lib/whatsapp";
 

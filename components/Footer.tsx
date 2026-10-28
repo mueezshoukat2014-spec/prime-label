@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { Marquee } from "@/components/anim";
 import Logo from "@/components/Logo";
 import { normalizeWaLink, WHATSAPP_URL } from "@/lib/whatsapp";

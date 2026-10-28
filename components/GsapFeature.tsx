@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 
 export default function GsapFeature() {
   const root = useRef<HTMLDivElement>(null);

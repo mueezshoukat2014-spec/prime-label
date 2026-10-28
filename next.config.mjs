@@ -12,10 +12,14 @@ const nextConfig = {
      * re-encoded to AVIF/WebP on the fly. remotePatterns below is locked to the
      * Blob host so nothing else can ever reach the optimizer.
      */
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [360, 414, 640, 750, 828, 1080, 1200, 1600],
-    imageSizes: [32, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Free-plan budget (Hobby: 5,000 image transformations / month): one modern
+    // format (WebP — AVIF doubled every variant) and a short ladder of widths,
+    // so each photo is transformed only a handful of times; results are cached
+    // for 31 days so the optimizer rarely re-reads the source from Blob.
+    formats: ['image/webp'],
+    deviceSizes: [640, 828, 1080, 1600],
+    imageSizes: [64, 128, 256, 384],
+    minimumCacheTTL: 60 * 60 * 24 * 31,
     remotePatterns: [
       {
         protocol: 'https',
@@ -31,6 +35,23 @@ const nextConfig = {
    * Short memorable aliases for the geo landing pages.
    * 301 (permanent) so search engines consolidate ranking onto the real URL.
    */
+  // Security headers are set here (static config, applied at the CDN) instead of
+  // in middleware, so middleware only runs for real page loads.
+  async headers() {
+    const security = [
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+    ];
+    const noindex = [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }];
+    return [
+      { source: '/:path*', headers: security },
+      { source: '/admin', headers: noindex },
+      { source: '/admin/:path*', headers: noindex },
+      { source: '/api/:path*', headers: noindex },
+    ];
+  },
   async redirects() {
     return [
       { source: '/uk', destination: '/', permanent: true },

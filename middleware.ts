@@ -33,18 +33,6 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers } });
 
-  // Baseline security hardening headers. A strict Content-Security-Policy is
-  // intentionally left out for now — Meta Pixel, Google Translate and Vercel
-  // Blob video sources all need whitelisting before one can be enforced.
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api")) {
-    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-  }
-
   if (country) {
     response.cookies.set("pl_country", country.toUpperCase(), {
       path: "/",
@@ -78,6 +66,18 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Skip static assets and image optimisation — only page requests matter.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|photos|videos).*)"],
+  // Real page loads only. Skips API routes, Next internals, every file with an
+  // extension (images, videos, robots.txt, sitemaps, icons) and client-side
+  // RSC/prefetch requests — each of those used to be an extra middleware
+  // invocation on the free plan. (Security headers now come from next.config.)
+  matcher: [
+    {
+      source: "/((?!api|_next/static|_next/image|_vercel|favicon.ico|photos|videos|.*\\..*).*)",
+      missing: [
+        { type: "header", key: "rsc" },
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
+      ],
+    },
+  ],
 };

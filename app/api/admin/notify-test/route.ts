@@ -15,7 +15,18 @@ export async function POST() {
   }
 
   const to = await getNotificationEmail();
-  const result = await sendQuoteAlert();
+  const result = await sendQuoteAlert({
+    test: true,
+    id: "TEST",
+    name: "Sample Customer",
+    phone: "+966 50 000 0000",
+    email: "customer@example.com",
+    company: "Sample Brand",
+    country: "Saudi Arabia",
+    product: "Woven Labels",
+    quantity: "500 pcs",
+    details: "This is a test alert from Admin → Site Content.\nReal alerts show the customer's own details here.",
+  });
 
   if (result.sent) {
     return NextResponse.json({ ok: true, to: result.to });

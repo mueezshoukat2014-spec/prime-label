@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";

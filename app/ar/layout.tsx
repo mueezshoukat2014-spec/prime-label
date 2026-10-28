@@ -10,7 +10,9 @@ import { buildRootMetadata, rootViewport } from "../_shared/metadata";
  * declares lang="ar" dir="rtl" (hreflang="ar" consistency — see SEO notes), and
  * the pages are static + ISR like the English site (lib/revalidate.ts).
  */
-export const revalidate = 300;
+// Daily safety-net refresh only — admin saves revalidate instantly (lib/revalidate.ts),
+// so frequent time-based re-renders would just spend the free-plan ISR/function quota.
+export const revalidate = 86400;
 
 export const viewport: Viewport = rootViewport;
 

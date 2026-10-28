@@ -204,7 +204,20 @@ export async function POST(req: Request) {
     //
     // Awaiting costs ~300ms and is safe: sendQuoteAlert never throws, so a
     // broken email provider still cannot turn a real enquiry into an error.
-    const alert = await sendQuoteAlert();
+    const alert = await sendQuoteAlert({
+      id: rows[0]?.id ?? null,
+      createdAt: rows[0]?.created_at ?? null,
+      name: fields.name,
+      phone: fields.phone,
+      email: fields.email,
+      company: fields.company,
+      country: fields.country,
+      product: fields.product,
+      quantity: fields.quantity,
+      details: fields.details,
+      artworkUrl: artworkUrl || null,
+      artworkName: artworkName || null,
+    });
     if (!alert.sent) {
       // Logged, not returned: the lead is already stored, so the customer must
       // still see success. This line is what makes a delivery problem

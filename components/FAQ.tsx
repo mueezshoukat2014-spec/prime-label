@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 
 export default function FAQ({ items }: { items: { q: string; a: string }[] }) {
   const [open, setOpen] = useState<number | null>(0);

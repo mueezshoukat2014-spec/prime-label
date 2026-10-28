@@ -28,6 +28,9 @@ export function getSessionId(): string {
 export function trackEvent(event?: string, detail?: string) {
   if (typeof window === "undefined") return;
   if (window.location.pathname.startsWith("/admin")) return;
+  // Bots / headless browsers (crawlers, Lighthouse, test runners) are not visitors:
+  // skipping them saves a function call + a database write each time.
+  if ((navigator as Navigator & { webdriver?: boolean }).webdriver || /bot|crawl|spider|slurp|headless|lighthouse|prerender/i.test(navigator.userAgent)) return;
   const sid = getSessionId();
   if (!sid) return;
 

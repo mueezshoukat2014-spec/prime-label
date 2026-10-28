@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
 import { waLink } from "@/lib/whatsapp";

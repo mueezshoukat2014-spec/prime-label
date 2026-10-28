@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { Reveal, EASE } from "@/components/anim";
 import SwipeHint from "@/components/SwipeHint";
 import type { Reel } from "@/lib/content";
@@ -250,7 +250,9 @@ export default function Reels({ reels }: { reels: Reel[] }) {
   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 />
                         ) : (
-                          <video src={reel.src} muted playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover" />
+                          // No <video preload="metadata"> thumbnails: each one pulled part (or all) of the
+                          // video file on every home visit. The video loads only when tapped.
+                          <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(201,168,106,0.35),transparent_60%),linear-gradient(160deg,#1c1c22,#0e0e12)]" />
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <div className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full glass-strong">

@@ -42,13 +42,21 @@ export default function AnalyticsTracker() {
   }, [pathname]);
 
   // One final ping when the visitor leaves or switches tabs — this is the
-  // most valuable "they were here until X" signal and costs one request.
+  // most valuable "they were here until X" signal. visibilitychange and
+  // pagehide both fire when a tab closes, so only the first one is sent.
   useEffect(() => {
     if (pathname.startsWith("/admin")) return;
-    const onVis = () => {
-      if (document.visibilityState === "hidden") trackEvent();
+    let left = false;
+    const leave = () => {
+      if (left) return;
+      left = true;
+      trackEvent();
     };
-    const onHide = () => trackEvent();
+    const onVis = () => {
+      if (document.visibilityState === "hidden") leave();
+      else left = false; // came back: the next leave counts again
+    };
+    const onHide = () => leave();
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("pagehide", onHide);
     return () => {

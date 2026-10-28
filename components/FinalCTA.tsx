@@ -1,6 +1,6 @@
 "use client";
 import { Reveal, Magnetic, TextReveal } from "@/components/anim";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { normalizeWaLink } from "@/lib/whatsapp";
 
 export default function FinalCTA({

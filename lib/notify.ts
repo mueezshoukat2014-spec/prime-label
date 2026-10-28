@@ -59,8 +59,97 @@ async function getBrandName(): Promise<string> {
   return "Prime Labels";
 }
 
-/** Minimal, clean alert email. Deliberately contains no customer data. */
-function buildHtml(brand: string): string {
+/** Lead details included in the owner's quote alert (all optional). */
+export type QuoteAlertLead = {
+  id?: number | string | null;
+  name?: string;
+  phone?: string;
+  email?: string;
+  company?: string;
+  country?: string;
+  product?: string;
+  quantity?: string;
+  details?: string;
+  artworkUrl?: string | null;
+  artworkName?: string | null;
+  createdAt?: string | Date | null;
+  /** Admin "send test email" button. */
+  test?: boolean;
+};
+
+const clean = (v: unknown) => String(v ?? "").trim();
+
+function karachiTime(when?: string | Date | null): string {
+  const d = when ? new Date(when) : new Date();
+  try {
+    return (
+      new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Karachi", dateStyle: "medium", timeStyle: "short" }).format(d) +
+      " PKT"
+    );
+  } catch {
+    return d.toISOString();
+  }
+}
+
+/** wa.me link that opens a chat with the customer, with a short greeting. */
+function waReplyLink(lead: QuoteAlertLead, brand: string): string | null {
+  const digits = clean(lead.phone).replace(/\D/g, "");
+  if (digits.length < 8) return null;
+  const first = clean(lead.name).split(/\s+/)[0] || "there";
+  const product = clean(lead.product);
+  const text = `Hi ${first}, thank you for your quote request${product ? ` for ${product}` : ""} with ${brand}.`;
+  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+}
+
+export function quoteSubject(lead: QuoteAlertLead): string {
+  const name = clean(lead.name) || "Website visitor";
+  const product = clean(lead.product) || "Quote request";
+  const country = clean(lead.country);
+  const subject = `${lead.test ? "[TEST] " : ""}🔔 New quote: ${name} — ${product}${country ? ` · ${country}` : ""}`;
+  return subject.replace(/\s+/g, " ").slice(0, 150);
+}
+
+/** Label/value rows for the quote alert; empty fields are skipped. */
+function quoteRows(lead: QuoteAlertLead): Array<{ label: string; html: string; text: string }> {
+  const rows: Array<{ label: string; html: string; text: string }> = [];
+  const add = (label: string, value: string, html?: string) => {
+    if (value) rows.push({ label, html: html ?? esc(value), text: value });
+  };
+  const phone = clean(lead.phone);
+  const digits = phone.replace(/\D/g, "");
+  const email = clean(lead.email);
+  add("Name", clean(lead.name));
+  add("WhatsApp", phone, digits.length >= 8 ? `<a href="https://wa.me/${digits}" style="color:#E6CB8C;">${esc(phone)}</a>` : undefined);
+  add("Email", email, email ? `<a href="mailto:${esc(email)}" style="color:#E6CB8C;">${esc(email)}</a>` : undefined);
+  add("Company / brand", clean(lead.company));
+  add("Country", clean(lead.country));
+  add("Product(s)", clean(lead.product));
+  add("Quantity", clean(lead.quantity));
+  const details = clean(lead.details);
+  add("Details", details, esc(details).replace(/\r?\n/g, "<br />"));
+  const art = clean(lead.artworkUrl);
+  if (art) {
+    const label = clean(lead.artworkName) || "View artwork";
+    rows.push({ label: "Artwork", html: `<a href="${esc(art)}" style="color:#E6CB8C;">${esc(label)}</a>`, text: `${label}: ${art}` });
+  } else {
+    rows.push({ label: "Artwork", html: "Not uploaded", text: "Not uploaded" });
+  }
+  if (lead.id != null && lead.id !== "") add("Lead #", String(lead.id));
+  add("Received", karachiTime(lead.createdAt));
+  return rows;
+}
+
+/** Quote alert email: every detail the customer entered, plus one-tap WhatsApp reply. */
+export function buildQuoteHtml(brand: string, lead: QuoteAlertLead): string {
+  const wa = waReplyLink(lead, brand);
+  const rows = quoteRows(lead)
+    .map(
+      (r) => `<tr>
+                <td style="padding:9px 0;border-top:1px solid rgba(244,240,232,0.07);width:132px;vertical-align:top;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8A8274;">${esc(r.label)}</td>
+                <td style="padding:9px 0;border-top:1px solid rgba(244,240,232,0.07);font-size:14px;line-height:1.55;color:#F4F0E8;">${r.html}</td>
+              </tr>`
+    )
+    .join("\n              ");
   return `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:0;background:#0E0E12;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
@@ -68,40 +157,37 @@ function buildHtml(brand: string): string {
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-                 style="max-width:520px;background:#16161C;border:1px solid rgba(244,240,232,0.09);border-radius:16px;overflow:hidden;">
+                 style="max-width:560px;background:#16161C;border:1px solid rgba(244,240,232,0.09);border-radius:16px;overflow:hidden;">
             <tr>
-              <td style="padding:32px 32px 8px;">
+              <td style="padding:30px 30px 6px;">
                 <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#C9A86A;">
-                  New enquiry
+                  ${lead.test ? "Test alert" : "New quote request"}
                 </p>
-                <h1 style="margin:0;font-size:22px;line-height:1.3;color:#F4F0E8;font-weight:600;">
-                  Someone requested a quote on ${brand}
+                <h1 style="margin:0;font-size:21px;line-height:1.3;color:#F4F0E8;font-weight:600;">
+                  ${esc(clean(lead.name) || "Website visitor")}${clean(lead.product) ? ` — ${esc(clean(lead.product))}` : ""}
                 </h1>
               </td>
             </tr>
             <tr>
-              <td style="padding:12px 32px 0;">
-                <p style="margin:0;font-size:14px;line-height:1.65;color:#A59D8E;">
-                  A new quote request has been submitted on your website. Log in to your
-                  Admin Dashboard to view full details, artwork, and contact info.
-                </p>
+              <td style="padding:12px 30px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              ${rows}
+                </table>
               </td>
             </tr>
             <tr>
-              <td style="padding:26px 32px 34px;">
-                <a href="${ADMIN_URL}"
-                   style="display:inline-block;background:#C9A86A;color:#0E0E12;text-decoration:none;
-                          font-size:14px;font-weight:600;padding:13px 26px;border-radius:999px;">
-                  Open Admin Dashboard
-                </a>
-                <p style="margin:16px 0 0;font-size:12px;color:#6F685D;">
-                  Or paste this link: <span style="color:#A59D8E;">${ADMIN_URL}</span>
-                </p>
+              <td style="padding:24px 30px 30px;">
+                ${
+                  wa
+                    ? `<a href="${esc(wa)}" style="display:inline-block;background:#25D366;color:#0E0E12;text-decoration:none;font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;margin:0 8px 8px 0;">Reply on WhatsApp</a>`
+                    : ""
+                }
+                <a href="${ADMIN_URL}" style="display:inline-block;background:#C9A86A;color:#0E0E12;text-decoration:none;font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;margin:0 0 8px;">Open Admin Dashboard</a>
               </td>
             </tr>
           </table>
           <p style="margin:18px 0 0;font-size:11px;color:#6F685D;">
-            You are receiving this because you are the notification contact for ${brand}.<br />
+            You are receiving this because you are the notification contact for ${esc(brand)}.<br />
             Change this address in Admin Dashboard → Site Content.
           </p>
         </td>
@@ -111,14 +197,15 @@ function buildHtml(brand: string): string {
 </html>`;
 }
 
-function buildText(brand: string): string {
+export function buildQuoteText(brand: string, lead: QuoteAlertLead): string {
+  const wa = waReplyLink(lead, brand);
   return [
-    `Someone requested a quote on ${brand}`,
+    `${lead.test ? "[TEST] " : ""}New quote request on ${brand}`,
     "",
-    "A new quote request has been submitted on your website. Log in to your",
-    "Admin Dashboard to view full details, artwork, and contact info.",
+    ...quoteRows(lead).map((r) => `${r.label}: ${r.text}`),
     "",
-    `Open Admin Dashboard: ${ADMIN_URL}`,
+    ...(wa ? [`Reply on WhatsApp: ${wa}`] : []),
+    `Admin Dashboard: ${ADMIN_URL}`,
   ].join("\n");
 }
 
@@ -298,12 +385,12 @@ export async function sendContactAlert(m: ContactMessage): Promise<NotifyResult>
 }
 
 /**
- * Send the "new quote request" alert.
+ * Send the "new quote request" alert with every detail the customer entered.
  *
  * NEVER throws. Callers can await it without a try/catch and can safely
  * ignore the result — it exists only for tests and logging.
  */
-export async function sendQuoteAlert(): Promise<NotifyResult> {
+export async function sendQuoteAlert(lead: QuoteAlertLead = {}): Promise<NotifyResult> {
   try {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
@@ -326,9 +413,10 @@ export async function sendQuoteAlert(): Promise<NotifyResult> {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: [to],
-      subject: `🔔 Someone requested a quote on ${brand}!`,
-      html: buildHtml(brand),
-      text: buildText(brand),
+      subject: quoteSubject(lead),
+      html: buildQuoteHtml(brand, lead),
+      text: buildQuoteText(brand, lead),
+      ...(isEmail(clean(lead.email)) ? { replyTo: clean(lead.email) } : {}),
     });
 
     if (error) {

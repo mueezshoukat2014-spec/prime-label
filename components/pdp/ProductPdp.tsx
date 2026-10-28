@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import Image from "next/image";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
