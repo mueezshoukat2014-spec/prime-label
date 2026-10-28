@@ -9,7 +9,6 @@ import { AR_POSTS, getArPost } from "@/lib/blog-ar";
 import { SITE_URL, BRAND_NAME } from "@/lib/seo";
 import { fitTitle } from "@/lib/seo-meta";
 
-export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return AR_POSTS.map((p) => ({ slug: p.slug }));

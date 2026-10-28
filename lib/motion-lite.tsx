@@ -370,6 +370,81 @@ type MotionProps = Omit<
     onDragEnd?: (e: any, info: any) => void;
   };
 
+/* ------------------------- visible-first hydration ------------------------
+   Entrance animations used to render their `initial` styles (opacity:0,
+   translateY…) into the server HTML, so every heading, hero image and CTA
+   stayed invisible until the JS bundle downloaded, hydrated and ran — blank
+   pages on slow phones and no Largest Contentful Paint at all on several
+   pages. Now an element that arrives in the server HTML renders in its
+   resting (visible) state when its animation ends visible:
+     • whileInView reveals: once hydrated, only elements still BELOW the fold
+       are tucked into their initial state and revealed on scroll (the user
+       never sees that switch); anything already on screen simply stays put.
+     • initial→animate entrances (plain objects): shown at rest immediately.
+   Elements mounted after hydration (menus, modals, toasts, route changes)
+   animate exactly as before, as do variant-label and pathLength animations. */
+let hydrationDone = false;
+function markHydrated() {
+  if (!hydrationDone && typeof window !== "undefined") {
+    // Passive effects of the hydration commit flush together; flip the flag
+    // only after all of them ran so every server-rendered element saw `false`.
+    queueMicrotask(() => {
+      hydrationDone = true;
+    });
+  }
+}
+/* Pending reveals share ONE passive, rAF-throttled scroll/resize check as a
+   safety net next to IntersectionObserver (WebKit can deliver IO entries late
+   during very fast programmatic/momentum scrolls). Removed when nothing waits. */
+const pendingReveal = new Map<HTMLElement, () => void>();
+let pendingRaf = 0;
+function checkPending() {
+  pendingRaf = 0;
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  pendingReveal.forEach((run, node) => {
+    const r = node.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < vh * 0.95) run();
+  });
+}
+function onScrollCheck() {
+  if (!pendingRaf) pendingRaf = requestAnimationFrame(checkPending);
+}
+/** Run `cb` once when `node` comes into view (IntersectionObserver + scroll safety net). Returns a cleanup. */
+export function onceInView(node: HTMLElement, cb: () => void, rootMargin = "0px"): () => void {
+  let done = false;
+  let io: IntersectionObserver | null = null;
+  const stop = () => {
+    io?.disconnect();
+    pendingReveal.delete(node);
+    if (!pendingReveal.size) {
+      window.removeEventListener("scroll", onScrollCheck);
+      window.removeEventListener("resize", onScrollCheck);
+    }
+  };
+  const run = () => {
+    if (done) return;
+    done = true;
+    stop();
+    cb();
+  };
+  if (typeof IntersectionObserver !== "undefined") {
+    io = new IntersectionObserver((ents) => {
+      if (ents.some((e) => e.isIntersecting)) run();
+    }, { rootMargin, threshold: 0 });
+    io.observe(node);
+  }
+  if (!pendingReveal.size) {
+    window.addEventListener("scroll", onScrollCheck, { passive: true });
+    window.addEventListener("resize", onScrollCheck, { passive: true });
+  }
+  pendingReveal.set(node, run);
+  return stop;
+}
+
+function isPlainTarget(t: unknown): t is Record<string, unknown> {
+  return !!t && typeof t === "object" && !Array.isArray(t) && !Object.values(t as object).some((v) => Array.isArray(v));
+}
+
 /* -------------------------------- makeMotion ------------------------------ */
 function makeMotion(tag: string) {
   const C = forwardRef<HTMLElement, MotionProps>(function MotionEl(props, ref) {
@@ -415,6 +490,20 @@ function makeMotion(tag: string) {
       (initialTarget && initialTarget.pathLength != null) ||
       (animate && typeof animate === "object" && animate.pathLength != null);
 
+    // Decided once, at first render: true only for server-rendered elements
+    // (server pass or the hydration pass) whose animation comes to rest visible.
+    const visibleFirstRef = useRef<boolean | null>(null);
+    if (visibleFirstRef.current === null) {
+      const ssrPass = typeof window === "undefined" || !hydrationDone;
+      const rest = whileInView !== undefined ? resolveTarget(whileInView, variants) : animate;
+      visibleFirstRef.current =
+        ssrPass &&
+        !usesPathLength &&
+        isPlainTarget(initial) &&
+        isPlainTarget(rest) &&
+        (rest as Record<string, unknown>).opacity !== 0;
+    }
+
     const staticStyle = useMemo(() => {
       const out: Record<string, string> = {};
       if (style) {
@@ -425,7 +514,7 @@ function makeMotion(tag: string) {
           out[k] = unit(k, v as any);
         }
       }
-      if (initialTarget) Object.assign(out, cssFromTarget(initialTarget));
+      if (initialTarget && !visibleFirstRef.current) Object.assign(out, cssFromTarget(initialTarget));
       if (style?.transform && !initialTarget?.x && !initialTarget?.y) out.transform = style.transform;
       return out;
     }, []);
@@ -510,20 +599,41 @@ function makeMotion(tag: string) {
         applyMv();
       }
 
+      markHydrated();
+
       if (whileInView) {
-        const io = new IntersectionObserver(
-          (ents) => {
-            for (const e of ents) {
-              if (e.isIntersecting) {
-                applyTarget(node, resolveTarget(whileInView, variants), transition);
-                if (viewport?.once !== false) io.disconnect();
+        const observe = () => {
+          const io = new IntersectionObserver(
+            (ents) => {
+              for (const e of ents) {
+                if (e.isIntersecting) {
+                  applyTarget(node, resolveTarget(whileInView, variants), transition);
+                  if (viewport?.once !== false) io.disconnect();
+                }
               }
-            }
-          },
-          { rootMargin: viewport?.margin || "0px", threshold: 0 }
-        );
-        io.observe(node);
-        cleanups.push(() => io.disconnect());
+            },
+            { rootMargin: viewport?.margin || "0px", threshold: 0 }
+          );
+          io.observe(node);
+          cleanups.push(() => io.disconnect());
+        };
+        if (!visibleFirstRef.current) {
+          observe();
+        } else if (initialTarget) {
+          // Server-rendered visible. Only tuck it away if it is still below the
+          // fold (invisible to the user right now), then reveal it on scroll.
+          const r = node.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          const onScreen = r.bottom > 0 && r.top < vh;
+          if (!onScreen) {
+            node.style.transition = "none";
+            for (const [k, v] of Object.entries(cssFromTarget(initialTarget))) (node.style as any)[k] = v;
+            void node.offsetHeight; // commit the hidden state before any transition
+            cleanups.push(
+              onceInView(node, () => applyTarget(node, resolveTarget(whileInView, variants), transition), viewport?.margin || "0px")
+            );
+          }
+        }
       }
 
       const hoverT = resolveTarget(whileHover, variants);

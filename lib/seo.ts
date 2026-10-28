@@ -297,14 +297,9 @@ export function productsJsonLd(
         offers: {
           "@type": "Offer",
           url: `${SITE_URL}/products/${p.slug}`,
-          priceCurrency: "USD",
-          price: "0",
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "0",
-            priceCurrency: "USD",
-            description: "Custom quoted per order — tailored quote within 12 hours",
-          },
+          // No price: every order is custom-quoted and the page shows no price.
+          // (price "0" told Google the product was FREE.)
+          description: "Custom quoted per order — tailored quote within 24 hours",
           availability: "https://schema.org/InStock",
           eligibleQuantity: p.moq
             ? { "@type": "QuantitativeValue", minValue: p.moq, unitText: "units" }

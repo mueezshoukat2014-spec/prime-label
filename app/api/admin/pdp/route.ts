@@ -1,3 +1,4 @@
+import { withSiteRevalidate } from "@/lib/revalidate";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
@@ -65,7 +66,7 @@ export async function GET() {
 }
 
 /** PUT: save an override for one product page. */
-export async function PUT(req: Request) {
+async function _PUT(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -112,7 +113,7 @@ export async function PUT(req: Request) {
 }
 
 /** DELETE: remove the override — the page falls back to the built-in default copy. */
-export async function DELETE(req: Request) {
+async function _DELETE(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -132,3 +133,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ ok: false, error: msg }, { status: 400 });
   }
 }
+
+// Public pages are edge-cached (ISR): refresh them after every successful change.
+export const PUT = withSiteRevalidate(_PUT);
+export const DELETE = withSiteRevalidate(_DELETE);

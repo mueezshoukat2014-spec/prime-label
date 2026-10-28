@@ -1,3 +1,4 @@
+import { withSiteRevalidate } from "@/lib/revalidate";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
@@ -144,7 +145,7 @@ export async function GET() {
  *   - a blank value for a protected key does NOT overwrite existing data
  *     (mirrors COALESCE(NULLIF($1,''), value) semantics)
  */
-export async function PUT(req: Request) {
+async function _PUT(req: Request) {
   if (!(await isAuthed())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
@@ -247,3 +248,6 @@ export async function PUT(req: Request) {
     return NextResponse.json({ ok: false, error: "Could not save changes." }, { status: 500 });
   }
 }
+
+// Public pages are edge-cached (ISR): refresh them after every successful change.
+export const PUT = withSiteRevalidate(_PUT);

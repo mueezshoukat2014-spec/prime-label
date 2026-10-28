@@ -6,15 +6,17 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent, getProducts } from "@/lib/data";
 import { normalizeWaLink } from "@/lib/whatsapp";
 import { SITE_URL, BRAND_NAME, GCC_COUNTRIES, ARABIC_KEYWORDS } from "@/lib/seo";
+import SmartImg from "@/components/SmartImg";
 
-export const dynamic = "force-dynamic";
 
 const AR_TITLE = "ليبل ملابس مخصص وبطاقات تعليق وتغليف للبراندات";
 const AR_DESC =
   "ليبل منسوج وساتان وبطاقات تعليق وتغليف لبراندات الملابس في السعودية والخليج. أقل كمية 100 قطعة، بروفة مجانية خلال 24 ساعة، شحن سريع.";
 
 export const metadata: Metadata = {
-  title: AR_TITLE,
+  // /ar shares its segment with the Arabic root layout, so the layout's
+  // "%s | Prime Labels" template does not apply here — set it explicitly.
+  title: { absolute: `${AR_TITLE} | Prime Labels` },
   description: AR_DESC,
   keywords: [...ARABIC_KEYWORDS],
   alternates: {
@@ -163,10 +165,10 @@ export default async function ArabicPage() {
                       className="group block overflow-hidden rounded-2xl border border-line transition-all duration-300 hover:border-champagne/40"
                     >
                       <div className="relative aspect-square overflow-hidden">
-                        <img
+                        <SmartImg
                           src={p.image}
                           alt={ar?.name || p.title}
-                          loading="lazy"
+                          sizes="(max-width: 1024px) 46vw, 22vw"
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>

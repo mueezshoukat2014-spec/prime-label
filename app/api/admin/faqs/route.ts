@@ -1,3 +1,4 @@
+import { withSiteRevalidate } from "@/lib/revalidate";
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { isAuthed } from "@/lib/auth";
@@ -13,7 +14,7 @@ export async function GET() {
   return NextResponse.json({ ok: true, faqs: rows });
 }
 
-export async function POST(req: Request) {
+async function _POST(req: Request) {
   if (!(await isAuthed())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true });
 }
 
-export async function PUT(req: Request) {
+async function _PUT(req: Request) {
   if (!(await isAuthed())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
@@ -32,7 +33,7 @@ export async function PUT(req: Request) {
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(req: Request) {
+async function _DELETE(req: Request) {
   if (!(await isAuthed())) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
@@ -40,3 +41,8 @@ export async function DELETE(req: Request) {
   await sql`DELETE FROM faqs WHERE id = ${Number(id)}`;
   return NextResponse.json({ ok: true });
 }
+
+// Public pages are edge-cached (ISR): refresh them after every successful change.
+export const POST = withSiteRevalidate(_POST);
+export const PUT = withSiteRevalidate(_PUT);
+export const DELETE = withSiteRevalidate(_DELETE);

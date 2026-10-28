@@ -1,3 +1,4 @@
+import { withSiteRevalidate } from "@/lib/revalidate";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { put } from "@vercel/blob";
@@ -41,7 +42,7 @@ export async function GET() {
 
 /* ----------------------------- CREATE / UPDATE ----------------------------- */
 /** Multipart form: id?, title, excerpt, body, published, cover(file, optional). */
-export async function POST(req: Request) {
+async function _POST(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const form = await req.formData();
@@ -118,7 +119,7 @@ export async function POST(req: Request) {
 }
 
 /* ----------------------------- DELETE ----------------------------- */
-export async function DELETE(req: Request) {
+async function _DELETE(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -135,3 +136,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ ok: false, error: msg }, { status: 400 });
   }
 }
+
+// Public pages are edge-cached (ISR): refresh them after every successful change.
+export const POST = withSiteRevalidate(_POST);
+export const DELETE = withSiteRevalidate(_DELETE);

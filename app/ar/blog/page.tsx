@@ -7,7 +7,6 @@ import { getSiteContent } from "@/lib/data";
 import { AR_POSTS } from "@/lib/blog-ar";
 import { SITE_URL, BRAND_NAME } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "مدونة الليبل والتغليف — دليل عملي للبراندات",

@@ -198,8 +198,8 @@ export default function Hero({
           </motion.div>
 
           <h1 className="hero-title display text-[13vw] leading-[1.04] tracking-tightest sm:text-[11vw] sm:leading-[0.95] lg:text-[8.2rem]">
-            <TextReveal text={line1} delay={0.04} />
-            <TextReveal text={line2} delay={0.1} />
+            <TextReveal text={line1} delay={0.04} immediate />
+            <TextReveal text={line2} delay={0.1} immediate />
             <span className="block gradient-text italic">{gradientLine}</span>
           </h1>
 

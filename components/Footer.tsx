@@ -102,9 +102,9 @@ export default function Footer({ whatsapp, instagram, email }: { whatsapp?: stri
 
         {COLS.map((col) => (
           <div key={col.title}>
-            <h3 className="text-[11px] uppercase tracking-widest2 text-cream-dim">
+            <h2 className="text-[11px] uppercase tracking-widest2 text-cream-dim">
               {col.title}
-            </h3>
+            </h2>
             <ul className="mt-5 flex flex-col gap-3">
               {col.links.map((l) => {
                 const external = /^https?:/i.test(l.href);

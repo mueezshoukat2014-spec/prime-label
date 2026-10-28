@@ -2,16 +2,19 @@ import "server-only";
 import { sql } from "@/lib/db";
 import { products as staticProducts, gallery, reels as staticReels, STATIC_CONTENT, normalizeMediaUrl, type Reel } from "@/lib/content";
 import { normaliseManagedVideos } from "@/lib/video";
+import { photoThumb } from "@/lib/photo-thumb";
 
-/* Short TTL memo: serverless instances stay warm between requests, so caching
-   catalogue reads for 60s removes the Neon round-trips from almost every page
-   render (TTFB is on the LCP critical path). Admin edits appear within a
-   minute — an acceptable delay for this catalogue. */
-// 5 minutes (was 60s): content rarely changes, and every warm serverless
-// instance re-queried Neon every minute per key. Admin edits go live within
-// this window; a deploy always shows fresh data.
-const TTL = 300_000;
+/* Request-burst memo. Pages are static + ISR now (rendered at build time and
+   re-rendered in the background), so this only de-duplicates the identical
+   reads a single render / build pass makes. Kept short so an on-demand
+   revalidation after an admin save never re-renders with stale rows;
+   lib/revalidate.ts also clears it explicitly. */
+const TTL = 10_000;
 const memoCache = new Map<string, { t: number; v: unknown }>();
+/** Drop memoised catalogue reads (called before on-demand revalidation). */
+export function clearDataMemo() {
+  memoCache.clear();
+}
 function memo<T>(key: string, fn: () => Promise<T>): Promise<T> {
   const now = Date.now();
   const hit = memoCache.get(key);
@@ -84,7 +87,7 @@ async function _getTestimonials() {
  * Gallery Manager is prepended so new work leads. If the DB is unreachable the
  * static set alone is returned, so the page can never come back empty.
  */
-async function _getGallery() {
+async function _getGalleryRaw() {
   // Admin edits to the original static photos (caption/category/hidden) are
   // stored as overrides keyed by the photo's shortcode.
   let staticSet = gallery;
@@ -133,6 +136,14 @@ async function _getGallery() {
   return staticSet;
 }
 
+
+/** Gallery items + a small thumbnail (repo photos) for the masonry grid. */
+async function _getGallery() {
+  return (await _getGalleryRaw()).map((g: any) => {
+    const thumb = photoThumb(g.src);
+    return thumb ? { ...g, thumb } : g;
+  });
+}
 
 /** Admin PDP override for one product (null when not customised). */
 async function _getPdpOverride(slug: string) {
@@ -190,5 +201,11 @@ export const getFaqs = () => memo("faqs", _getFaqs);
 export const getTestimonials = () => memo("testimonials", _getTestimonials);
 export const getGallery = () => memo("gallery", _getGallery);
 export const getCategoryNames = () => memo("cats", _getCategoryNames);
-export const getReels = () => memo("reels", _getReels);
+export const getReels = () =>
+  memo("reels", async () =>
+    (await _getReels()).map((r: any) => {
+      const thumb = photoThumb(r.cover);
+      return thumb ? { ...r, thumb } : r;
+    })
+  );
 export const getPdpOverride = (slug: string) => memo(`pdp:${slug}`, () => _getPdpOverride(slug));

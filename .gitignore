@@ -30,3 +30,6 @@ pnpm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# generated at build by scripts/photo-thumbs.mjs
+public/photos/thumb/

@@ -24,6 +24,8 @@ export type GalleryItem = {
   type: string;
   w?: number;
   h?: number;
+  /** 540px WebP thumbnail for grid cards (repo photos only). */
+  thumb?: string;
 };
 
 export type Reel = {
@@ -35,6 +37,8 @@ export type Reel = {
   kind?: "local" | "uploaded";
   title?: string;
   product?: string;
+  /** 540px WebP thumbnail of a repo-photo cover (grid cards). */
+  thumb?: string;
 };
 
 export type SiteContent = {

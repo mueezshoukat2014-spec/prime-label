@@ -13,19 +13,23 @@ const langs = (en: string, ar: string) => ({
 });
 
 /**
- * Core + products sitemap. lastModified reflects the current deployment so
- * Google re-crawls after every release. Product URLs come from the live
- * catalogue (DB first, static fallback).
+ * Core + products sitemap. Product URLs come from the live catalogue (DB first,
+ * static fallback).
+ *
+ * lastmod is only sent where it is TRUE (blog posts, Arabic posts and the two
+ * blog indexes). It used to be "now" on every URL, so every deploy claimed that
+ * all 55 pages had changed — Google treats such a sitemap's lastmod as
+ * unreliable and then ignores it everywhere, including the real post dates.
+ * Pages without a known modification date simply omit it (allowed by Google).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const lastModified = new Date();
+  const arLatest = AR_POSTS.reduce((m, p) => (p.date > m ? p.date : m), "");
 
   let productUrls: MetadataRoute.Sitemap = [];
   try {
     const products = (await getProducts()) as Array<{ slug: string }>;
     productUrls = products.map((p) => ({
       url: `${base}/products/${p.slug}`,
-      lastModified,
       changeFrequency: "weekly" as const,
       priority: 0.9,
       // Only slugs that have an Arabic twin get hreflang alternates.
@@ -41,8 +45,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogUrls: MetadataRoute.Sitemap = [];
   try {
     const posts = await getPublishedPosts();
+    const newest = posts.reduce((m, p) => (p.updated_at > m ? p.updated_at : m), "");
     blogUrls = [
-      { url: `${base}/blog`, lastModified, changeFrequency: "weekly" as const, priority: 0.8 },
+      { url: `${base}/blog`, ...(newest ? { lastModified: new Date(newest) } : {}), changeFrequency: "weekly" as const, priority: 0.8 },
       ...posts.map((p) => ({
         url: `${base}/blog/${p.slug}`,
         lastModified: new Date(p.updated_at),
@@ -51,79 +56,72 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
     ];
   } catch {
-    blogUrls = [{ url: `${base}/blog`, lastModified, changeFrequency: "weekly" as const, priority: 0.8 }];
+    blogUrls = [{ url: `${base}/blog`, changeFrequency: "weekly" as const, priority: 0.8 }];
   }
 
   return [
     {
       url: base,
-      lastModified,
       changeFrequency: "weekly",
       priority: 1,
       alternates: langs(base, `${base}/ar`),
     },
     {
       url: `${base}/quote`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.95,
       alternates: langs(`${base}/quote`, `${base}/ar/quote`),
     },
     {
       url: `${base}/products`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.93,
     },
     {
       url: `${base}/ar`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.9,
       alternates: langs(base, `${base}/ar`),
     },
     {
       url: `${base}/ar/quote`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.85,
       alternates: langs(`${base}/quote`, `${base}/ar/quote`),
     },
     ...Object.keys(AR_PDP).map((slug) => ({
       url: `${base}/ar/products/${slug}`,
-      lastModified,
       changeFrequency: "weekly" as const,
       priority: 0.8,
       alternates: langs(`${base}/products/${slug}`, `${base}/ar/products/${slug}`),
     })),
-    { url: `${base}/ar/blog`, lastModified, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${base}/ar/blog`, ...(arLatest ? { lastModified: new Date(arLatest) } : {}), changeFrequency: "weekly", priority: 0.75 },
     ...AR_POSTS.map((p) => ({
       url: `${base}/ar/blog/${p.slug}`,
-      lastModified,
+      lastModified: new Date(p.date),
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
     ...productUrls,
-    { url: `${base}/work`, lastModified, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/work`, changeFrequency: "monthly", priority: 0.85 },
     ...CASE_STUDIES.map((c) => ({
       url: `${base}/work/${c.slug}`,
-      lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...blogUrls,
-    { url: `${base}/about`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/samples`, lastModified, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${base}/designer`, lastModified, changeFrequency: "monthly", priority: 0.88 },
-    { url: `${base}/starter-kit`, lastModified, changeFrequency: "monthly", priority: 0.88 },
-    { url: `${base}/calculator`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/refer`, lastModified, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/track`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/faq`, lastModified, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${base}/shipping`, lastModified, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${base}/gallery`, lastModified, changeFrequency: "weekly", priority: 0.85 },
-    { url: `${base}/contact`, lastModified, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/privacy-policy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/terms`, lastModified, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/about`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/samples`, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/designer`, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${base}/starter-kit`, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${base}/calculator`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/refer`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/track`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/shipping`, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/gallery`, changeFrequency: "weekly", priority: 0.85 },
+    { url: `${base}/contact`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/privacy-policy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.3 },
   ];
 }

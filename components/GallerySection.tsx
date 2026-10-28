@@ -117,7 +117,9 @@ export default function GallerySection({
               className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25"
             >
               <img
-  src={typeof item.src === "string" ? (item.src) : ""}
+  src={(item as { thumb?: string }).thumb || (typeof item.src === "string" ? item.src : "")}
+  srcSet={(item as { thumb?: string }).thumb ? `${(item as { thumb?: string }).thumb} 540w, ${item.src} ${item.w || 1080}w` : undefined}
+  sizes={(item as { thumb?: string }).thumb ? "(max-width: 768px) 46vw, (max-width: 1024px) 31vw, 23vw" : undefined}
   alt={`${item.caption || item.category || "Custom branding"} — Prime Labels work sample`}
   loading="lazy"
   decoding="async"

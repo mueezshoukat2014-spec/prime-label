@@ -8,6 +8,7 @@ import {
   useMotionValue,
   useReducedMotion,
   animate,
+  onceInView,
   type Variants,
 } from "@/lib/motion-lite";
 import {
@@ -50,51 +51,76 @@ export function Reveal({
   );
 }
 
-/* ---------- TextReveal: masked word-by-word headline ---------- */
+/* ---------- TextReveal: masked word-by-word headline ----------
+   Visible-first: the words are in the server HTML in place, so the headline
+   never waits for JavaScript.
+   • immediate (above-the-fold hero): a pure-CSS masked rise (.pl-word-rise in
+     globals.css) plays on first paint.
+   • default: once hydrated, a headline that is still below the fold has its
+     words tucked under their masks and rises when scrolled into view. */
 export function TextReveal({
   text,
   className,
   delay = 0,
   stagger = 0.05,
   as = "div",
+  immediate = false,
 }: {
   text: string;
   className?: string;
   delay?: number;
   stagger?: number;
   as?: "div" | "h1" | "h2" | "h3" | "p" | "span";
+  immediate?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const ref = useRef<HTMLElement>(null);
   const words = text.split(" ");
-  const MotionTag = motion[as];
+  const Tag = as as React.ElementType;
+
+  useEffect(() => {
+    if (immediate) return;
+    const node = ref.current;
+    if (!node) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const r = node.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < window.innerHeight) return; // on screen: leave it be
+    const spans = Array.from(node.querySelectorAll<HTMLElement>("[data-tr]"));
+    spans.forEach((s) => {
+      s.style.transition = "none";
+      s.style.transform = "translateY(110%)";
+    });
+    void node.offsetHeight;
+    return onceInView(
+      node,
+      () =>
+        spans.forEach((s, i) => {
+          s.style.transition = `transform 0.55s cubic-bezier(${EASE.join(",")}) ${delay + i * stagger}s`;
+          requestAnimationFrame(() => {
+            s.style.transform = "translateY(0)";
+          });
+        }),
+      "-10% 0px"
+    );
+  }, [immediate, delay, stagger]);
+
   return (
-    <MotionTag
-      ref={ref as any}
-      className={className}
-      aria-label={text}
-      initial="hidden"
-      animate={inView ? "show" : "hidden"}
-    >
+    <Tag ref={ref} className={className} aria-label={text}>
       {words.map((word, i) => (
         <span
           key={i}
           style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top", paddingBottom: "0.14em", marginBottom: "-0.14em" }}
         >
-          <motion.span
-            style={{ display: "inline-block", willChange: "transform" }}
-            variants={{
-              hidden: { y: "110%" },
-              show: { y: "0%" },
-            }}
-            transition={{ duration: 0.55, ease: EASE, delay: delay + i * stagger }}
+          <span
+            data-tr=""
+            className={immediate ? "pl-word-rise" : undefined}
+            style={{ display: "inline-block", ...(immediate ? { animationDelay: `${delay + i * stagger}s` } : null) }}
           >
             {word}
             {i < words.length - 1 ? "\u00A0" : ""}
-          </motion.span>
+          </span>
         </span>
       ))}
-    </MotionTag>
+    </Tag>
   );
 }
 

@@ -2,11 +2,58 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
 import { waProductLink, waGuidedOrderLink } from "@/lib/whatsapp";
 import { GOOGLE_REVIEW_URL } from "@/lib/seo";
 import { volumeTiersFor, type PdpContent } from "@/lib/pdp-content";
+
+/**
+ * Same image policy as ProductsShowcase: remote Vercel-Blob uploads go through
+ * next/image (resized + AVIF/WebP for the visitor's screen); repo photos stay
+ * plain <img> (already compressed, no transformations). The main image of the
+ * first view is the page's LCP element, so it is preloaded with high priority;
+ * thumbnails request a ~256px rendition instead of the full-size photo.
+ */
+function PdpImg({
+  src,
+  alt,
+  sizes,
+  priority = false,
+  className,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+  priority?: boolean;
+  className: string;
+}) {
+  if (src.startsWith("https://")) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        quality={80}
+        priority={priority}
+        loading={priority ? undefined : "lazy"}
+        className={className}
+      />
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      {...(priority ? { fetchPriority: "high" as const } : {})}
+      className={className}
+    />
+  );
+}
 
 type PdpProduct = {
   slug: string;
@@ -131,17 +178,23 @@ export default function ProductPdp({
             }
           >
             <AnimatePresence mode="wait">
-              <motion.img
+              <motion.div
                 key={images[activeImg]}
-                src={images[activeImg]}
-                alt={`${product.title} — view ${activeImg + 1}`}
                 initial={{ opacity: 0, scale: 1.06 }}
                 animate={{ opacity: 1, scale: zoom ? 1.9 : 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: zoom ? 0.15 : 0.6, ease: EASE }}
                 style={zoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+                className="absolute inset-0"
+              >
+                <PdpImg
+                  src={images[activeImg]}
+                  alt={`${product.title} — view ${activeImg + 1}`}
+                  sizes="(max-width: 1024px) 92vw, 46vw"
+                  priority={activeImg === 0}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </motion.div>
             </AnimatePresence>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
             {canZoom && (
@@ -163,7 +216,7 @@ export default function ProductPdp({
                     i === activeImg ? "border-champagne shadow-glow-sm" : "border-line opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <img src={g} alt={`${product.title} — photo ${i + 1}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  <PdpImg src={g} alt={`${product.title} — photo ${i + 1}`} sizes="88px" className="absolute inset-0 h-full w-full object-cover" />
                 </button>
               ))}
             </div>

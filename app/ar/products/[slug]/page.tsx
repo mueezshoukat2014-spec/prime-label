@@ -9,8 +9,19 @@ import { getArPdpContent, AR_PDP } from "@/lib/pdp-content-ar";
 import { normalizeWaLink } from "@/lib/whatsapp";
 import { SITE_URL, BRAND_NAME, DEMAND_MARKETS } from "@/lib/seo";
 import { fitTitle, fitDescription } from "@/lib/seo-meta";
+import SmartImg from "@/components/SmartImg";
 
-export const dynamic = "force-dynamic";
+// Pre-render the Arabic product pages that have native Arabic content.
+export async function generateStaticParams() {
+  try {
+    return ((await getProducts()) as Array<{ slug: string }>)
+      .filter((p) => Boolean((AR_PDP as Record<string, unknown>)[p.slug]))
+      .map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 
 async function findProduct(slug: string) {
   const products = await getProducts();
@@ -90,14 +101,9 @@ export default async function ArProductPage({ params }: { params: { slug: string
         // The offer lives on this product page; advertise the indexable URL
         // rather than the parameterized /ar/quote?product= CTA.
         url,
-        priceCurrency: "USD",
-        price: "0",
-        priceSpecification: {
-          "@type": "PriceSpecification",
-          price: "0",
-          priceCurrency: "USD",
-          description: "تسعير مخصص لكل طلب — عرض سعر خلال 24 ساعة",
-        },
+        // No price: every order is custom-quoted and the page shows no price.
+        // (price "0" told Google the product was FREE.)
+        description: "تسعير مخصص لكل طلب — عرض سعر خلال 24 ساعة",
         availability: "https://schema.org/InStock",
         eligibleQuantity: product.moq
           ? { "@type": "QuantitativeValue", minValue: product.moq, unitText: "قطعة" }
@@ -159,7 +165,7 @@ export default async function ArProductPage({ params }: { params: { slug: string
                               : "border-line text-cream-muted hover:border-champagne/50 hover:text-cream"
                           }`}
                         >
-                          <img src={p.image} alt="" className="h-7 w-7 rounded-full object-cover" />
+                          <SmartImg src={p.image} alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
                           {AR_PDP[p.slug] ? AR_PDP[p.slug].name : p.title}
                         </Link>
                       );
@@ -174,14 +180,14 @@ export default async function ArProductPage({ params }: { params: { slug: string
               <Reveal>
                 <div>
                   <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line shadow-soft">
-                    <img src={images[0]} alt={ar.name} className="absolute inset-0 h-full w-full object-cover" />
+                    <SmartImg src={images[0]} alt={ar.name} sizes="(max-width: 1024px) 92vw, 46vw" priority quality={80} className="absolute inset-0 h-full w-full object-cover" />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
                   </div>
                   {images.length > 1 && (
                     <div className="mt-3 grid grid-cols-4 gap-2">
                       {images.slice(1).map((g: string, i: number) => (
                         <div key={g} className="relative aspect-square overflow-hidden rounded-xl border border-line">
-                          <img src={g} alt={`${ar.name} ${i + 2}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                          <SmartImg src={g} alt={`${ar.name} ${i + 2}`} sizes="(max-width: 1024px) 23vw, 11vw" className="absolute inset-0 h-full w-full object-cover" />
                         </div>
                       ))}
                     </div>
@@ -294,7 +300,7 @@ export default async function ArProductPage({ params }: { params: { slug: string
                           className="group overflow-hidden rounded-2xl border border-line transition-all duration-300 hover:border-champagne/40"
                         >
                           <div className="relative aspect-square overflow-hidden">
-                            <img src={p.image} alt={arOther?.name || p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <SmartImg src={p.image} alt={arOther?.name || p.title} sizes="(max-width: 1024px) 46vw, 22vw" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           </div>
                           <div className="p-3.5">
                             <p className="arabic-text text-[13px] font-semibold text-cream group-hover:text-champagne">

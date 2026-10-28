@@ -1,3 +1,4 @@
+import { withSiteRevalidate } from "@/lib/revalidate";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
@@ -39,7 +40,7 @@ export async function GET() {
 }
 
 /* ----------------------------- CREATE ----------------------------- */
-export async function POST(req: Request) {
+async function _POST(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
 }
 
 /* ----------------------------- RENAME ----------------------------- */
-export async function PUT(req: Request) {
+async function _PUT(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -93,7 +94,7 @@ export async function PUT(req: Request) {
 
 /* ----------------------------- DELETE ----------------------------- */
 /** Deleting a category never deletes photos — they just become Uncategorised. */
-export async function DELETE(req: Request) {
+async function _DELETE(req: Request) {
   if (!(await isAuthed())) return unauthorized();
   try {
     const body = await req.json().catch(() => ({}));
@@ -119,3 +120,8 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ ok: false, error: msg }, { status: 400 });
   }
 }
+
+// Public pages are edge-cached (ISR): refresh them after every successful change.
+export const POST = withSiteRevalidate(_POST);
+export const PUT = withSiteRevalidate(_PUT);
+export const DELETE = withSiteRevalidate(_DELETE);

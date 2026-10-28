@@ -44,9 +44,15 @@ export default function OrderTracker({ initialCode = "" }: { initialCode?: strin
     }
   }
 
-  // auto-lookup when arriving via /track?code=PL-1234
+  // auto-lookup when arriving via /track?code=PL-1234 (read in the browser:
+  // the page itself is static / edge-cached)
   useEffect(() => {
-    if (initialCode) lookup(initialCode);
+    const fromUrl = (new URLSearchParams(window.location.search).get("code") || "").toUpperCase().slice(0, 24);
+    const c = initialCode || fromUrl;
+    if (c) {
+      setCode(c);
+      lookup(c);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialCode]);
 

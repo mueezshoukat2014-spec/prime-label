@@ -243,7 +243,7 @@ export default function Reels({ reels }: { reels: Reel[] }) {
                       <button ref={(el) => { thumbRefs.current[i] = el; }} onClick={() => select(i)} className={`group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border transition-all duration-500 ${isActive ? "border-champagne/60 shadow-glow-sm" : "border-line opacity-60 hover:opacity-100"}`}>
                         {reel.cover ? (
                           <img
-  src={typeof reel.cover === "string" ? (reel.cover) : ""}
+  src={(reel as { thumb?: string }).thumb || (typeof reel.cover === "string" ? reel.cover : "")}
   alt={reel.caption}
   loading="lazy"
   decoding="async"

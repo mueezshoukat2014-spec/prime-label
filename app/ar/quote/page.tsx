@@ -3,13 +3,13 @@ import Link from "next/link";
 import SiteShell from "@/components/SiteShell";
 import Footer from "@/components/Footer";
 import QuoteForm from "@/components/QuoteForm";
+import WaLinkFromQuery from "@/components/WaLinkFromQuery";
 import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { parseQuoteProducts } from "@/lib/quote-validation";
 import { normalizeWaLink } from "@/lib/whatsapp";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "اطلب تسعيرة — ليبل ملابس وبطاقات وتغليف",
@@ -41,18 +41,12 @@ const AR_POINTS = [
   { t: "شحن عالمي DDP", d: "الجمارك مدفوعة مسبقاً حتى باب منزلك" },
 ];
 
-export default async function ArQuotePage({
-  searchParams,
-}: {
-  searchParams: { product?: string; details?: string };
-}) {
+// Static + ISR: ?product= / ?details= prefill happens in the browser (QuoteForm).
+export default async function ArQuotePage() {
   const site = await getSiteContent();
-  const product = searchParams?.product || "";
-  const details = searchParams?.details || "";
   const wa = normalizeWaLink(site.whatsapp);
-  const waAr = `https://wa.me/${(wa.match(/wa\.me\/(\d+)/) || [])[1] || "923244999224"}?text=${encodeURIComponent(
-    product ? `مرحباً، أرغب بطلب تسعيرة لـ ${product}` : "مرحباً، أرغب بطلب تسعيرة"
-  )}`;
+  const waNumber = (wa.match(/wa\.me\/(\d+)/) || [])[1] || "923244999224";
+  const waAr = `https://wa.me/${waNumber}?text=${encodeURIComponent("مرحباً، أرغب بطلب تسعيرة")}`;
 
   const jsonLd = breadcrumbJsonLd([{ name: "اطلب تسعيرة", path: "/ar/quote" }]);
 
@@ -105,17 +99,17 @@ export default async function ArQuotePage({
                   <p className="arabic-text mt-1.5 text-[12.5px] leading-relaxed text-cream-muted">
                     أرسل تصميمك وكميتك مباشرة على واتساب وسنرد عليك بالعربية.
                   </p>
-                  <a
-                    href={waAr}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <WaLinkFromQuery
+                    fallbackHref={waAr}
+                    number={waNumber}
+                    productText="مرحباً، أرغب بطلب تسعيرة لـ {product}"
                     className="arabic-text mt-3 inline-flex items-center gap-2 rounded-full border border-champagne/40 bg-champagne/10 px-5 py-2.5 text-[13px] font-medium text-champagne transition-colors hover:bg-champagne/20"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366" aria-hidden>
                       <path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.607z" />
                     </svg>
                     تواصل واتساب
-                  </a>
+                  </WaLinkFromQuery>
                 </div>
                 <p className="arabic-text mt-4 text-[11.5px] leading-relaxed text-cream-dim">
                   ملاحظة: نموذج الطلب أدناه بالإنجليزية — يكفي كتابة اسمك ورقم واتساب
@@ -128,8 +122,6 @@ export default async function ArQuotePage({
             <Reveal delay={0.15}>
               <div id="quote-form" className="glass scroll-mt-24 rounded-4xl p-7 sm:scroll-mt-28 sm:p-10">
                 <QuoteForm
-                  defaultProduct={product}
-                  defaultDetails={details}
                   whatsapp={site.whatsapp}
                   productChoices={parseQuoteProducts((site as Record<string, string>).quoteProducts)}
                 />

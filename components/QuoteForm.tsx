@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { EASE } from "@/components/anim";
 import { normalizeWaLink, waProductLink, waQuoteSubmittedLink } from "@/lib/whatsapp";
@@ -65,7 +65,7 @@ function Field({
             *
           </span>
         ) : (
-          <span className="normal-case tracking-normal text-cream-dim/70">(Optional)</span>
+          <span className="normal-case tracking-normal text-cream-dim">(Optional)</span>
         )}
       </label>
       {children}
@@ -239,6 +239,20 @@ type FormState = {
 
 type TouchKey = "name" | "phone" | "product" | "email";
 
+/** Nearest dropdown quantity band for a free-form quantity like "2,500 pcs". */
+function quantityBand(raw: string): string {
+  const n = parseInt(String(raw || "").replace(/[^\d]/g, ""), 10);
+  if (!Number.isFinite(n) || n <= 0) return "";
+  if (n < 100) return QUANTITY_OPTIONS[0];
+  if (n <= 250) return QUANTITY_OPTIONS[1];
+  if (n <= 500) return QUANTITY_OPTIONS[2];
+  if (n <= 1000) return QUANTITY_OPTIONS[3];
+  if (n <= 2500) return QUANTITY_OPTIONS[4];
+  if (n <= 5000) return QUANTITY_OPTIONS[5];
+  if (n <= 10000) return QUANTITY_OPTIONS[6];
+  return QUANTITY_OPTIONS[7];
+}
+
 export default function QuoteForm({
   defaultProduct = "",
   defaultDetails = "",
@@ -257,8 +271,10 @@ export default function QuoteForm({
 }) {
   const productList: string[] =
     productChoices && productChoices.length > 0 ? productChoices : [...PRODUCT_CATEGORIES];
-  const fallbackWa = defaultProduct
-    ? waProductLink(defaultProduct)
+  const [urlProduct, setUrlProduct] = useState("");
+  const fallbackProduct = defaultProduct || urlProduct;
+  const fallbackWa = fallbackProduct
+    ? waProductLink(fallbackProduct)
     : normalizeWaLink(whatsapp);
 
   // Map an incoming ?product= title onto a real dropdown option: prefer an
@@ -269,18 +285,7 @@ export default function QuoteForm({
 
   // Map an incoming ?quantity= (e.g. "2,500 pcs" from the cost calculator)
   // onto the nearest quantity band offered in the dropdown.
-  const seededQuantity = (() => {
-    const n = parseInt(defaultQuantity.replace(/[^\d]/g, ""), 10);
-    if (!Number.isFinite(n) || n <= 0) return "";
-    if (n < 100) return QUANTITY_OPTIONS[0];
-    if (n <= 250) return QUANTITY_OPTIONS[1];
-    if (n <= 500) return QUANTITY_OPTIONS[2];
-    if (n <= 1000) return QUANTITY_OPTIONS[3];
-    if (n <= 2500) return QUANTITY_OPTIONS[4];
-    if (n <= 5000) return QUANTITY_OPTIONS[5];
-    if (n <= 10000) return QUANTITY_OPTIONS[6];
-    return QUANTITY_OPTIONS[7];
-  })();
+  const seededQuantity = quantityBand(defaultQuantity);
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -294,6 +299,27 @@ export default function QuoteForm({
     country: "",
     otherCountry: "",
   });
+
+  // URL prefill (?product=, ?details=, ?quantity=). The quote pages are static
+  // (served from the edge cache), so the query string is read here, in the
+  // browser, right after mount. Never overrides anything already chosen.
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const p = (sp.get("product") || "").trim();
+    const d = (sp.get("details") || "").trim();
+    const q = (sp.get("quantity") || "").trim();
+    if (!p && !d && !q) return;
+    const exact = p ? productList.find((x) => x.toLowerCase() === p.toLowerCase()) : undefined;
+    const fromUrl = p ? exact || resolveCategory(p) : "";
+    setForm((f) => ({
+      ...f,
+      products: fromUrl && f.products.length === 0 ? [fromUrl] : f.products,
+      quantity: q && !f.quantity ? quantityBand(q) : f.quantity,
+      details: d && !f.details ? d.slice(0, 2000) : f.details,
+    }));
+    if (p) setUrlProduct(p);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [touched, setTouched] = useState<Record<TouchKey, boolean>>({
     name: false,
     phone: false,
@@ -969,13 +995,14 @@ export default function QuoteForm({
             <div className="sm:col-span-2">
               <span className="mb-2 flex items-baseline gap-2 text-[11px] uppercase tracking-wide2 text-cream-dim">
                 <span>Artwork / design file</span>
-                <span className="normal-case tracking-normal text-cream-dim/70">(Optional)</span>
+                <span className="normal-case tracking-normal text-cream-dim">(Optional)</span>
               </span>
 
               <input
                 ref={fileInputRef}
                 type="file"
                 name="artwork"
+                aria-label="Upload your logo or artwork file"
                 accept={FILE_ACCEPT}
                 className="sr-only"
                 onChange={(ev) => acceptFile(ev.target.files?.[0])}

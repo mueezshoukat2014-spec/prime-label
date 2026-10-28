@@ -473,3 +473,14 @@ html[data-lang="ar"] .tabular-nums.notranslate {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+
+/* Hero headline (TextReveal immediate): masked word rise that starts on first
+   paint — pure CSS, so the headline never waits for the JS bundle. The
+   reduced-motion rule above collapses it to an instant finish. */
+@keyframes pl-word-rise {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+.pl-word-rise {
+  animation: pl-word-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
