@@ -187,7 +187,7 @@ export default async function ArProductPage({ params }: { params: { slug: string
                     <div className="mt-3 grid grid-cols-4 gap-2">
                       {images.slice(1).map((g: string, i: number) => (
                         <div key={g} className="relative aspect-square overflow-hidden rounded-xl border border-line">
-                          <SmartImg src={g} alt={`${ar.name} ${i + 2}`} sizes="(max-width: 1024px) 23vw, 11vw" className="absolute inset-0 h-full w-full object-cover" />
+                          <SmartImg src={g} alt={`${ar.name} ${i + 2}`} sizes="(max-width: 1024px) 23vw, 11vw" small className="absolute inset-0 h-full w-full object-cover" />
                         </div>
                       ))}
                     </div>
@@ -300,7 +300,7 @@ export default async function ArProductPage({ params }: { params: { slug: string
                           className="group overflow-hidden rounded-2xl border border-line transition-all duration-300 hover:border-champagne/40"
                         >
                           <div className="relative aspect-square overflow-hidden">
-                            <SmartImg src={p.image} alt={arOther?.name || p.title} sizes="(max-width: 1024px) 46vw, 22vw" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <SmartImg src={p.image} alt={arOther?.name || p.title} sizes="(max-width: 1024px) 46vw, 22vw" small className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           </div>
                           <div className="p-3.5">
                             <p className="arabic-text text-[13px] font-semibold text-cream group-hover:text-champagne">

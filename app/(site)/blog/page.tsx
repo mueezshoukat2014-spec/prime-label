@@ -6,6 +6,7 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { getPublishedPosts, readingTime } from "@/lib/blog";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
+import SmartImg from "@/components/SmartImg";
 
 
 export const metadata: Metadata = {
@@ -81,10 +82,10 @@ export default async function BlogPage() {
                   >
                     {p.cover && (
                       <div className="relative aspect-[16/10] overflow-hidden">
-                        <img
+                        <SmartImg
                           src={p.cover}
                           alt={p.title}
-                          loading="lazy"
+                          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />

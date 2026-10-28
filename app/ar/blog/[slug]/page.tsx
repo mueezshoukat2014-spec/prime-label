@@ -8,6 +8,7 @@ import { getSiteContent } from "@/lib/data";
 import { AR_POSTS, getArPost } from "@/lib/blog-ar";
 import { SITE_URL, BRAND_NAME } from "@/lib/seo";
 import { fitTitle } from "@/lib/seo-meta";
+import SmartImg from "@/components/SmartImg";
 
 
 export function generateStaticParams() {
@@ -109,8 +110,9 @@ export default async function ArBlogPost({ params }: { params: { slug: string } 
 
             <Reveal delay={0.08}>
               <div className="mt-8 overflow-hidden rounded-3xl border border-line">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={post.cover} alt={post.title} className="aspect-[16/9] w-full object-cover" />
+                <div className="relative aspect-[16/9]">
+                  <SmartImg src={post.cover} alt={post.title} sizes="(max-width: 1024px) 100vw, 896px" priority quality={80} className="absolute inset-0 h-full w-full object-cover" />
+                </div>
               </div>
             </Reveal>
 

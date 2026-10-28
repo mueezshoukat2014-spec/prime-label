@@ -180,7 +180,7 @@ export default async function AboutPage() {
                   className="group block overflow-hidden rounded-2xl border border-line transition-all duration-300 hover:border-champagne/40"
                 >
                   <div className="relative aspect-square overflow-hidden">
-                    <SmartImg src={p.image} alt={p.title} sizes="(max-width: 1024px) 46vw, 22vw" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <SmartImg src={p.image} alt={p.title} sizes="(max-width: 1024px) 46vw, 22vw" small className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-3.5">
                     <p className="text-[13px] font-medium text-cream group-hover:text-champagne">{p.title}</p>

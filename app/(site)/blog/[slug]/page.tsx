@@ -9,6 +9,7 @@ import { getSiteContent } from "@/lib/data";
 import { getPost, getPublishedPosts, readingTime, fixRetiredLinks } from "@/lib/blog";
 import { SITE_URL, BRAND_NAME, breadcrumbJsonLd } from "@/lib/seo";
 import { fitTitle } from "@/lib/seo-meta";
+import SmartImg from "@/components/SmartImg";
 
 // Pre-render published posts at build time (edge-cached); posts published
 // later render on their first visit and are cached from then on.
@@ -106,7 +107,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
             {post.cover && (
               <div className="relative mx-auto mt-10 aspect-[16/8] max-w-4xl overflow-hidden rounded-3xl border border-line shadow-soft">
-                <img src={post.cover} alt={post.title} className="absolute inset-0 h-full w-full object-cover" />
+                <SmartImg src={post.cover} alt={post.title} sizes="(max-width: 1024px) 100vw, 896px" priority quality={80} className="absolute inset-0 h-full w-full object-cover" />
               </div>
             )}
 

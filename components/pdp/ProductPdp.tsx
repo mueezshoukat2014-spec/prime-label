@@ -105,9 +105,12 @@ const chip = (active: boolean) =>
 export default function ProductPdp({
   product,
   content,
+  thumbs,
 }: {
   product: PdpProduct;
   content: PdpContent;
+  /** src → small thumbnail (repo photos), computed on the server. */
+  thumbs?: Record<string, string>;
 }) {
   const images = useMemo(() => {
     const list = [product.image, ...(product.gallery || [])].filter(Boolean);
@@ -216,7 +219,7 @@ export default function ProductPdp({
                     i === activeImg ? "border-champagne shadow-glow-sm" : "border-line opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <PdpImg src={g} alt={`${product.title} — photo ${i + 1}`} sizes="88px" className="absolute inset-0 h-full w-full object-cover" />
+                  <PdpImg src={thumbs?.[g] || g} alt={`${product.title} — photo ${i + 1}`} sizes="88px" className="absolute inset-0 h-full w-full object-cover" />
                 </button>
               ))}
             </div>

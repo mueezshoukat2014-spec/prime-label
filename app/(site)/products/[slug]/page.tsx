@@ -11,6 +11,7 @@ import { SITE_URL, BRAND_NAME, DEMAND_MARKETS, breadcrumbJsonLd } from "@/lib/se
 import { AR_PDP } from "@/lib/pdp-content-ar";
 import { fitTitle, fitDescription, productSeo } from "@/lib/seo-meta";
 import SmartImg from "@/components/SmartImg";
+import { photoThumb } from "@/lib/photo-thumb";
 
 // Pre-render every live product page at build time so it is served from the
 // edge cache. Products added later render on their first visit, then cache.
@@ -178,7 +179,15 @@ export default async function ProductPage({ params }: { params: { slug: string }
             </Reveal>
           )}
 
-          <ProductPdp product={product} content={content} />
+          <ProductPdp
+            product={product}
+            content={content}
+            thumbs={Object.fromEntries(
+              [product.image, ...(product.gallery || [])]
+                .filter(Boolean)
+                .map((g: string) => [g, photoThumb(g) ?? g])
+            )}
+          />
 
 
           {/* other products */}
@@ -200,7 +209,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
                         <SmartImg
                           src={p.image}
                           alt={p.title}
-                          sizes="(max-width: 1024px) 46vw, 22vw"
+                          sizes="(max-width: 1024px) 46vw, 22vw" small
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>

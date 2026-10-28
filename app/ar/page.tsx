@@ -168,7 +168,7 @@ export default async function ArabicPage() {
                         <SmartImg
                           src={p.image}
                           alt={ar?.name || p.title}
-                          sizes="(max-width: 1024px) 46vw, 22vw"
+                          sizes="(max-width: 1024px) 46vw, 22vw" small
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>

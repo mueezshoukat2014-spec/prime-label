@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoThumb } from "@/lib/photo-thumb";
 
 /**
  * Site image policy (see next.config.mjs): remote Vercel-Blob uploads go through
@@ -16,6 +17,7 @@ export default function SmartImg({
   priority = false,
   eager = false,
   quality = 75,
+  small = false,
 }: {
   src: unknown;
   alt: string;
@@ -28,8 +30,12 @@ export default function SmartImg({
   /** Above the fold but not the LCP: load immediately, normal priority. */
   eager?: boolean;
   quality?: number;
+  /** Shown small (cards/thumbnails ≤ ~180 CSS px): repo photos use their 540px WebP thumbnail. */
+  small?: boolean;
 }) {
-  const s = typeof src === "string" ? src : "";
+  const raw = typeof src === "string" ? src : "";
+  const isSmall = small || (!!width && width <= 180);
+  const s = !raw.startsWith("https://") && isSmall ? photoThumb(raw) ?? raw : raw;
   if (s.startsWith("https://")) {
     const loading = priority ? undefined : eager ? ("eager" as const) : ("lazy" as const);
     return width && height ? (

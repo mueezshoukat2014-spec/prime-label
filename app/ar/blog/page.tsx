@@ -6,6 +6,7 @@ import { Reveal } from "@/components/anim";
 import { getSiteContent } from "@/lib/data";
 import { AR_POSTS } from "@/lib/blog-ar";
 import { SITE_URL, BRAND_NAME } from "@/lib/seo";
+import SmartImg from "@/components/SmartImg";
 
 
 export const metadata: Metadata = {
@@ -61,13 +62,14 @@ export default async function ArBlogIndex() {
                     href={`/ar/blog/${p.slug}`}
                     className="group block h-full overflow-hidden rounded-3xl border border-line bg-surface/30 transition-all duration-300 hover:border-champagne/40"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={p.cover}
-                      alt={p.title}
-                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <SmartImg
+                        src={p.cover}
+                        alt={p.title}
+                        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
                     <div className="p-5">
                       <p className="arabic-text text-[11px] text-cream-dim">
                         {new Date(p.date).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
