@@ -3,6 +3,7 @@ import { sql } from "@/lib/db";
 import { products as staticProducts, gallery, reels as staticReels, STATIC_CONTENT, normalizeMediaUrl, type Reel } from "@/lib/content";
 import { normaliseManagedVideos } from "@/lib/video";
 import { photoThumb } from "@/lib/photo-thumb";
+import { isBlobUrl, blobReachable } from "@/lib/blob-health";
 
 /* Request-burst memo. Pages are static + ISR now (rendered at build time and
    re-rendered in the background), so this only de-duplicates the identical
@@ -195,17 +196,51 @@ async function _getReels(): Promise<Reel[]> {
 
 export { gallery, staticReels as reels };
 
-export const getProducts = () => memo("products", _getProducts);
+/* Blob outage fallback (lib/blob-health.ts): if the Blob store is blocked, show
+   each product with its repo photos (data/content.json) instead of broken images. */
+const REPO_PHOTO_FALLBACK = "/photos/ai-brand-packaging.jpg";
+async function withBlobFallback(list: any[]) {
+  const sample =
+    list.map((p) => p.image).find(isBlobUrl) ?? list.flatMap((p) => p.gallery || []).find(isBlobUrl);
+  if (!sample || (await blobReachable(sample))) return list;
+  const bySlug = new Map((staticProducts as any[]).map((sp) => [sp.slug, sp]));
+  return list.map((p) => {
+    const sp: any = bySlug.get(p.slug);
+    const kept = (p.gallery || []).filter((g: string) => !isBlobUrl(g));
+    const gallery = kept.length ? kept : sp?.gallery || [];
+    return {
+      ...p,
+      image: isBlobUrl(p.image) ? sp?.image || gallery[0] || REPO_PHOTO_FALLBACK : p.image,
+      gallery,
+      count: gallery.length,
+    };
+  });
+}
+export const getProducts = () => memo("products", async () => withBlobFallback(await _getProducts()));
 export const getSiteContent = () => memo("site", _getSiteContent);
 export const getFaqs = () => memo("faqs", _getFaqs);
 export const getTestimonials = () => memo("testimonials", _getTestimonials);
-export const getGallery = () => memo("gallery", _getGallery);
+export const getGallery = () =>
+  memo("gallery", async () => {
+    const items = await _getGallery();
+    const sample = items.map((g: any) => g.src).find(isBlobUrl);
+    // Blob blocked → hide uploaded (Blob) photos; the repo photos stay.
+    if (sample && !(await blobReachable(sample))) return items.filter((g: any) => !isBlobUrl(g.src));
+    return items;
+  });
 export const getCategoryNames = () => memo("cats", _getCategoryNames);
 export const getReels = () =>
-  memo("reels", async () =>
-    (await _getReels()).map((r: any) => {
+  memo("reels", async () => {
+    let list: any[] = await _getReels();
+    const sample = list.map((r) => r.src).find(isBlobUrl) ?? list.map((r) => r.cover).find(isBlobUrl);
+    if (sample && !(await blobReachable(sample))) {
+      // Blob blocked → managed (Blob) videos can't play; show the repo reels instead.
+      const kept = list.filter((r) => !isBlobUrl(r.src));
+      list = kept.length ? kept : (staticReels as any[]);
+    }
+    return list.map((r) => {
       const thumb = photoThumb(r.cover);
       return thumb ? { ...r, thumb } : r;
-    })
-  );
+    });
+  });
 export const getPdpOverride = (slug: string) => memo(`pdp:${slug}`, () => _getPdpOverride(slug));

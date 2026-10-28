@@ -1,5 +1,6 @@
 import "server-only";
 import { sql } from "@/lib/db";
+import { isBlobUrl, blobReachable } from "@/lib/blob-health";
 
 export type BlogPost = {
   id: number;
@@ -13,13 +14,20 @@ export type BlogPost = {
   updated_at: string;
 };
 
+/** Blob store blocked (lib/blob-health.ts) → drop Blob covers instead of showing broken images. */
+async function withoutBlockedCovers<T extends { cover: string }>(posts: T[]): Promise<T[]> {
+  const sample = posts.map((p) => p.cover).find(isBlobUrl);
+  if (!sample || (await blobReachable(sample))) return posts;
+  return posts.map((p) => (isBlobUrl(p.cover) ? { ...p, cover: "" } : p));
+}
+
 export async function getPublishedPosts(): Promise<BlogPost[]> {
   try {
     const rows = await sql`
       SELECT id, slug, title, excerpt, cover, body, published, created_at, updated_at
       FROM blog_posts WHERE published = TRUE ORDER BY created_at DESC
     `;
-    return rows as BlogPost[];
+    return withoutBlockedCovers(rows as BlogPost[]);
   } catch {
     return [];
   }
@@ -31,7 +39,8 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
       SELECT id, slug, title, excerpt, cover, body, published, created_at, updated_at
       FROM blog_posts WHERE slug = ${slug} AND published = TRUE LIMIT 1
     `;
-    return (rows[0] as BlogPost) ?? null;
+    const post = (rows[0] as BlogPost) ?? null;
+    return post ? (await withoutBlockedCovers([post]))[0] : null;
   } catch {
     return null;
   }
