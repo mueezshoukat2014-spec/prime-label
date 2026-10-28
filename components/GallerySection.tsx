@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "@/lib/motion-lite";
 import { Reveal, EASE } from "@/components/anim";
 import Link from "@/components/AppLink";
 import type { GalleryItem } from "@/lib/content";
+import Image from "next/image";
 
 const CAT_LABELS: Record<string, string> = {
   "woven-labels": "Woven",
@@ -116,6 +117,20 @@ export default function GallerySection({
               style={{ aspectRatio: `${item.w || 1200} / ${item.h || 1500}`, contentVisibility: "auto", containIntrinsicSize: "auto 360px" } as React.CSSProperties}
               className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-line transition-[transform,border-color] duration-[220ms] ease-out hover:-translate-y-1 hover:border-cream/25"
             >
+              {typeof item.src === "string" && item.src.startsWith("https://") ? (
+                // Admin uploads live on Vercel Blob: serve them through the image
+                // optimizer (cached 31 days at the CDN) so gallery views never
+                // spend Blob data transfer.
+                <Image
+                  src={item.src}
+                  alt={`${item.caption || item.category || "Custom branding"} — Prime Labels work sample`}
+                  fill
+                  sizes="(max-width: 768px) 46vw, (max-width: 1024px) 31vw, 23vw"
+                  quality={75}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
+                />
+              ) : (
               <img
   src={(item as { thumb?: string }).thumb || (typeof item.src === "string" ? item.src : "")}
   srcSet={(item as { thumb?: string }).thumb ? `${(item as { thumb?: string }).thumb} 540w, ${item.src} ${item.w || 1080}w` : undefined}
@@ -125,6 +140,7 @@ export default function GallerySection({
   decoding="async"
   className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-[220ms] ease-out group-hover:brightness-110 group-hover:contrast-105"
 />
+              )}
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <span className="line-clamp-2 text-left text-[12px] uppercase tracking-widest2 text-cream-muted">
                   {item.caption || labelFor(item.category) || "Custom branding by Prime Labels"}
@@ -188,6 +204,18 @@ export default function GallerySection({
               className="relative max-h-[85vh] max-w-4xl"
               onClick={(e) => e.stopPropagation()}
             >
+              {String(filtered[lightbox].src).startsWith("https://") ? (
+                <Image
+                  src={filtered[lightbox].src}
+                  alt={filtered[lightbox].caption || ""}
+                  width={filtered[lightbox].w || 1200}
+                  height={filtered[lightbox].h || 1500}
+                  sizes="(max-width: 1024px) 100vw, 896px"
+                  quality={80}
+                  priority
+                  className="max-h-[80vh] w-auto rounded-2xl border border-line object-contain"
+                />
+              ) : (
               <img
                 src={filtered[lightbox].src}
                 alt={filtered[lightbox].caption || ""}
@@ -197,6 +225,7 @@ export default function GallerySection({
                 decoding="async"
                 className="max-h-[80vh] w-auto rounded-2xl border border-line object-contain"
               />
+              )}
               <figcaption className="mt-4 flex items-center justify-between gap-4">
                 <span className="text-[13px] text-cream-muted line-clamp-1">
                   {filtered[lightbox].caption || "Custom branding by Prime Labels"}
